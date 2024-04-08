@@ -1,95 +1,48 @@
 import Image from "next/image";
 import styles from "./page.module.css";
+import {image} from './assets'
+
 
 export default function Home() {
   return (
-    <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>src/app/page.js</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
+    <div className="">
+      <div className={styles.main}
+        style={{
+          width: "100%",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <div
+          style={{
+            width: "50%",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            color: "white",
+          }}
+        >
+          <Image alt="" src={image.mainLogo} width={250} height={120} />
+          <p style={{ fontSize: 18, textAlign: "center", marginTop: 10 }}>
+            Earn Green Currency by participating in our projects to purchase
+            items from <a href="/shops" style={{color: 'skyblue', cursor: 'pointer', textDecoration: 'none'}}>our Eco²Balance Shop</a>
+          </p>
         </div>
       </div>
-
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
+      <div className="container" style={{paddingTop: 50}}>
+        <div className="row">
+        <div className="col-12 col-lg-6">
+          <Image alt="" src={image.mainProject} layout="responsive"/>
+          </div>
+          <div className="col-12 col-lg-6">
+            <h1>OUR SUSTAINABILITY PROJECTS</h1>
+            <p>Join us in our Green initiatives!</p>
+            <p>Be a volunteer in our sustainable projects; make new friends, learn new skills and earn green currency which you can use for purchasing items from our Eco²Balance Shop.</p>
+            <button type="button" class="btn btn-success">Success</button>
+          </div>
+        </div>
       </div>
-
-      <div className={styles.grid}>
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore starter templates for Next.js.</p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
+    </div>
   );
 }

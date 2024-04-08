@@ -1,10 +1,10 @@
 .main {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: center;
-  padding: 6rem;
-  min-height: 100vh;
+  background-image: url('https://w0.peakpx.com/wallpaper/779/524/HD-wallpaper-beautiful-forest-view-with-reflection-on-calm-body-of-water-forest.jpg');
+  height: 80vh;
+  width: '100%';
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
 }
 
 .description {
