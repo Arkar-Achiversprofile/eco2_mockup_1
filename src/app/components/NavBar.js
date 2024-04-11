@@ -5,7 +5,7 @@ export default function NavBar() {
     <nav class="navbar navbar-expand-lg navbar-light bg-dark">
         
         <div style={{width: '100%', height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
-        <h1 style={{fontSize: 45, color: 'white', fontWeight: 'bold', alignSelf: 'center'}}>Otolith Enrichment</h1>
+        <h1 style={{fontSize: 50, color: 'white', fontWeight: 'bold', alignSelf: 'center'}}><a href="/" style={{color: 'white', textDecoration: 'none', fontFamily: 'serif'}}>Otolith Enrichment</a></h1>
         </div>
         
       {/* <div class="container-fluid">

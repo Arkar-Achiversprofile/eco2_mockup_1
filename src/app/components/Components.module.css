@@ -1,0 +1,9 @@
+.aTag {
+    text-decoration: none;
+    color: #717171;
+  }
+  
+  .aTag:hover {
+    text-decoration: none;
+    color: white;
+  }

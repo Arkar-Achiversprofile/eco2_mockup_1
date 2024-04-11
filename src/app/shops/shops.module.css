@@ -1,0 +1,16 @@
+.main {
+/* background-image: url("../assets/eco2_shops_back.png"); */
+  /* height: 80vh;
+  width: '100%'; */
+  /* background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center; */
+}
+
+.image {
+  transition: transform 1s;
+}
+
+.image:hover {
+  transform: scale(1.04); 
+}
