@@ -13,7 +13,7 @@ export default function Home() {
   });
   return (
     <div className="">
-      <video autoPlay muted loop>
+      <video autoPlay muted loop >
         <source src="/eco2_home_back.mp4" type="video/mp4" />
       </video>
       {/* <div className={styles.main}
