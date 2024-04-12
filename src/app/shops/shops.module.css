@@ -14,3 +14,13 @@
 .image:hover {
   transform: scale(1.04); 
 }
+
+.loadingBack {
+  width: '100%';
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.1);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1;
+}
