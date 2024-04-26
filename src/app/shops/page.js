@@ -56,8 +56,8 @@ function Shops() {
         <Image
           alt=""
           src={image.shopBack}
-          width={"100%"}
-          height={"100%"}
+          width={"1000"}
+          height={"500"}
           layout="responsive"
         />
       </div>
