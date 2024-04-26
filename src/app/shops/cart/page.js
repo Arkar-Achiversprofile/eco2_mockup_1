@@ -10,10 +10,10 @@ import { useMediaQuery } from "react-responsive";
 export default function Cart() {
     const router = useRouter();
     const isMobile = useMediaQuery({
-        query: "(max-width: 500px)",
+        query: "(max-width: 770px)",
       });
       const isTablet = useMediaQuery({
-        query: "(min-width: 500px) and (max-width: 1050px)",
+        query: "(min-width: 770px) and (max-width: 1050px)",
       });
 
   return (
@@ -35,17 +35,17 @@ export default function Cart() {
                 {isMobile || isTablet ? ( <h6>Fish</h6>) : (<h5>Fish</h5>)}
               
               <div className="d-flex flex-row justify-content-between">
-                <p style={{color: color.grey, fontSize: isMobile ? 12 : 16}}>QUANTITY: 1</p>
-                <p style={{ color: color.green, fontSize: isMobile ? 10 : 12 }}>
+                <p style={{color: color.grey, fontSize: isMobile ? 10 : 16}}>QUANTITY: 1</p>
+                <p style={{ color: color.green, fontSize: isMobile ? 8 : 12 }}>
                   Green Currency: 199.79
                 </p>
               </div>
               <div className="d-flex flex-row justify-content-between">
                 <div className="d-flex flex-row">
-                  <p style={{color: color.grey, fontSize: isMobile ? 12 : 16}}>Color: </p>
+                  <p style={{color: color.grey, fontSize: isMobile ? 10 : 16}}>Color: </p>
                   <div style={{width: 10, height: 10, borderRadius: 5, backgroundColor: color.orange, marginTop: 5, marginLeft: 10}}/>
                 </div>
-                <p style={{ fontWeight: 'bold', fontSize: isMobile ? 10 : 12 }}>
+                <p style={{ fontWeight: 'bold', fontSize: isMobile ? 8 : 12 }}>
                   SGD: 4
                 </p>
               </div>
