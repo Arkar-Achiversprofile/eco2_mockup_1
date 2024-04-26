@@ -1,0 +1,16 @@
+.buttonShipping {
+    cursor: pointer;
+}
+
+.buttonShipping:hover {
+    background-color: #0DCAF0;
+    color: white;
+}
+
+.textType {
+    color: #0DCAF0;
+}
+
+.buttonShipping:hover .textType {
+    color: white;
+}

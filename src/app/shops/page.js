@@ -7,10 +7,13 @@ import { tempShopData } from "../components/TempData";
 import Pagination from "../components/Pagination";
 import { useMediaQuery } from "react-responsive";
 import Footer from "../components/Footer";
+import { useRouter } from "next/navigation";
+import NavBar from "../components/NavBar";
 
 function Shops() {
   // const [allData, setAllData] = useState(tempShopData);
   // const [currentData, setCurrentData] = useState([]);
+  const router = useRouter();
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 6;
   const isMobile = useMediaQuery({
@@ -48,6 +51,7 @@ function Shops() {
   };
   return (
     <div>
+      <NavBar/>
       <div className="" style={{ width: "100%" }}>
         <Image
           alt=""
@@ -141,6 +145,7 @@ function Shops() {
                 marginRight: 10,
                 marginTop: 30,
               }}
+              onClick={() => {router.push(`/shops/productsdetail`)}}
             >
               <div class="card" style={{ width: "100%", minHeight: 680 }}>
                 <Image

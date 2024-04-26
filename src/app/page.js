@@ -5,6 +5,7 @@ import { image } from "./assets";
 import Footer from "./components/Footer";
 import { useRouter } from "next/navigation";
 import { useMediaQuery } from "react-responsive";
+import NavBar from "./components/NavBar";
 
 export default function Home() {
   const router = useRouter();
@@ -12,7 +13,9 @@ export default function Home() {
     query: "(max-width: 850px)",
   });
   return (
+    
     <div className="">
+      <NavBar/>
       <video autoPlay muted loop >
         <source src="/eco2_home_back.mp4" type="video/mp4" />
       </video>

@@ -2,6 +2,13 @@ const { image } = require("../assets");
 
 export const tempShopData = [
     {
+        productId: 1000,
+        productName: "Locally Farmed Tilapia",
+        price: "$6.00",
+        productBy: "Otolith Enrichment",
+        image: image.fish
+    },
+    {
         productId: 1001,
         productName: "Fragrant Red Basil 60g",
         price: "$4.00",

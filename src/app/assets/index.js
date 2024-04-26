@@ -14,6 +14,12 @@ import prawn from "./VannameiPrawn.png";
 import mushroom from "./Mushroom.png";
 import kombucha from "./Kombucha.png";
 import vegetable from "./Vegetables.png";
+import fish from "./Fish.png";
+import visaCard from './Visa.jpeg';
+import masterCard from './Master.jpg'
+import paypalCard from './Paypal.png';
+import paynowCard from './Paynow.jpg';
+import banks from './qrcodeBanks.png';
 
 export const image = {
   mainLogo,
@@ -32,5 +38,11 @@ export const image = {
   mushroom,
   kombucha,
   vegetable,
+  fish,
+  visaCard,
+  masterCard,
+  paypalCard,
+  paynowCard,
+  banks,
 };
 

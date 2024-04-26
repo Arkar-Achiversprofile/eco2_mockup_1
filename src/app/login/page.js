@@ -1,6 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import Footer from "../components/Footer";
+import NavBar from "../components/NavBar";
 
 export default function Login() {
   const [isShow, setIsShow] = useState(false);
@@ -8,6 +9,7 @@ export default function Login() {
   const onClickShowOrHide = () => {};
   return (
     <div>
+      <NavBar/>
     <div className="d-flex justify-content-center">
       <div className="pt-5 pb-5" style={{ width: "80%" }}>
         <h1>Login</h1>
