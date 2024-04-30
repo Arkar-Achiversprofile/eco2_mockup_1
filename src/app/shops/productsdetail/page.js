@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import styles from "../shops.module.css";
 import Image from "next/image";
 import { image } from "@/app/assets";
@@ -18,17 +18,33 @@ export default function ProductDetail() {
     query: "(min-width: 500px) and (max-width: 1050px)",
   });
 
+  const [GC, setGC] = useState("");
+  const [productCost, setProductCost] = useState(6);
+  console.log("GC and COst ====>", GC, productCost);
+
+  const onChangeGC = (value) => {
+    setGC(value);
+    if (value == "" || value == "0") {
+      setProductCost(6);
+    } else {
+      setProductCost(productCost - parseFloat(value));
+    }
+  };
+
   return (
-    <div>
+    <div style={{backgroundColor: color.lightGrey}}>
       <ShopNavBar name="Product Detail" />
-      <div className="row mt-5 mb-5">
+      <div className="row mt-3 mb-5">
+        <h4 style={{ paddingLeft: isMobile ? 20 : 40, marginBottom: 20 }}>
+          Food / Seafood / Fish
+        </h4>
         <div className="col-10 col-md-5 d-flex justify-content-center justify-content-md-end mx-auto">
           <Image
             alt=""
             className={styles.image}
             src={image.fish}
-            width={400}
-            height={480}
+            width={isMobile || isTablet ? 400 : 470}
+            height={550}
             //   layout="responsive"
             // onMouseOut={(e) => {
             //   e.target.style.transform = "scale(1)";
@@ -39,16 +55,18 @@ export default function ProductDetail() {
           <div
             style={{
               width: isMobile || isTablet ? 400 : "100%",
-              height: 480,
+              height: 550,
               backgroundColor: color.lightGrey,
               padding: 10,
             }}
           >
             <h5>Locally Farmed Tilapia Fish</h5>
-            <p style={{ color: color.grey, marginTop: 20 }}>SGD 6.00</p>
+            <p style={{ color: color.grey, marginTop: 20, fontSize: 18 }}>
+              SGD 6.00
+            </p>
             <hr />
-            <p style={{ fontWeight: "bold", fontSize: 12 }}>Descriptions:</p>
-            <p style={{ color: color.grey, fontSize: 12 }}>
+            <p style={{ fontWeight: "bold", fontSize: 16 }}>Descriptions:</p>
+            <p style={{ color: color.grey, fontSize: 16 }}>
               300 - 500g Freshly harvested
             </p>
             <p
@@ -56,11 +74,12 @@ export default function ProductDetail() {
                 color: color.skyBlue,
                 marginTop: 30,
                 textDecoration: "underline",
+                fontSize: 18,
               }}
             >
               Read More
             </p>
-            <ul style={{ fontSize: 12 }}>
+            <ul style={{ fontSize: 14 }}>
               <li>
                 {" "}
                 Green Currency Limit:{" "}
@@ -77,16 +96,16 @@ export default function ProductDetail() {
               </li>
             </ul>
             <div
-              className="d-flex flex-row"
+              // className="d-flex flex-row"
               style={{ width: "80%", margin: "auto" }}
             >
               <div
-                className="d-flex col-6 justify-content-center align-items-center border border-info rounded-start-5 py-1"
+                className="d-flex justify-content-center align-items-center border border-info rounded-5 py-1"
                 style={{ fontSize: isTablet ? 14 : 16 }}
               >
                 QUANTITY 1 <i className="bi bi-caret-down"></i>
               </div>
-              <div
+              {/* <div
                 className="d-flex col-6 justify-content-center align-items-center border border-info border-start-0 rounded-end-5 py-1"
                 style={{ fontSize: isTablet ? 14 : 16 }}
               >
@@ -99,12 +118,12 @@ export default function ProductDetail() {
                     backgroundColor: color.orange,
                   }}
                 />
-              </div>
+              </div> */}
             </div>
             <div
               class="form-check mt-3"
               style={{
-                width: isMobile ? "80%" : isTablet ? "60%" : "50%",
+                width: isMobile ? "80%" : "60%",
                 margin: "0 auto",
               }}
             >
@@ -117,15 +136,29 @@ export default function ProductDetail() {
               <label
                 class="form-check-label"
                 for="flexCheckDefault"
-                style={{ fontSize: 10 }}
+                style={{ fontSize: 12 }}
               >
                 Used <span style={{ color: color.green }}>199.79</span> Green
                 Currency To Deduct - 33%{" "}
               </label>
             </div>
-            <p className="mt-2" style={{ fontSize: 10, textAlign: "center" }}>
+            <input
+              class="form-control"
+              type="text"
+              placeholder="Green Currency"
+              aria-label="default input example"
+              value={GC}
+              onChange={(v) => onChangeGC(v.target.value)}
+              style={{
+                width: isMobile ? "80%" : "60%",
+                margin: "5px auto",
+                height: 30,
+                fontSize: 12,
+              }}
+            ></input>
+            <p className="mt-2" style={{ fontSize: 12, textAlign: "center" }}>
               Final Payment Amount:{" "}
-              <span style={{ fontWeight: "bold" }}>SGD 4</span>
+              <span style={{ fontWeight: "bold" }}>SGD {productCost}</span>
             </p>
             <div className="d-flex justify-content-center">
               <button

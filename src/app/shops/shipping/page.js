@@ -85,7 +85,25 @@ export default function ShippingInfo() {
           </div>
         </div>
 
-        <h5 style={{ paddingLeft: isMobile ? 30 : 50, marginTop: 30 }}>
+        <h5 style={{ paddingLeft: isMobile ? 20 : 50, marginTop: 30, textDecoration: 'underline' }}>
+          Delivery Charges By Supplier
+        </h5>
+        <div style={{ width: "90%", margin: "0 auto" }}>
+          <div className="d-flex flex-row">
+            <p style={{width: isMobile ? '50%': '30%'}}>Otolith Enrichment:</p>
+            <p>SGD 10</p>
+          </div>
+          <div className="d-flex flex-row">
+            <p style={{width: isMobile ? '50%': '30%'}}>Mushroom Buddies:</p>
+            <p>SGD 8</p>
+          </div>
+          <div className="d-flex flex-row">
+            <p style={{width: isMobile ? '50%': '30%'}}>The Good Kombucha:</p>
+            <p>SGD 12</p>
+          </div>
+        </div>
+
+        <h5 style={{ paddingLeft: isMobile ? 20 : 50, marginTop: 30 }}>
           Delivery Information
         </h5>
         <div
@@ -152,7 +170,7 @@ export default function ShippingInfo() {
                 color: buttonIndex == 1 ? color.white : color.skyBlue,
               }}
             >
-              SGD 15
+              SGD 30
             </p>
             <p
               style={{
