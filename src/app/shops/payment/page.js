@@ -1,22 +1,48 @@
 "use client";
-import { image } from "@/app/assets";
-import ShopNavBar from "@/app/components/ShopNavBar";
-import { color } from "@/app/components/color";
+import { image } from "../../assets";
+import ShopNavBar from "../../components/ShopNavBar";
+import { color } from "../../components/color";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useMediaQuery } from "react-responsive";
 
 export default function Payment() {
-    const router = useRouter();
+  const router = useRouter();
   const isMobile = useMediaQuery({
     query: "(max-width: 500px)",
   });
   const [buttonIndex, setButtonIndex] = useState(1);
+  
+  // const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY, {
+  //   apiVersion: '2024-04-10',
+  //   appInfo: { // For sample support and debugging, not required for production:
+  //     name: "stripe-samples/<your-sample-name>",
+  //     version: "0.0.1",
+  //     url: "https://github.com/stripe-samples"
 
-  const onClickPaymentType = (index) => {
+  //   }
+  // });
+
+  // useEffect(() => {
+  //   fetch("http://localhost:4242/config").then(async (r) => {
+  //     const { publishableKey } = await r.json();
+  //     setStripePromise(loadStripe(publishableKey));
+  //   });
+  // }, []);
+
+
+  const onClickPaymentType = async (index) => {
     setButtonIndex(index);
   };
+
+  const onClickContinue = () => {
+    if (buttonIndex == 0) {
+      router.push("/shops/card_payment");
+    } else {
+      router.push("/shops/paynowpaylah");
+    }
+  }
   return (
     <div>
       <ShopNavBar name="Payment" />
@@ -80,7 +106,7 @@ export default function Payment() {
         </div>
         <div
           className="d-flex flex-row justify-content-around align-items-center mt-5"
-          style={{ width: "70%",}}
+          style={{ width: "70%" }}
         >
           <div
             className="border border-info"
@@ -121,7 +147,7 @@ export default function Payment() {
               cursor: "pointer",
               backgroundColor: buttonIndex == 1 ? color.skyBlue : null,
               display: "flex",
-              flexDirection: 'column',
+              flexDirection: "column",
               justifyContent: "center",
               alignItems: "center",
             }}
@@ -146,20 +172,20 @@ export default function Payment() {
             </p>
           </div>
         </div>
-        <div className="d-flex mt-5" style={{width: '70%'}}>
-        <button
-            type="button"
-            class="btn btn-info"
-            style={{
-              color: color.white,
-              fontSize: 16,
-              padding: isMobile ? "5px 30px" : "5px 40px",
-            }}
-            onClick={() => router.push("/shops/paynowpaylah")}
-          >
-            Continue
-          </button>
-        </div>
+          <div className="d-flex mt-5" style={{ width: "70%" }}>
+            <button
+              type="button"
+              class="btn btn-info"
+              style={{
+                color: color.white,
+                fontSize: 16,
+                padding: isMobile ? "5px 30px" : "5px 40px",
+              }}
+              onClick={() => onClickContinue()}
+            >
+              Continue
+            </button>
+          </div>
       </div>
     </div>
   );

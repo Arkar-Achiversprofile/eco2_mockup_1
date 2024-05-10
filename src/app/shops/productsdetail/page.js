@@ -2,10 +2,10 @@
 import React, { useState } from "react";
 import styles from "../shops.module.css";
 import Image from "next/image";
-import { image } from "@/app/assets";
-import { color } from "@/app/components/color";
+import { image } from "../../assets";
+import { color } from "../../components/color";
 import { useMediaQuery } from "react-responsive";
-import ShopNavBar from "@/app/components/ShopNavBar";
+import ShopNavBar from "../../components/ShopNavBar";
 import { useRouter } from "next/navigation";
 
 export default function ProductDetail() {

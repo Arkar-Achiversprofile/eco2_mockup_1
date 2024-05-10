@@ -1,0 +1,6 @@
+export const StripeApiKey = {
+  NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY:
+    "pk_test_51N3sdFJYYD0LqRPzywFrSiJFVLKtrms6x2cCgWGOcPk5tUdqOiNJTgK4o3XjPWLHjgPqc8m4ZaDBf7XOLOQOiT7w007qMw0aa1",
+  STRIPE_SECRET_KEY:
+    "sk_test_51N3sdFJYYD0LqRPzLXzPo4gSdUsfxvq9Lhb7rLwARZfcy8x8uGWmqRPSroxSAzKspwgvUFCtJVwi31y8UwXVYosq00edOaHHK7",
+};

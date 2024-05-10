@@ -1,8 +1,8 @@
 "use client";
-import { image } from "@/app/assets";
-import { generatePayNowQR } from "@/app/components/GeneratePayNowQR";
-import ShopNavBar from "@/app/components/ShopNavBar";
-import { color } from "@/app/components/color";
+import { image } from "../../assets";
+import { generatePayNowQR } from "../../components/GeneratePayNowQR";
+import ShopNavBar from "../../components/ShopNavBar";
+import { color } from "../../components/color";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
 

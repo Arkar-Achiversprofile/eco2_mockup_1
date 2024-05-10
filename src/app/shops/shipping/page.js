@@ -1,6 +1,6 @@
 "use client";
-import ShopNavBar from "@/app/components/ShopNavBar";
-import { color } from "@/app/components/color";
+import ShopNavBar from "../../components/ShopNavBar";
+import { color } from "../../components/color";
 import React, { useState } from "react";
 import "./shipping.css";
 import { useRouter } from "next/navigation";

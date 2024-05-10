@@ -1,7 +1,7 @@
 "use client";
-import { image } from "@/app/assets";
-import ShopNavBar from "@/app/components/ShopNavBar";
-import { color } from "@/app/components/color";
+import { image } from "../../assets";
+import ShopNavBar from "../../components/ShopNavBar";
+import { color } from "../../components/color";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
