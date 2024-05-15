@@ -1,21 +1,56 @@
 "use client";
+import { Elements } from "@stripe/react-stripe-js";
 import { image } from "../../assets";
 import { generatePayNowQR } from "../../components/GeneratePayNowQR";
 import ShopNavBar from "../../components/ShopNavBar";
 import { color } from "../../components/color";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
+import PaymentForm from "./components/PaymentForm";
+import { StripeApiKey } from "../../api/StripeApiKey";
+import { loadStripe } from "@stripe/stripe-js";
+import { useSearchParams } from "next/navigation";
+
+const stripePromise = loadStripe(
+  StripeApiKey.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
+);
 
 export default function PaynowPaylah() {
+  // const { clientSecret, paymentIntentId } = params;
+  const searchParams = useSearchParams();
+
+  const clientSecret = searchParams.get("clientSecret");
+  const paymentIntentId = searchParams.get("paymentIntentId");
   const [qrImage, setQrImage] = useState("");
-  useEffect(() => {
-    generatePayNowQR("4.00", setQrImage);
-  }, []);
-  console.log("qrImage ====>", qrImage);
+
+  console.log("client secrete ==>", clientSecret);
+  console.log("ID  ==>", paymentIntentId)
+
+  // useEffect(() => {
+  //   generatePayNowQR("4.00", setQrImage);
+  // }, []);
+  // console.log("qrImage ====>", qrImage);
+  const appearance = {
+    theme: "stripe",
+  };
+  const options = {
+    clientSecret,
+    appearance,
+  };
   return (
     <div>
       <ShopNavBar name="Payment" />
-      <h4 style={{ marginLeft: "10%", marginTop: 30 }}>PayNow / PayLah</h4>
+      {clientSecret != "" && (
+        <div
+          className="d-flex justify-content-center align-items-center"
+          style={{ width: "100%" }}
+        >
+          <Elements options={options} stripe={stripePromise}>
+            <PaymentForm clientSecret={clientSecret} paymentIntentId={paymentIntentId} />
+          </Elements>
+        </div>
+      )}
+      {/* <h4 style={{ marginLeft: "10%", marginTop: 30 }}>PayNow / PayLah</h4>
       <div className="d-flex flex-column align-items-center col-11 col-md-6 mx-auto">
         <Image alt="" src={qrImage} width={300} height={300} />
         <p style={{ fontWeight: "bold", marginTop: 20 }}>SGD 4</p>
@@ -65,7 +100,7 @@ export default function PaynowPaylah() {
           >
             Done
           </button>
-      </div>
+      </div> */}
     </div>
   );
 }

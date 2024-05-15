@@ -6,6 +6,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React, { useState, useEffect } from "react";
 import { useMediaQuery } from "react-responsive";
+import { StripeApiKey } from "../../api/StripeApiKey";
 
 export default function Payment() {
   const router = useRouter();
@@ -13,7 +14,7 @@ export default function Payment() {
     query: "(max-width: 500px)",
   });
   const [buttonIndex, setButtonIndex] = useState(1);
-  
+
   // const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY, {
   //   apiVersion: '2024-04-10',
   //   appInfo: { // For sample support and debugging, not required for production:
@@ -31,18 +32,38 @@ export default function Payment() {
   //   });
   // }, []);
 
-
   const onClickPaymentType = async (index) => {
     setButtonIndex(index);
   };
 
-  const onClickContinue = () => {
+  const createQueryString = (name, value) => {
+    const params = new URLSearchParams();
+    params.set(name, value);
+
+    return params.toString();
+  };
+
+  const onClickContinue = async () => {
     if (buttonIndex == 0) {
       router.push("/shops/card_payment");
     } else {
-      router.push("/shops/paynowpaylah");
+      // Set your secret key. Remember to switch to your live secret key in production.
+      // See your keys here: https://dashboard.stripe.com/apikeys
+      const stripe = require("stripe")(
+        StripeApiKey.STRIPE_SECRET_KEY
+      );
+
+      const paymentIntent = await stripe.paymentIntents.create({
+        payment_method_types: ["paynow"],
+        payment_method_data: {
+          type: "paynow",
+        },
+        amount: 15000,
+        currency: "sgd",
+      });
+      router.push("/shops/paynowpaylah" + "?" + createQueryString("clientSecret", paymentIntent.client_secret) + "&" + createQueryString("paymentIntentId", paymentIntent.id));
     }
-  }
+  };
   return (
     <div>
       <ShopNavBar name="Payment" />
@@ -172,20 +193,20 @@ export default function Payment() {
             </p>
           </div>
         </div>
-          <div className="d-flex mt-5" style={{ width: "70%" }}>
-            <button
-              type="button"
-              class="btn btn-info"
-              style={{
-                color: color.white,
-                fontSize: 16,
-                padding: isMobile ? "5px 30px" : "5px 40px",
-              }}
-              onClick={() => onClickContinue()}
-            >
-              Continue
-            </button>
-          </div>
+        <div className="d-flex mt-5" style={{ width: "70%" }}>
+          <button
+            type="button"
+            class="btn btn-info"
+            style={{
+              color: color.white,
+              fontSize: 16,
+              padding: isMobile ? "5px 30px" : "5px 40px",
+            }}
+            onClick={() => onClickContinue()}
+          >
+            Continue
+          </button>
+        </div>
       </div>
     </div>
   );
