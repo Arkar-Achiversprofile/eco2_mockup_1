@@ -20,6 +20,14 @@ export default function Cart() {
   const [product2, setProduct2] = useState(true);
   const [product3, setProduct3] = useState(true);
 
+  const [radioCheck1, setRadioCheck1] = useState(0);
+  const [radioCheck2, setRadioCheck2] = useState(0);
+  const [radioCheck3, setRadioCheck3] = useState(0);
+
+  const [address1, setAddress1] = useState(0);
+  const [address2, setAddress2] = useState(0);
+  const [address3, setAddress3] = useState(0);
+
   const onClickCheckbox = (id) => {
     if (id == 1) {
       setProduct1(!product1);
@@ -28,6 +36,26 @@ export default function Cart() {
     } else {
       setProduct3(!product3);
     }
+  };
+
+  const onClickRadioShipping1 = (v) => {
+    setRadioCheck1(v);
+  };
+  const onClickRadioShipping2 = (v) => {
+    setRadioCheck2(v);
+  };
+  const onClickRadioShipping3 = (v) => {
+    setRadioCheck3(v);
+  };
+
+  const onClickAddress1 = (v) => {
+    setAddress1(v);
+  };
+  const onClickAddress2 = (v) => {
+    setAddress2(v);
+  };
+  const onClickAddress3 = (v) => {
+    setAddress3(v);
   };
 
   return (
@@ -53,7 +81,10 @@ export default function Cart() {
                 Otolith Enrichment
               </label>
             </div>
-            <div className="d-flex justify-content-center justify-content-md-end" style={{marginBottom: 10}}>
+            <div
+              className="d-flex justify-content-center justify-content-md-end"
+              style={{ marginBottom: 10 }}
+            >
               <div class="form-check col-1">
                 <input
                   class="form-check-input"
@@ -162,7 +193,11 @@ export default function Cart() {
               </div>
               <div className="col-8">
                 <div className="px-2">
-                  {isMobile || isTablet ? <h6>Fragrant Red Basil 60g</h6> : <h5>Fragrant Red Basil 60g</h5>}
+                  {isMobile || isTablet ? (
+                    <h6>Fragrant Red Basil 60g</h6>
+                  ) : (
+                    <h5>Fragrant Red Basil 60g</h5>
+                  )}
 
                   <div className="d-flex flex-row justify-content-between">
                     <p
@@ -225,6 +260,65 @@ export default function Cart() {
                     Remove
                   </button>
                 </div>
+              </div>
+            </div>
+            <div className="mt-3">
+              <h5>Shipping Info</h5>
+              <div class="form-check">
+                <input
+                  class="form-check-input"
+                  type="radio"
+                  name="flexRadioDefault"
+                  id="flexRadioDefault1"
+                  onClick={() => onClickRadioShipping1(0)}
+                  checked={radioCheck1 == 0 ? true : false}
+                />
+                <label class="form-check-label" for="flexRadioDefault1">
+                  Delivery: $15 (Singapore Only)
+                </label>
+              </div>
+              <div class="form-check">
+                <input
+                  class="form-check-input"
+                  type="radio"
+                  name="flexRadioDefault"
+                  id="flexRadioDefault2"
+                  checked={radioCheck1 == 1 ? true : false}
+                  onClick={() => onClickRadioShipping1(1)}
+                />
+                <label class="form-check-label" for="flexRadioDefault2">
+                  Self Collection
+                </label>
+                {radioCheck1 == 1 && (
+                  <div>
+                    <div class="form-check">
+                      <input
+                        class="form-check-input"
+                        type="checkbox"
+                        value=""
+                        id="flexCheckDefault"
+                        checked={address1 == 0 ? true : false}
+                        onClick={() => onClickAddress1(0)}
+                      />
+                      <label class="form-check-label" for="flexCheckDefault">
+                        XXX, YYY (S) 123456
+                      </label>
+                    </div>
+                    <div class="form-check">
+                      <input
+                        class="form-check-input"
+                        type="checkbox"
+                        value=""
+                        id="flexCheckChecked"
+                        checked={address1 == 1 ? true : false}
+                        onClick={() => onClickAddress1(1)}
+                      />
+                      <label class="form-check-label" for="flexCheckChecked">
+                        AAA, BBB (S) 987654
+                      </label>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -339,6 +433,65 @@ export default function Cart() {
                 </div>
               </div>
             </div>
+            <div className="mt-3">
+              <h5>Shipping Info</h5>
+              <div class="form-check">
+                <input
+                  class="form-check-input"
+                  type="radio"
+                  name="flexRadioDefault1"
+                  id="flexRadioDefault3"
+                  onClick={() => onClickRadioShipping2(0)}
+                  checked={radioCheck2 == 0 ? true : false}
+                />
+                <label class="form-check-label" for="flexRadioDefault3">
+                  Delivery: $15 (Singapore Only)
+                </label>
+              </div>
+              <div class="form-check">
+                <input
+                  class="form-check-input"
+                  type="radio"
+                  name="flexRadioDefault1"
+                  id="flexRadioDefault4"
+                  checked={radioCheck2 == 1 ? true : false}
+                  onClick={() => onClickRadioShipping2(1)}
+                />
+                <label class="form-check-label" for="flexRadioDefault4">
+                  Self Collection
+                </label>
+                {radioCheck2 == 1 && (
+                  <div>
+                    <div class="form-check">
+                      <input
+                        class="form-check-input"
+                        type="checkbox"
+                        value=""
+                        id="flexCheckDefault1"
+                        checked={address2 == 0 ? true : false}
+                        onClick={() => onClickAddress2(0)}
+                      />
+                      <label class="form-check-label" for="flexCheckDefault1">
+                        XXX, YYY (S) 123456
+                      </label>
+                    </div>
+                    <div class="form-check">
+                      <input
+                        class="form-check-input"
+                        type="checkbox"
+                        value=""
+                        id="flexCheckChecked1"
+                        checked={address2 == 1 ? true : false}
+                        onClick={() => onClickAddress2(1)}
+                      />
+                      <label class="form-check-label" for="flexCheckChecked1">
+                        AAA, BBB (S) 987654
+                      </label>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
           </div>
           <hr />
 
@@ -451,6 +604,65 @@ export default function Cart() {
                     Remove
                   </button>
                 </div>
+              </div>
+            </div>
+            <div className="mt-3">
+              <h5>Shipping Info</h5>
+              <div class="form-check">
+                <input
+                  class="form-check-input"
+                  type="radio"
+                  name="flexRadioDefault2"
+                  id="flexRadioDefault5"
+                  onClick={() => onClickRadioShipping3(0)}
+                  checked={radioCheck3 == 0 ? true : false}
+                />
+                <label class="form-check-label" for="flexRadioDefault5">
+                  Delivery: $15 (Singapore Only)
+                </label>
+              </div>
+              <div class="form-check">
+                <input
+                  class="form-check-input"
+                  type="radio"
+                  name="flexRadioDefault2"
+                  id="flexRadioDefault6"
+                  checked={radioCheck3 == 1 ? true : false}
+                  onClick={() => onClickRadioShipping3(1)}
+                />
+                <label class="form-check-label" for="flexRadioDefault6">
+                  Self Collection
+                </label>
+                {radioCheck3 == 1 && (
+                  <div>
+                    <div class="form-check">
+                      <input
+                        class="form-check-input"
+                        type="checkbox"
+                        value=""
+                        id="flexCheckDefault2"
+                        checked={address3 == 0 ? true : false}
+                        onClick={() => onClickAddress3(0)}
+                      />
+                      <label class="form-check-label" for="flexCheckDefault2">
+                        XXX, YYY (S) 123456
+                      </label>
+                    </div>
+                    <div class="form-check">
+                      <input
+                        class="form-check-input"
+                        type="checkbox"
+                        value=""
+                        id="flexCheckChecked2"
+                        checked={address3 == 1 ? true : false}
+                        onClick={() => onClickAddress3(1)}
+                      />
+                      <label class="form-check-label" for="flexCheckChecked2">
+                        AAA, BBB (S) 987654
+                      </label>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           </div>
