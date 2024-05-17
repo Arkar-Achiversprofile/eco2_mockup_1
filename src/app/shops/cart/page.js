@@ -123,7 +123,7 @@ export default function Cart() {
                         fontSize: isMobile ? 10 : 14,
                       }}
                     >
-                      Green Currency: 199.79
+                      Green Currency: 200
                     </p>
                   </div>
                   <div className="d-flex flex-row justify-content-between">

@@ -1,13 +1,59 @@
 import React from "react";
+import { useMediaQuery } from "react-responsive";
+import {color} from "../components/color"
 
 export default function NavBar() {
+  const isMobile = useMediaQuery({
+    query: "(max-width: 770px)",
+  });
   return (
     <nav class="navbar navbar-expand-lg navbar-light bg-dark">
-        
-        <div style={{width: '100%', height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
-        <h1 style={{fontSize: 50, color: 'white', fontWeight: 'bold', alignSelf: 'center'}}><a href="/" style={{color: 'white', textDecoration: 'none', fontFamily: 'serif'}}>Otolith Enrichment</a></h1>
-        </div>
-        
+      <div
+        style={{
+          width: "87%",
+          height: "100%",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <h1
+          style={{
+            fontSize: isMobile ? 30 : 50,
+            color: "white",
+            fontWeight: "bold",
+            alignSelf: "center",
+            marginRight: isMobile ? -70 : -150,
+          }}
+        >
+          <a
+            href="/"
+            style={{
+              color: "white",
+              textDecoration: "none",
+              fontFamily: "serif",
+            }}
+          >
+            Otolith Enrichment
+          </a>
+        </h1>
+      </div>
+      <div
+        style={{
+          width: "13%",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <a
+          href="/qr_scanner"
+          style={{ textDecoration: "none", fontSize: isMobile ? 10 : 16, color: color.white }}
+        >
+          Scan In/Out
+        </a>
+      </div>
+
       {/* <div class="container-fluid">
         <button
           class="navbar-toggler"

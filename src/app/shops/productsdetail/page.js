@@ -20,7 +20,6 @@ export default function ProductDetail() {
 
   const [GC, setGC] = useState("");
   const [productCost, setProductCost] = useState(6);
-  console.log("GC and COst ====>", GC, productCost);
 
   const onChangeGC = (value) => {
     setGC(value);
@@ -138,7 +137,7 @@ export default function ProductDetail() {
                 for="flexCheckDefault"
                 style={{ fontSize: 12 }}
               >
-                Used <span style={{ color: color.green }}>199.79</span> Green
+                Used <span style={{ color: color.green }}>200</span> Green
                 Currency To Deduct - 33%{" "}
               </label>
             </div>
