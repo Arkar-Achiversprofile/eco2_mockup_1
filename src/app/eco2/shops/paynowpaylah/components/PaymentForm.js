@@ -61,12 +61,14 @@ export default function CheckoutForm({ clientSecret, paymentIntentId }) {
     stripe.confirmPayNowPayment(clientSecret).then(async (res) => {
       // console.log("res =====>", res)
       if (res.paymentIntent.status === "succeeded") {
-        router.push("/eco2/shops");
+        router.push("/eco2/shops/order_success");
       } else {
         const stripe1 = require("stripe")(StripeApiKey.STRIPE_SECRET_KEY);
         // The user closed the modal, cancelling payment
-        console.log("errorr", res.error, res.paymentIntent.status);
         const payment = await stripe1.paymentIntents.cancel(paymentIntentId);
+        if (payment) {
+          router.push("/eco2/shops/order_cancel")
+        }
       }
     });
 

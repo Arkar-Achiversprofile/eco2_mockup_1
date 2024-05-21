@@ -34,7 +34,7 @@ export default function Home() {
 
   const onClickJoinNow = async () => {
     const paymentIntent = await stripe.paymentIntents.retrieve(
-      "pi_3PGGQkJYYD0LqRPz00okYqkZ"
+      "pi_3PIkChJYYD0LqRPz1YDwgGKP"
     );
     router.push(
       "/eco2/shops/paynowpaylah" +
@@ -135,6 +135,7 @@ export default function Home() {
                 type="button"
                 class="btn btn-success rounded-pill"
                 style={{ width: 150, backgroundColor: "green" }}
+                onClick={() => router.push("/eco2/shops/order_cancel")}
               >
                 Learn More
               </button>

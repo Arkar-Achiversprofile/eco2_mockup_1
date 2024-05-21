@@ -57,7 +57,7 @@ export default function CheckoutForm() {
       elements,
       confirmParams: {
         // Make sure to change this to your payment completion page
-        return_url: "http://localhost:3000/eco2/payment_complete",
+        return_url: "https://feak.achieversprofile.com/eco2/shops/order_success",
       },
     });
 
