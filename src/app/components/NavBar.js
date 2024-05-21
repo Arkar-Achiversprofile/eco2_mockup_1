@@ -47,7 +47,7 @@ export default function NavBar() {
         }}
       >
         <a
-          href="/qr_scanner"
+          href="/eco2/qr_scanner"
           style={{ textDecoration: "none", fontSize: isMobile ? 10 : 16, color: color.white }}
         >
           Scan In/Out

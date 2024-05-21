@@ -1,7 +1,7 @@
 "use client";
-import { image } from "../../assets";
-import ShopNavBar from "../../components/ShopNavBar";
-import { color } from "../../components/color";
+import { image } from "../../../assets";
+import ShopNavBar from "../../../components/ShopNavBar";
+import { color } from "../../../components/color";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
@@ -164,7 +164,7 @@ export default function Cart() {
                       marginTop: isMobile ? -10 : 10,
                       fontSize: isMobile ? 8 : 16,
                     }}
-                    // onClick={() => router.push("/shops/cart")}
+                    // onClick={() => router.push("/eco2/cart")}
                   >
                     Remove
                   </button>
@@ -255,7 +255,7 @@ export default function Cart() {
                       marginTop: isMobile ? -10 : 10,
                       fontSize: isMobile ? 8 : 16,
                     }}
-                    // onClick={() => router.push("/shops/cart")}
+                    // onClick={() => router.push("/eco2/cart")}
                   >
                     Remove
                   </button>
@@ -426,7 +426,7 @@ export default function Cart() {
                       marginTop: isMobile ? -10 : 10,
                       fontSize: isMobile ? 8 : 16,
                     }}
-                    // onClick={() => router.push("/shops/cart")}
+                    // onClick={() => router.push("/eco2/cart")}
                   >
                     Remove
                   </button>
@@ -599,7 +599,7 @@ export default function Cart() {
                       marginTop: isMobile ? -10 : 10,
                       fontSize: isMobile ? 8 : 16,
                     }}
-                    // onClick={() => router.push("/shops/cart")}
+                    // onClick={() => router.push("/eco2/cart")}
                   >
                     Remove
                   </button>
@@ -684,7 +684,7 @@ export default function Cart() {
                 fontSize: 18,
                 marginTop: isMobile ? 10 : 30,
               }}
-              onClick={() => router.push("/shops/shipping")}
+              onClick={() => router.push("/eco2/shops/shipping")}
             >
               Continue
             </button>

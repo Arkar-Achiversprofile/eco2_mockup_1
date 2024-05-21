@@ -1,6 +1,6 @@
 "use client";
-import ShopNavBar from "../../components/ShopNavBar";
-import { color } from "../../components/color";
+import ShopNavBar from "../../../components/ShopNavBar";
+import { color } from "../../../components/color";
 import React, { useState } from "react";
 import "./shipping.css";
 import { useRouter } from "next/navigation";
@@ -113,7 +113,7 @@ export default function ShippingInfo() {
           </div>
         </div>
 
-        <h5 style={{ paddingLeft: isMobile ? 20 : 50, marginTop: 30 }}>
+        {/* <h5 style={{ paddingLeft: isMobile ? 20 : 50, marginTop: 30 }}>
           Delivery Information
         </h5>
         <div
@@ -230,7 +230,7 @@ export default function ShippingInfo() {
               If any other option
             </p>
           </div>
-        </div>
+        </div> */}
 
         <div className="d-flex flex-row justify-content-center mt-3">
           <button
@@ -254,7 +254,7 @@ export default function ShippingInfo() {
               fontSize: 16,
               padding: isMobile ? "5px 30px" : "5px 40px",
             }}
-            onClick={() => router.push("/shops/payment")}
+            onClick={() => router.push("/eco2/shops/payment")}
           >
             Payment
           </button>

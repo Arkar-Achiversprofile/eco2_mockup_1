@@ -2,10 +2,10 @@
 import React, { useState } from "react";
 import styles from "../shops.module.css";
 import Image from "next/image";
-import { image } from "../../assets";
-import { color } from "../../components/color";
+import { image } from "../../../assets";
+import { color } from "../../../components/color";
 import { useMediaQuery } from "react-responsive";
-import ShopNavBar from "../../components/ShopNavBar";
+import ShopNavBar from "../../../components/ShopNavBar";
 import { useRouter } from "next/navigation";
 
 export default function ProductDetail() {
@@ -164,7 +164,7 @@ export default function ProductDetail() {
                 type="button"
                 class="btn btn-info"
                 style={{ color: color.white, width: "80%" }}
-                onClick={() => router.push("/shops/cart")}
+                onClick={() => router.push("/eco2/shops/cart")}
               >
                 Add Cart
               </button>

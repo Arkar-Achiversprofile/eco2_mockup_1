@@ -1,4 +1,4 @@
-import ShopNavBar from "../components/ShopNavBar";
+import ShopNavBar from "../../components/ShopNavBar";
 
 export default function ShopsLayout({
     children, // will be a page or nested layout

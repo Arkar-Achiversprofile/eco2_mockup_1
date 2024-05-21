@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
-import ShopNavBar from "../../components/ShopNavBar";
-import { color } from "../../components/color";
+import ShopNavBar from "../../../components/ShopNavBar";
+import { color } from "../../../components/color";
 import { useRouter } from "next/navigation";
 import { useMediaQuery } from "react-responsive";
 
@@ -34,7 +34,7 @@ export default function PaymentComplete() {
           <button
             className="btn btn-info"
             style={{ color: color.white, width: 120 }}
-            onClick={() => router.push("/shops")}
+            onClick={() => router.push("/eco2/shops")}
           >
             Shop
           </button>

@@ -1,27 +1,10 @@
 "use client";
-import React, { useEffect } from "react";
-import ShopNavBar from "../../components/ShopNavBar";
+import React from "react";
+import ShopNavBar from "../../../components/ShopNavBar";
 import { Elements } from "@stripe/react-stripe-js";
-import PaymentForm from "../../components/PaymentForm";
-import { loadStripe } from "@stripe/stripe-js";
-import { StripeApiKey } from "../../api/StripeApiKey";
-import { color } from "../../components/color";
+import PaymentForm from "../../../components/PaymentForm";
+import {stripe, stripePromise} from "../../../api/stripe-paymentintent";
 
-// Make sure to call `loadStripe` outside of a component’s render to avoid
-// recreating the `Stripe` object on every render.
-const Stripe = require("stripe");
-const stripe = Stripe(StripeApiKey.STRIPE_SECRET_KEY, {
-  apiVersion: "2024-04-10",
-  appInfo: {
-    // For sample support and debugging, not required for production:
-    name: "stripe-samples/<your-sample-name>",
-    version: "0.0.1",
-    url: "https://github.com/stripe-samples",
-  },
-});
-const stripePromise = loadStripe(
-  StripeApiKey.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
-);
 
 export default function CardPayment() {
   const [clientSecret, setClientSecret] = React.useState("");

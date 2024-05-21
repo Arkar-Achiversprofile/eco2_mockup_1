@@ -1,12 +1,13 @@
 "use client";
-import { image } from "../../assets";
-import ShopNavBar from "../../components/ShopNavBar";
-import { color } from "../../components/color";
+import { image } from "../../../assets";
+import ShopNavBar from "../../../components/ShopNavBar";
+import { color } from "../../../components/color";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React, { useState, useEffect } from "react";
 import { useMediaQuery } from "react-responsive";
-import { StripeApiKey } from "../../api/StripeApiKey";
+import { StripeApiKey } from "../../../api/StripeApiKey";
+import {stripe} from "../../../api/stripe-paymentintent";
 
 export default function Payment() {
   const router = useRouter();
@@ -45,23 +46,20 @@ export default function Payment() {
 
   const onClickContinue = async () => {
     if (buttonIndex == 0) {
-      router.push("/shops/card_payment");
+      router.push("/eco2/shops/card_payment");
     } else {
       // Set your secret key. Remember to switch to your live secret key in production.
       // See your keys here: https://dashboard.stripe.com/apikeys
-      const stripe = require("stripe")(
-        StripeApiKey.STRIPE_SECRET_KEY
-      );
 
       const paymentIntent = await stripe.paymentIntents.create({
         payment_method_types: ["paynow"],
         payment_method_data: {
           type: "paynow",
         },
-        amount: 15000,
+        amount: 20000,
         currency: "sgd",
       });
-      router.push("/shops/paynowpaylah" + "?" + createQueryString("clientSecret", paymentIntent.client_secret) + "&" + createQueryString("paymentIntentId", paymentIntent.id));
+      router.push("/eco2/shops/paynowpaylah" + "?" + createQueryString("clientSecret", paymentIntent.client_secret) + "&" + createQueryString("paymentIntentId", paymentIntent.id));
     }
   };
   return (

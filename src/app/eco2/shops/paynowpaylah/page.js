@@ -1,19 +1,14 @@
 "use client";
 import { Elements } from "@stripe/react-stripe-js";
-import { image } from "../../assets";
-import { generatePayNowQR } from "../../components/GeneratePayNowQR";
-import ShopNavBar from "../../components/ShopNavBar";
-import { color } from "../../components/color";
-import Image from "next/image";
-import React, { useEffect, useState } from "react";
+import ShopNavBar from "../../../components/ShopNavBar";
+import React, { useState } from "react";
 import PaymentForm from "./components/PaymentForm";
-import { StripeApiKey } from "../../api/StripeApiKey";
-import { loadStripe } from "@stripe/stripe-js";
+import {stripePromise} from "../../../api/stripe-paymentintent";
 import { useSearchParams } from "next/navigation";
 
-const stripePromise = loadStripe(
-  StripeApiKey.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
-);
+// const stripePromise = loadStripe(
+//   StripeApiKey.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
+// );
 
 export default function PaynowPaylah() {
   // const { clientSecret, paymentIntentId } = params;
@@ -22,9 +17,6 @@ export default function PaynowPaylah() {
   const clientSecret = searchParams.get("clientSecret");
   const paymentIntentId = searchParams.get("paymentIntentId");
   const [qrImage, setQrImage] = useState("");
-
-  console.log("client secrete ==>", clientSecret);
-  console.log("ID  ==>", paymentIntentId)
 
   // useEffect(() => {
   //   generatePayNowQR("4.00", setQrImage);

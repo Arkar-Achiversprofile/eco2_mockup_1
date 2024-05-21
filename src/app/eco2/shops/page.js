@@ -2,13 +2,13 @@
 import React, { useState, useEffect, useMemo } from "react";
 import styles from "./shops.module.css";
 import Image from "next/image";
-import { image } from "../assets";
-import { tempShopData } from "../components/TempData";
-import Pagination from "../components/Pagination";
+import { image } from "../../assets";
+import { tempShopData } from "../../components/TempData";
+import Pagination from "../../components/Pagination";
 import { useMediaQuery } from "react-responsive";
-import Footer from "../components/Footer";
+import Footer from "../../components/Footer";
 import { useRouter } from "next/navigation";
-import NavBar from "../components/NavBar";
+import NavBar from "../../components/NavBar";
 
 function Shops() {
   // const [allData, setAllData] = useState(tempShopData);
@@ -145,7 +145,7 @@ function Shops() {
                 marginRight: 10,
                 marginTop: 30,
               }}
-              onClick={() => {router.push(`/shops/productsdetail`)}}
+              onClick={() => {router.push(`/eco2/shops/productsdetail`)}}
             >
               <div class="card" style={{ width: "100%", minHeight: 680 }}>
                 <Image

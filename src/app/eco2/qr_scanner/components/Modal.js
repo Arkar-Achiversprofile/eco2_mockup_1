@@ -3,7 +3,7 @@
 import React from "react";
 
 import style from "./Modal.module.css";
-import {color} from "../../components/color"
+import {color} from "../../../components/color"
 import { useMediaQuery } from "react-responsive";
 
 export const Modal = ({ onSubmit, onCancel, closeModal, children }) => {

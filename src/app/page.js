@@ -6,17 +6,48 @@ import Footer from "./components/Footer";
 import { useRouter } from "next/navigation";
 import { useMediaQuery } from "react-responsive";
 import NavBar from "./components/NavBar";
+import { stripe, stripePromise } from "./api/stripe-paymentintent";
+import { useEffect } from "react";
 
 export default function Home() {
   const router = useRouter();
   const isMobile = useMediaQuery({
     query: "(max-width: 850px)",
   });
+  useEffect(() => {
+    getPaymentData();
+  }, []);
+
+  const getPaymentData = async () => {
+    const paymentIntents = await stripe.paymentIntents.list({
+      limit: 100,
+    });
+    console.log("payment =====>", paymentIntents);
+  };
+
+  const createQueryString = (name, value) => {
+    const params = new URLSearchParams();
+    params.set(name, value);
+
+    return params.toString();
+  };
+
+  const onClickJoinNow = async () => {
+    const paymentIntent = await stripe.paymentIntents.retrieve(
+      "pi_3PGGQkJYYD0LqRPz00okYqkZ"
+    );
+    router.push(
+      "/eco2/shops/paynowpaylah" +
+        "?" +
+        createQueryString("clientSecret", paymentIntent.client_secret) +
+        "&" +
+        createQueryString("paymentIntentId", paymentIntent.id)
+    );
+  };
   return (
-    
     <div className="">
-      <NavBar/>
-      <video autoPlay muted loop >
+      <NavBar />
+      <video autoPlay muted loop height="1000">
         <source src="/eco2_home_back.mp4" type="video/mp4" />
       </video>
       {/* <div className={styles.main}
@@ -39,7 +70,7 @@ export default function Home() {
           <Image alt="" src={image.mainLogo} width={250} height={120} />
           <p style={{ fontSize: 18, textAlign: "center", marginTop: 10 }}>
             Earn Green Currency by participating in our projects to purchase
-            items from <a href="/shops" style={{color: 'skyblue', cursor: 'pointer', textDecoration: 'none'}}>our Eco²Balance Shop</a>
+            items from <a href="/eco2" style={{color: 'skyblue', cursor: 'pointer', textDecoration: 'none'}}>our Eco²Balance Shop</a>
           </p>
         </div>
       </div> */}
@@ -75,6 +106,7 @@ export default function Home() {
                 type="button"
                 class="btn btn-success rounded-pill"
                 style={{ width: 150, backgroundColor: "green" }}
+                onClick={() => onClickJoinNow()}
               >
                 Join Now
               </button>
@@ -161,7 +193,7 @@ export default function Home() {
                 type="button"
                 class="btn btn-success rounded-pill"
                 style={{ width: 150, backgroundColor: "green" }}
-                onClick={() => router.push("/shops")}
+                onClick={() => router.push("/eco2/shops")}
               >
                 Shop Now
               </button>
