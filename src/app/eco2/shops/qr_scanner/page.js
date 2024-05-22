@@ -1,20 +1,20 @@
 "use client";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
-import { QrReader } from "react-qr-reader";
 import { useMediaQuery } from "react-responsive";
 import { Modal } from "./components/Modal";
 import { createPortal } from "react-dom";
-
-
+import QrReader from "react-camera-qr";
 
 export default function QRScanner() {
   const router = useRouter();
   const isMobile = useMediaQuery({
     query: "(max-width: 500px)",
   });
+  const [errorText, setErrorText] = useState("");
   const [qrData, setQrData] = useState("");
   const [modalOpen, setModalOpen] = useState(false);
+  console.log('error text =====>', errorText);
 
   const handleButtonClick = () => {
     setModalOpen(false);
@@ -24,13 +24,25 @@ export default function QRScanner() {
   const handleClickClose = () => {
     setModalOpen(false);
     setQrData("");
-  }
+  };
+
+  const handleScan = (data) => {
+    if (data) {
+      
+        setQrData(data)
+      
+    }
+  };
+
+  const handleError = (err) => {
+    setErrorText(err);
+  };
 
   // console.log("qrdata =====>", qrData);
   useEffect(() => {
     if (qrData != "") {
-    // onOpen();
-    setModalOpen(true);
+      // onOpen();
+      setModalOpen(true);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [qrData]);
@@ -48,6 +60,12 @@ export default function QRScanner() {
           document.body
         )}
       <QrReader
+        delay={300}
+        onError={(data) => handleError(data)}
+        onScan={(data) => handleScan(data)}
+        style={{ width: "100%", zIndex: 0 }}
+      />
+      {/* <QrReader
         onResult={(result, error) => {
           if (!!result) {
             // console.log("result ====>", result);
@@ -66,7 +84,7 @@ export default function QRScanner() {
           height: "100%",
           marginTop: isMobile ? -50 : -150,
         }}
-      />
+      /> */}
     </div>
   );
 }
