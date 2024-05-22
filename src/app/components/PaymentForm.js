@@ -1,11 +1,14 @@
+'use client'
 import React from "react";
 import {
   PaymentElement,
   useStripe,
-  useElements
+  useElements,
 } from "@stripe/react-stripe-js";
+import { useRouter } from "next/navigation";
 
 export default function CheckoutForm() {
+  const router = useRouter();
   const stripe = useStripe();
   const elements = useElements();
   const [message, setMessage] = React.useState(null);
@@ -53,24 +56,39 @@ export default function CheckoutForm() {
 
     setIsLoading(true);
 
-    const { error } = await stripe.confirmPayment({
+    stripe.confirmPayment({
       elements,
       confirmParams: {
         // Make sure to change this to your payment completion page
         return_url: "https://feak.achieversprofile.com/eco2/shops/order_success",
+        // return_url: "http://localhost:3000/eco2/shops/order_success",
       },
-    });
+      redirect: 'if_required',
+    }).then( async (result) => {
+      console.log('result====>', result.paymentIntent.status)
+      if (result.paymentIntent.status === "succeeded") {
+        router.push("/eco2/shops/order_success")
+      } else {
+        const stripe1 = require("stripe")(StripeApiKey.STRIPE_SECRET_KEY);
+        // The user closed the modal, cancelling payment
+        const payment =  await stripe1.paymentIntents.cancel(paymentIntentId);
+        if (payment) {
+          router.push("/eco2/shops/order_cancel")
+        }
+      }
+      // if (result.error.type === "card_error" || result.error.type === "validation_error") {
+      //   setMessage(result.error.message);
+      // } else {
+      //   setMessage("An unexpected error occurred.");
+      // }
+    })
 
     // This point will only be reached if there is an immediate error when
     // confirming the payment. Otherwise, your customer will be redirected to
     // your `return_url`. For some payment methods like iDEAL, your customer will
     // be redirected to an intermediate site first to authorize the payment, then
     // redirected to the `return_url`.
-    if (error.type === "card_error" || error.type === "validation_error") {
-      setMessage(error.message);
-    } else {
-      setMessage("An unexpected error occurred.");
-    }
+    
 
     setIsLoading(false);
   };
@@ -81,9 +99,13 @@ export default function CheckoutForm() {
 
   return (
     <form id="payment-form" onSubmit={handleSubmit}>
-
       <PaymentElement id="payment-element" options={paymentElementOptions} />
-      <button className="btn btn-success" disabled={isLoading || !stripe || !elements} id="submit" style={{marginTop: 20}}>
+      <button
+        className="btn btn-success"
+        disabled={isLoading || !stripe || !elements}
+        id="submit"
+        style={{ marginTop: 20 }}
+      >
         <span id="button-text">
           {isLoading ? <div className="spinner" id="spinner"></div> : "Pay now"}
         </span>
