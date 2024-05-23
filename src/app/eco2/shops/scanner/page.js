@@ -14,7 +14,6 @@ export default function QRScanner() {
   const [errorText, setErrorText] = useState("");
   const [qrData, setQrData] = useState("");
   const [modalOpen, setModalOpen] = useState(false);
-  console.log('error text =====>', errorText);
 
   const handleButtonClick = () => {
     setModalOpen(false);
@@ -48,6 +47,7 @@ export default function QRScanner() {
   }, [qrData]);
   return (
     <div>
+      {/* <p>Hello World</p> */}
       {modalOpen &&
         createPortal(
           <Modal

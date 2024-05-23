@@ -135,7 +135,7 @@ export default function Home() {
                 type="button"
                 class="btn btn-success rounded-pill"
                 style={{ width: 150, backgroundColor: "green" }}
-                onClick={() => router.push("/eco2/shops/order_cancel")}
+                // onClick={() => router.push("/eco2/shops/scanner")}
               >
                 Learn More
               </button>

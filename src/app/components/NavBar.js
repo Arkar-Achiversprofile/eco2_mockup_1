@@ -1,8 +1,11 @@
+"use client"
 import React from "react";
 import { useMediaQuery } from "react-responsive";
 import {color} from "../components/color"
+import { useRouter } from "next/navigation";
 
 export default function NavBar() {
+  const router = useRouter();
   const isMobile = useMediaQuery({
     query: "(max-width: 770px)",
   });
@@ -46,12 +49,12 @@ export default function NavBar() {
           alignItems: "center",
         }}
       >
-        <a
-          href="/eco2/shops/qr_scanner"
-          style={{ textDecoration: "none", fontSize: isMobile ? 10 : 16, color: color.white }}
+        <div
+          onClick={() => router.push("/eco2/shops/scanner")}
+          style={{ textDecoration: "none", fontSize: isMobile ? 10 : 16, color: color.white, cursor: 'pointer' }}
         >
           Scan In/Out
-        </a>
+        </div>
       </div>
 
       {/* <div class="container-fluid">
