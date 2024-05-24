@@ -1,10 +1,17 @@
 .main {
-  /* background-image: url("./assets/eco2_home_back.mp4"); */
-  height: 80vh;
+  /* background-image: url("/eco2_home_back.mp4"); */
+  height: '50%';
   width: '100%';
-  /* background-repeat: no-repeat;
-  background-size: cover;
+  /* background-repeat: no-repeat; */
+  /* background-size: cover;
   background-position: center; */
+}
+
+.backgroundVideo {
+  height: 80vh; /* Set the height to 100% of the viewport height */
+  width: 100vw; /* Set the width to 100% of the viewport width */
+  object-fit: cover;
+  z-index: -1;
 }
 
 .description {

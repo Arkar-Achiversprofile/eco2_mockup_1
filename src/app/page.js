@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-// import styles from "./page.module.css";
+import styles from "./page.module.css";
 import { image } from "./assets";
 import Footer from "./components/Footer";
 import { useRouter } from "next/navigation";
@@ -47,9 +47,10 @@ export default function Home() {
   return (
     <div className="">
       <NavBar />
-      <video autoPlay muted loop height="1000">
+      <video autoPlay muted loop className={styles.backgroundVideo}>
         <source src="/eco2_home_back.mp4" type="video/mp4" />
       </video>
+
       {/* <div className={styles.main}
         style={{
           width: "100%",
@@ -135,7 +136,7 @@ export default function Home() {
                 type="button"
                 class="btn btn-success rounded-pill"
                 style={{ width: 150, backgroundColor: "green" }}
-                // onClick={() => router.push("/eco2/shops/scanner")}
+                // onClick={() => router.push("/eco2/shops/scanner")} 
               >
                 Learn More
               </button>
