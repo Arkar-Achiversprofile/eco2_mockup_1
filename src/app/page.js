@@ -75,7 +75,11 @@ export default function Home() {
           </p>
         </div>
       </div> */}
-      <div className="container" style={{ paddingTop: 100 }}>
+      <div className="d-flex justify-content-center mt-5">
+        <Image alt="" src={image.homeQr} width={450}
+              height={250}/>
+      </div>
+      <div className="container" style={{ paddingTop: 30 }}>
         <div className="row">
           <div className="col-lg-1"></div>
           <div className="col-12 col-lg-6">

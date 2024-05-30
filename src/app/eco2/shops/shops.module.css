@@ -24,3 +24,22 @@
   align-items: center;
   z-index: 1;
 }
+
+.scrollmenu {
+  background-color: #333;
+  overflow: auto;
+  white-space: nowrap;
+  width: 500;
+}
+
+.scrollmenuA {
+  display: inline-block;
+  color: white;
+  text-align: center;
+  padding: 14px;
+  text-decoration: none;
+}
+
+.scrollmenuA:hover {
+  background-color: #777;
+}

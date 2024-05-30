@@ -20,6 +20,7 @@ let masterCard = '/Master.jpg'
 let paypalCard = '/Paypal.png';
 let paynowCard = '/Paynow.jpg';
 let banks = '/qrcodeBanks.png';
+let homeQr = '/HomeQR.png';
 
 export const image = {
   mainLogo,
@@ -44,5 +45,6 @@ export const image = {
   paypalCard,
   paynowCard,
   banks,
+  homeQr,
 };
 

@@ -141,7 +141,7 @@ export default function ProductDetail() {
                 Currency To Deduct - 33%{" "}
               </label>
             </div>
-            <input
+            {/* <input
               class="form-control"
               type="text"
               placeholder="Green Currency"
@@ -154,7 +154,7 @@ export default function ProductDetail() {
                 height: 30,
                 fontSize: 12,
               }}
-            ></input>
+            ></input> */}
             <p className="mt-2" style={{ fontSize: 12, textAlign: "center" }}>
               Final Payment Amount:{" "}
               <span style={{ fontWeight: "bold" }}>SGD {productCost}</span>

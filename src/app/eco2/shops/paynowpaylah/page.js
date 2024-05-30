@@ -31,7 +31,7 @@ export default function PaynowPaylah() {
   };
   return (
     <div>
-      <ShopNavBar name="Payment" />
+      <ShopNavBar name="Payment" paymentIntentId={paymentIntentId} />
       {clientSecret != "" && (
         <div
           className="d-flex justify-content-center align-items-center"
