@@ -18,15 +18,15 @@ export default function ProductDetail() {
     query: "(min-width: 500px) and (max-width: 1050px)",
   });
 
-  const [GC, setGC] = useState("");
+  const [GC, setGC] = useState(false);
   const [productCost, setProductCost] = useState(6);
 
   const onChangeGC = (value) => {
     setGC(value);
-    if (value == "" || value == "0") {
-      setProductCost(6);
+    if (value) {
+      setProductCost(productCost - 2)
     } else {
-      setProductCost(productCost - parseFloat(value));
+      setProductCost(6)
     }
   };
 
@@ -34,16 +34,16 @@ export default function ProductDetail() {
     <div style={{backgroundColor: color.lightGrey}}>
       <ShopNavBar name="Product Detail" />
       <div className="row mt-3 mb-5">
-        <h4 style={{ paddingLeft: isMobile ? 20 : 40, marginBottom: 20 }}>
-          Food / Seafood / Fish
+        <h4 style={{ paddingLeft: isMobile ? 20 : 40, marginBottom: 20, fontSize: isMobile ? 16 : 22 }}>
+          Food / Seafood / Fish / Tilapia
         </h4>
         <div className="col-10 col-md-5 d-flex justify-content-center justify-content-md-end mx-auto">
           <Image
             alt=""
             className={styles.image}
             src={image.fish}
-            width={isMobile || isTablet ? 400 : 470}
-            height={550}
+            width={isMobile ? 350 : isTablet ? 400 : 470}
+            height={isMobile ? 450 : 550}
             //   layout="responsive"
             // onMouseOut={(e) => {
             //   e.target.style.transform = "scale(1)";
@@ -53,20 +53,20 @@ export default function ProductDetail() {
         <div className="col-10 col-md-5 mx-auto d-flex flex-column align-items-center align-items-md-start">
           <div
             style={{
-              width: isMobile || isTablet ? 400 : "100%",
+              width: isMobile ? 350 : isTablet ? 400 : "100%",
               height: 550,
               backgroundColor: color.lightGrey,
               padding: 10,
             }}
           >
-            <h5>Locally Farmed Tilapia Fish</h5>
+            <h5>  Tilapia</h5>
             <p style={{ color: color.grey, marginTop: 20, fontSize: 18 }}>
               SGD 6.00
             </p>
             <hr />
             <p style={{ fontWeight: "bold", fontSize: 16 }}>Descriptions:</p>
             <p style={{ color: color.grey, fontSize: 16 }}>
-              300 - 500g Freshly harvested
+            Locally Farmed Tilapia. 300 - 500g Freshly harvested
             </p>
             <p
               style={{
@@ -129,8 +129,9 @@ export default function ProductDetail() {
               <input
                 class="form-check-input"
                 type="checkbox"
-                value=""
+                value={GC}
                 id="flexCheckDefault"
+                onChange={() => onChangeGC(!GC)}
               />
               <label
                 class="form-check-label"
@@ -138,7 +139,7 @@ export default function ProductDetail() {
                 style={{ fontSize: 12 }}
               >
                 Used <span style={{ color: color.green }}>200</span> Green
-                Currency To Deduct - 33%{" "}
+                Currency To Deduct - $2{" "}
               </label>
             </div>
             {/* <input

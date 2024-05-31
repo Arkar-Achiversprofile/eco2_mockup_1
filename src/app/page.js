@@ -12,6 +12,9 @@ import { useEffect } from "react";
 export default function Home() {
   const router = useRouter();
   const isMobile = useMediaQuery({
+    query: "(max-width: 500px)",
+  });
+  const isTablet = useMediaQuery({
     query: "(max-width: 850px)",
   });
   useEffect(() => {
@@ -76,8 +79,8 @@ export default function Home() {
         </div>
       </div> */}
       <div className="d-flex justify-content-center mt-5">
-        <Image alt="" src={image.homeQr} width={450}
-              height={250}/>
+        <Image alt="" src={image.homeQr} width={isMobile ? 350 : 450}
+              height={isMobile ? 200 : 250}/>
       </div>
       <div className="container" style={{ paddingTop: 30 }}>
         <div className="row">
@@ -93,7 +96,7 @@ export default function Home() {
           </div>
           <div
             className="d-flex justify-content-center align-items-center col-12 col-lg-4"
-            style={{ marginTop: isMobile ? 30 : 0 }}
+            style={{ marginTop: isTablet ? 30 : 0 }}
           >
             <div className="d-flex flex-column justify-content-center">
               <h3 style={{ fontFamily: "serif", fontWeight: "bold" }}>
@@ -148,7 +151,7 @@ export default function Home() {
           </div>
           <div
             className="col-12 col-lg-6"
-            style={{ marginTop: isMobile ? 30 : 0 }}
+            style={{ marginTop: isTablet ? 30 : 0 }}
           >
             <Image
               alt=""
@@ -175,7 +178,7 @@ export default function Home() {
           </div>
           <div
             className="d-flex justify-content-center align-items-center col-12 col-lg-5"
-            style={{ marginTop: isMobile ? 30 : 0 }}
+            style={{ marginTop: isTablet ? 30 : 0 }}
           >
             <div className="d-flex flex-column justify-content-center">
               <h3 style={{ fontFamily: "serif", fontWeight: "bold" }}>

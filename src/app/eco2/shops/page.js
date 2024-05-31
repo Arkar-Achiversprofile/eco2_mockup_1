@@ -50,6 +50,7 @@ function Shops() {
   const [shopPage, setShopPage] = useState("allproduct");
   const [categoryName, setCategoryName] = useState("Seafood");
   const [subCategoryName, setSubCategoryName] = useState("Fish");
+  const [isCategoryClick, setIsCategoryClick] = useState(false);
   // console.log("=====>", isMobile, isTablet);
 
   // useEffect(() => {
@@ -80,6 +81,7 @@ function Shops() {
 
   const onClickCategory = (id) => {
     setShopPage("category");
+    setIsCategoryClick(true);
   };
 
   const onClickSubCategory = () => {
@@ -98,84 +100,85 @@ function Shops() {
           layout="responsive"
         />
       </div>
-
-      <Carousel responsive={responsive}>
-        <div
-          className="d-flex flex-column align-items-center"
-          onClick={onClickCategory}
-          style={{ cursor: "pointer" }}
-        >
-          <Image
-            alt=""
-            src={image.fish}
-            width={categoryImage}
-            height={categoryImage}
-            style={{ borderRadius: 100 }}
-          />
-          <div>Seafood</div>
-        </div>
-        <div
-          className="d-flex flex-column align-items-center"
-          onClick={onClickCategory}
-          style={{ cursor: "pointer" }}
-        >
-          <Image
-            alt=""
-            src={image.vegetable}
-            width={categoryImage}
-            height={categoryImage}
-            style={{ borderRadius: 100 }}
-          />
-          <div>Vegetable</div>
-        </div>
-        <div
-          className="d-flex flex-column align-items-center"
-          onClick={onClickCategory}
-          style={{ cursor: "pointer" }}
-        >
-          <Image
-            alt=""
-            src={image.kombucha}
-            width={categoryImage}
-            height={categoryImage}
-            style={{ borderRadius: 100 }}
-          />
-          <div>Consumable</div>
-        </div>
-        <div
-          className="d-flex flex-column align-items-center"
-          onClick={onClickCategory}
-          style={{ cursor: "pointer" }}
-        >
-          <Image
-            alt=""
-            src={image.blackSoldier}
-            width={categoryImage}
-            height={categoryImage}
-            style={{ borderRadius: 100 }}
-          />
-          <div>Fertillizer</div>
-        </div>
-        <div
-          className="d-flex flex-column align-items-center"
-          onClick={onClickCategory}
-          style={{ cursor: "pointer" }}
-        >
-          <Image
-            alt=""
-            src={image.dogSmall}
-            width={categoryImage}
-            height={categoryImage}
-            style={{ borderRadius: 100 }}
-          />
-          <div>Pet Food</div>
-        </div>
-      </Carousel>
+      {!isCategoryClick ? (
+        <Carousel responsive={responsive}>
+          <div
+            className="d-flex flex-column align-items-center"
+            onClick={onClickCategory}
+            style={{ cursor: "pointer" }}
+          >
+            <Image
+              alt=""
+              src={image.fish}
+              width={categoryImage}
+              height={categoryImage}
+              style={{ borderRadius: 100 }}
+            />
+            <div>Seafood</div>
+          </div>
+          <div
+            className="d-flex flex-column align-items-center"
+            onClick={onClickCategory}
+            style={{ cursor: "pointer" }}
+          >
+            <Image
+              alt=""
+              src={image.vegetable}
+              width={categoryImage}
+              height={categoryImage}
+              style={{ borderRadius: 100 }}
+            />
+            <div>Vegetable</div>
+          </div>
+          <div
+            className="d-flex flex-column align-items-center"
+            onClick={onClickCategory}
+            style={{ cursor: "pointer" }}
+          >
+            <Image
+              alt=""
+              src={image.kombucha}
+              width={categoryImage}
+              height={categoryImage}
+              style={{ borderRadius: 100 }}
+            />
+            <div>Consumable</div>
+          </div>
+          <div
+            className="d-flex flex-column align-items-center"
+            onClick={onClickCategory}
+            style={{ cursor: "pointer" }}
+          >
+            <Image
+              alt=""
+              src={image.blackSoldier}
+              width={categoryImage}
+              height={categoryImage}
+              style={{ borderRadius: 100 }}
+            />
+            <div>Fertillizer</div>
+          </div>
+          <div
+            className="d-flex flex-column align-items-center"
+            onClick={onClickCategory}
+            style={{ cursor: "pointer" }}
+          >
+            <Image
+              alt=""
+              src={image.dogSmall}
+              width={categoryImage}
+              height={categoryImage}
+              style={{ borderRadius: 100 }}
+            />
+            <div>Pet Food</div>
+          </div>
+        </Carousel>
+      ) : null}
 
       <div className="d-flex mt-5">
         {/* <form className="d-flex flex-row justify-content-end col-12" onSubmit={{}}> */}
         <div className="d-flex justify-content-center justify-content-md-end col-9">
-          <div className="d-flex flex-row col-8">
+          <div className="d-flex flex-row col-9">
             <div class="input-group" style={{ height: 30 }}>
               <div class="input-group-text">
                 <i className="bi bi-search"></i>
@@ -203,12 +206,17 @@ function Shops() {
             type="button"
             data-bs-toggle="dropdown"
             aria-expanded="false"
-            style={{ marginRight: 10, width: 110 }}
+            style={{
+              marginRight: 10,
+              width: isMobile ? 75 : 110,
+              // height: 30,
+              fontSize: isMobile ? 10 : 14,
+            }}
           >
             <i className="bi bi-funnel-fill"></i>
             Sorting
           </button>
-          <ul class="dropdown-menu">
+          <ul class="dropdown-menu" style={{fontSize: isMobile ? 12 : 14}}>
             <li>
               <button class="dropdown-item" type="button">
                 Date (old to new)
@@ -236,12 +244,17 @@ function Shops() {
             type="button"
             data-bs-toggle="dropdown"
             aria-expanded="false"
-            style={{ marginRight: 10, width: 110 }}
+            style={{
+              marginRight: 10,
+              width: isMobile ? 75 : 110,
+              // height: 30,
+              fontSize: isMobile ? 10 : 14,
+            }}
           >
             <i className="bi bi-funnel-fill"></i>
             Filter
           </button>
-          <ul class="dropdown-menu">
+          <ul class="dropdown-menu" style={{fontSize: isMobile ? 12 : 14}}>
             <li>
               <button class="dropdown-item" type="button">
                 Supplier (Yora)
@@ -284,7 +297,7 @@ function Shops() {
               >
                 <div class="card" style={{ width: "100%", minHeight: 680 }}>
                   <div
-                  style={{cursor: 'pointer'}}
+                    style={{ cursor: "pointer" }}
                     onClick={() => {
                       router.push(`/eco2/shops/productsdetail`);
                     }}
@@ -355,7 +368,10 @@ function Shops() {
                     fontSize: 22,
                     cursor: "pointer",
                   }}
-                  onClick={() => setShopPage("allproduct")}
+                  onClick={() => {
+                    setShopPage("allproduct");
+                    setIsCategoryClick(false);
+                  }}
                 >
                   eShop
                 </a>
@@ -455,7 +471,10 @@ function Shops() {
                     fontSize: 22,
                     cursor: "pointer",
                   }}
-                  onClick={() => setShopPage("allproduct")}
+                  onClick={() => {
+                    setShopPage("allproduct");
+                    setIsCategoryClick(false);
+                  }}
                 >
                   eShop
                 </a>

@@ -7,6 +7,9 @@ import { useRouter } from "next/navigation";
 export default function NavBar() {
   const router = useRouter();
   const isMobile = useMediaQuery({
+    query: "(max-width: 500px)",
+  })
+  const isTablet = useMediaQuery({
     query: "(max-width: 770px)",
   });
   return (
@@ -31,11 +34,11 @@ export default function NavBar() {
     //     >
     //       <h1
     //         style={{
-    //           fontSize: isMobile ? 30 : 50,
+    //           fontSize: isTablet ? 30 : 50,
     //           color: "white",
     //           fontWeight: "bold",
     //           alignSelf: "center",
-    //           // marginRight: isMobile ? -70 : -150,
+    //           // marginRight: isTablet ? -70 : -150,
     //         }}
     //       >
     //         <a
@@ -60,7 +63,7 @@ export default function NavBar() {
     //   >
     //     <div
     //       onClick={() => router.push("/eco2/shops/scanner")}
-    //       style={{ textDecoration: "none", fontSize: isMobile ? 10 : 16, color: color.white, cursor: 'pointer' }}
+    //       style={{ textDecoration: "none", fontSize: isTablet ? 10 : 16, color: color.white, cursor: 'pointer' }}
     //     >
     //       Scan In/Out
     //     </div>
@@ -153,7 +156,7 @@ export default function NavBar() {
         <div style={{flex: 1}}>
         <h1
           style={{
-            fontSize: isMobile ? 30 : 50,
+            fontSize: isMobile ? 25 : isTablet ? 30 : 50,
             color: "white",
             fontWeight: "bold",
             textAlign: 'center',
@@ -181,7 +184,7 @@ export default function NavBar() {
           // style={{color: color.grey}}
           style={{marginRight: 10 }}
         >
-          <i className="bi bi-list" style={{color: color.white, fontSize: isMobile ? 25 : 35}}></i>
+          <i className="bi bi-list" style={{color: color.white, fontSize: isMobile ? 20 : isTablet ? 25 : 35}}></i>
         </div>
         <div
           class="offcanvas offcanvas-end"

@@ -83,7 +83,8 @@ export default function Payment() {
             marginTop: 20,
           }}
         >
-          <p style={{ color: color.grey }}>My Total Green Currency</p>
+          <p style={{ color: color.grey }}>Green Currency Deductible
+</p>
           <p style={{ fontWeight: "bold" }}>200</p>
         </div>
         <div
@@ -94,7 +95,7 @@ export default function Payment() {
             justifyContent: "space-between",
           }}
         >
-          <p style={{ color: color.grey }}>Cart Amount</p>
+          <p style={{ color: color.grey }}>Amount Payable</p>
           <p style={{ fontWeight: "bold" }}>SGD 4</p>
         </div>
         {/* <div
