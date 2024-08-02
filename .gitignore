@@ -6,6 +6,39 @@
 .pnp.js
 .yarn/install-state.gz
 
+# video
+/public/ProgramVideo.mp4
+/public/TourVideo.mp4
+/public/TourVideo1.mp4
+/public/TourVideo2.mp4
+/public/Educational1.jpg
+/public/Educational2.jpg
+/public/Educational3.jpg
+/public/Educational4.jpg
+/public/Educational5.jpg
+/public/Educational6.jpeg
+/public/Educational7.jpg
+/public/Educational8.jpg
+/public/Educational9.jpg
+/public/ProgramLeft.jpg
+/public/ProgramMiddle.jpeg
+/public/ProgramRight.jpg
+/public/ProgramText.png
+/public/Tortle.png
+/public/Tour1Left.jpg
+/public/Tour1Middle.jpeg
+/public/Tour1Right.jpg
+/public/Tour2Left.jpeg
+/public/Tour2Right.png
+/public/Tour3Left.jpg
+/public/Tour3Right.jpg
+/public/TourBackground.png
+/public/TourBackground1.jpeg
+/public/TourBackground2.jpg
+/public/TourLeft.png
+/public/TourMiddle.jpg
+/public/TourRight.jpeg
+
 # testing
 /coverage
 

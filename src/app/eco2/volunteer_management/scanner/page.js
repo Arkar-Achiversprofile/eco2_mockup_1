@@ -1,16 +1,12 @@
 "use client";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
-import { useMediaQuery } from "react-responsive";
 import { Modal } from "./components/Modal";
 import { createPortal } from "react-dom";
 import QrReader from "react-camera-qr";
 
 export default function QRScanner() {
   const router = useRouter();
-  const isMobile = useMediaQuery({
-    query: "(max-width: 500px)",
-  });
   const [errorText, setErrorText] = useState("");
   const [qrData, setQrData] = useState("");
   const [modalOpen, setModalOpen] = useState(false);

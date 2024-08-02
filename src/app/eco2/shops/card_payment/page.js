@@ -4,6 +4,7 @@ import ShopNavBar from "../../../components/ShopNavBar";
 import { Elements } from "@stripe/react-stripe-js";
 import PaymentForm from "../../../components/PaymentForm";
 import {stripe, stripePromise} from "../../../api/stripe-paymentintent";
+import { getLocalStorage } from "../../../api/localStorage";
 
 
 export default function CardPayment() {
@@ -12,12 +13,25 @@ export default function CardPayment() {
   //   const paymentIntent = await stripe.paymentIntents.cancel(paymentIntentId);
   //       setClientSecret("");
   //       setPaymentIntentId("");
+  const [total, setTotal] = useState(0);
+  const [orderData, setOrderData] = useState([]);
+
+  useEffect(() => {
+    getOrderData()
+  }, [])
+
+  const getOrderData = () => {
+    let orderData = JSON.parse(getLocalStorage("orderData"))
+    let orderTotalAmount = getLocalStorage("totalAmount");
+    setOrderData(orderData);
+    setTotal(orderTotalAmount);
+  }
 
 
   const onClickButton = async () => {
     try {
         const paymentIntent = await stripe.paymentIntents.create({
-          amount: 100 * 100,
+          amount: total * 100,
           currency: "sgd",
           payment_method_types: ["card"],
         });
@@ -48,7 +62,7 @@ export default function CardPayment() {
           style={{ width: "100%" }}
         >
           <Elements options={options} stripe={stripePromise}>
-            <PaymentForm />
+            <PaymentForm orderData={orderData} />
           </Elements>
         </div>
       ) : (

@@ -1,10 +1,19 @@
 export const color = {
     grey: '#717171',
     lightGrey: '#F4F4F4',
+    whiteGray: '#D0B2A0',
     skyBlue: '#0DCAF0',
     orange: 'orange',
-    green: 'green',
     white: 'white',
     black: '#000000',
-    red: "#ff0000"
+    red: "#ff0000",
+    gold: '#FFCC33',
+    pink: '#E6BEBE',
+    darkPink: '#805f4d',
+    green: 'green',
+    green1: '#28A897',
+    green2: '#9DAB81',
+    ligthGreen: '#D0DCC6',
+    darkGreen: '#5A7344',
+    yellow: '#D9FF40',
 }

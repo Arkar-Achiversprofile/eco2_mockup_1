@@ -8,7 +8,7 @@
 }
 
 .backgroundVideo {
-  height: 80vh; /* Set the height to 100% of the viewport height */
+  height: 65vh; /* Set the height to 100% of the viewport height */
   width: 100vw; /* Set the width to 100% of the viewport width */
   object-fit: cover;
   z-index: -1;
@@ -233,5 +233,32 @@
   }
   to {
     transform: rotate(0deg);
+  }
+}
+
+
+.title {
+  font-size: 50px;
+}
+
+.menu {
+  font-size: 35px;
+}
+
+@media (max-width: 500px) {
+  .title {
+    font-size: 28px;
+  }
+  .menu {
+    font-size: 22px;
+  }
+}
+
+@media (max-width: 770px) and (min-width: 500px) {
+  .title {
+    font-size: 30px;
+  }
+  .menu {
+    font-size: 25px;
   }
 }

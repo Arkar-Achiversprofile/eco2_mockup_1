@@ -1,18 +1,22 @@
 'use client'
-import React from "react";
+import React, { useContext } from "react";
 import {
   PaymentElement,
   useStripe,
   useElements,
 } from "@stripe/react-stripe-js";
 import { useRouter } from "next/navigation";
+import {EShopController} from "../controller"
+import AppContext from "../context/AppContext";
 
-export default function CheckoutForm() {
+export default function PaymentForm(orderData) {
   const router = useRouter();
   const stripe = useStripe();
   const elements = useElements();
   const [message, setMessage] = React.useState(null);
   const [isLoading, setIsLoading] = React.useState(false);
+  const {userInfo} = useContext(AppContext);
+  console.log("orderData ====>", orderData)
 
   React.useEffect(() => {
     if (!stripe) {
@@ -56,6 +60,14 @@ export default function CheckoutForm() {
 
     setIsLoading(true);
 
+    var obj = {
+      accountItemId: userInfo.userId,
+    }
+    var purchasedData = []
+    // orderData.map((v) => {
+
+    // })
+
     stripe.confirmPayment({
       elements,
       confirmParams: {
@@ -65,8 +77,10 @@ export default function CheckoutForm() {
       },
       redirect: 'if_required',
     }).then( async (result) => {
-      console.log('result====>', result.paymentIntent.status)
+      console.log('result====>', result)
+      console.log("intent ====>", result.paymentIntent)
       if (result.paymentIntent.status === "succeeded") {
+        EShopController.createTransaction();
         router.push("/eco2/shops/order_success")
       } else {
         const stripe1 = require("stripe")(StripeApiKey.STRIPE_SECRET_KEY);

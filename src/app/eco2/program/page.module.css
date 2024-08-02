@@ -1,0 +1,102 @@
+.background {
+  background-image: url("/Background.jpg");
+  height: 100vh;
+  width: 100vw;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  overflow: auto;
+}
+
+.mainVideo {
+    /* height: 750; Set the height to 100% of the viewport height */
+    width: 100%; /* Set the width to 100% of the viewport width */
+    /* z-index: -1; */
+  }
+
+.background1 {
+    background-image: url("/Background1.jpeg");
+  height: 150vh;
+  width: 100vw;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+}
+
+.eduAndContactNavBackground {
+    background-image: url("/NavBackground.jpg");
+  height: 30vh;
+  width: 100vw;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+}
+
+.eduBackground1 {
+  background-image: url("/Educational9.jpg");
+  height: 130vh;
+  width: 100vw;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.imageRow {
+    --bs-gutter-x: 0;
+}
+
+.tourBackground {
+  background-image: url("/TourBackground.png");
+  height: 100vh;
+  width: 100vw;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  overflow: auto;
+  /* position: fixed; */
+  
+}
+
+.tourNavBackground {
+  background-image: url("/NavBackground.jpg");
+  height: 20vh;
+  width: 100vw;
+  /* position: fixed; */
+
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+
+}
+
+.tourBackground1 {
+  background-image: url("/TourBackground1.jpeg");
+  height: 90vh;
+  width: 100vw;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  overflow: auto;
+}
+
+.tourBackground2 {
+  background-image: url("/TourBackground2.jpg");
+  height: 130vh;
+  width: 100vw;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}

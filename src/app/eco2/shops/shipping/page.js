@@ -1,25 +1,65 @@
 "use client";
 import ShopNavBar from "../../../components/ShopNavBar";
 import { color } from "../../../components/color";
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import "./shipping.css";
 import { useRouter } from "next/navigation";
 import { useMediaQuery } from "react-responsive";
+import AppContext from "../../../context/AppContext";
+import { getLocalStorage } from "../../../api/localStorage";
 
 export default function ShippingInfo() {
+  // const { orderData, setOrderData, orderTotalAmount } = useContext(AppContext);
   const router = useRouter();
   const isMobile = useMediaQuery({
     query: "(max-width: 500px)",
   });
-  const [buttonIndex, setButtonIndex] = useState(1);
-  const [collectionInstruction, setCollectionInstruction] = useState(false);
 
-  const onClickPaymentType = (index) => {
-    setButtonIndex(index);
+  const [deliveryData, setDeliveryData] = useState([]);
+  const [collectionData, setCollectionData] = useState([]);
+  // const [totalAmount, setTotalAmount] = useState(0);
+
+  useEffect(() => {
+    separateOrderData();
+  }, []);
+
+  const separateOrderData = () => {
+    let orderData = JSON.parse(getLocalStorage("orderData"));
+    // let orderTotalAmount = getLocalStorage("totalAmount");
+    var delivery = [];
+    var collection = [];
+    orderData.length > 0 &&
+      orderData.map((v) => {
+        if (v.isDelivery) {
+          delivery.push(v);
+        } else {
+          collection.push(v);
+        }
+      });
+    // setTotalAmount(orderTotalAmount);
+    setDeliveryData(delivery);
+    setCollectionData(collection);
   };
 
-  const onClickCollectionInstruction = () => {
-    setCollectionInstruction(!collectionInstruction);
+  const onClickCollectionInstruction = (parentIndex, value) => {
+    setCollectionData((prevData) =>
+      prevData.map((item, index) => {
+        return index !== parentIndex
+          ? item
+          : {
+              brandName: item.brandName,
+              deliveryFee: item.deliveryFee,
+              freeShipping: item.freeShipping,
+              collectionLocations: item.collectionLocations,
+              shopCartDisplayProductDtos: item.shopCartDisplayProductDtos,
+              brandCheck: item.brandCheck,
+              isDelivery: item.isDelivery,
+              address: item.address,
+              addressId: item.addressId,
+              collectionInstruction: value,
+            };
+      })
+    );
   };
 
   return (
@@ -74,85 +114,105 @@ export default function ShippingInfo() {
             <p>Serangoon avenue 5</p>
           </div>
         </div>
-        <div className="row">
-          <div
-            className="col-md-5 col-11 d-flex flex-row justify-content-between border-bottom px-3 mx-auto"
-            style={{ paddingTop: 10 }}
-          >
-            <p>Zip:</p>
-            <p>60607</p>
-          </div>
-          <div
-            className="col-md-5 col-11 d-flex flex-row justify-content-between px-3 mx-auto"
-            style={{ paddingTop: 10 }}
-          >
-            <p></p>
-            <p></p>
-          </div>
-        </div>
 
-        <h5
-          style={{
-            paddingLeft: isMobile ? 20 : 50,
-            marginTop: 30,
-            textDecoration: "underline",
-          }}
-        >
-          Delivery Charges By Supplier
-        </h5>
-        <div style={{ width: "90%", margin: "0 auto" }}>
-          <p>Fish</p>
-          <p>Fragrant Red Basil 60g</p>
-          <div className="d-flex flex-row">
-            <p style={{ width: isMobile ? "50%" : "30%", fontWeight: "bold" }}>
-              Otolith Enrichment:
-            </p>
-            <p>SGD 10</p>
-          </div>
+        {deliveryData.length > 0 && (
+          <h5
+            style={{
+              paddingLeft: isMobile ? 20 : 50,
+              marginTop: 30,
+              textDecoration: "underline",
+            }}
+          >
+            Delivery Charges By Supplier
+          </h5>
+        )}
 
-          <p>The Food Kombucha Small Gift Pack (4 x 375ml)</p>
-          <div className="d-flex flex-row">
-            <p style={{ width: isMobile ? "50%" : "30%", fontWeight: "bold" }}>
-              The Good Kombucha:
-            </p>
-            <p>SGD 12</p>
-          </div>
-        </div>
-        <h5
-          style={{
-            paddingLeft: isMobile ? 20 : 50,
-            marginTop: 30,
-            textDecoration: "underline",
-          }}
-        >
-          Self Collected
-        </h5>
         <div style={{ width: "90%", margin: "0 auto" }}>
-          <p>Pearl Oyster Mushroom</p>
-          <div className="d-flex flex-row">
-            <p style={{ width: isMobile ? "50%" : "30%", fontWeight: "bold" }}>
-              Mushroom Buddies:
-            </p>
-            <p>XXX, YYY (S) 123456</p>
-          </div>
-          {collectionInstruction ? (
-            <div>
-            <div
-              style={{ cursor: 'pointer', textDecoration: 'underline', color: color.black }}
-              onClick={() => onClickCollectionInstruction()}
-            >
-              Hide Collection Instruction
+          {deliveryData.map((d, index) => (
+            <div key={index}>
+              {d.shopCartDisplayProductDtos.map((p, i) => (
+                <p key={i}>{p.productName}</p>
+              ))}
+              <div className="d-flex flex-row">
+                <p
+                  style={{
+                    width: isMobile ? "50%" : "30%",
+                    fontWeight: "bold",
+                  }}
+                >
+                  {d.brandName}:
+                </p>
+                <p>SGD {d.deliveryFee}</p>
+              </div>
             </div>
-            <p style={{color: color.red}}>Collection only be done on weekdays 9am-6pm</p>
+          ))}
+        </div>
+        {collectionData.length > 0 && (
+          <h5
+            style={{
+              paddingLeft: isMobile ? 20 : 50,
+              marginTop: 30,
+              textDecoration: "underline",
+            }}
+          >
+            Self Collected
+          </h5>
+        )}
+        <div style={{ width: "90%", margin: "0 auto" }}>
+          {collectionData.map((c, i) => (
+            <div key={i}>
+              {c.shopCartDisplayProductDtos.map((p, index) => (
+                <p key={index}>{p.productName}</p>
+              ))}
+              <div className="d-flex flex-row">
+                <p
+                  style={{
+                    width: isMobile ? "50%" : "30%",
+                    fontWeight: "bold",
+                  }}
+                >
+                  {c.brandName}:
+                </p>
+                <p>{c.address}</p>
+              </div>
+              {c.collectionInstruction ? (
+                <div>
+                  <div
+                    style={{
+                      cursor: "pointer",
+                      textDecoration: "underline",
+                      color: color.black,
+                    }}
+                    onClick={() =>
+                      onClickCollectionInstruction(i, !c.collectionInstruction)
+                    }
+                  >
+                    Hide Collection Instruction
+                  </div>
+                  <p style={{ color: color.red }}>
+                    {
+                      c.collectionLocations.filter(
+                        (cl) => cl.id == c.addressId
+                      )[0].instructions
+                    }
+                  </p>
+                </div>
+              ) : (
+                <div
+                  style={{
+                    cursor: "pointer",
+                    textDecoration: "underline",
+                    color: color.black,
+                  }}
+                  onClick={() =>
+                    onClickCollectionInstruction(i, !c.collectionInstruction)
+                  }
+                >
+                  Show Collection Instruction
+                </div>
+              )}
             </div>
-          ) : (
-            <div
-              style={{ cursor: 'pointer', textDecoration: 'underline', color: color.black }}
-              onClick={() => onClickCollectionInstruction()}
-            >
-              Show Collection Instruction
-            </div>
-          )}
+          ))}
         </div>
 
         {/* <h5 style={{ paddingLeft: isMobile ? 20 : 50, marginTop: 30 }}>

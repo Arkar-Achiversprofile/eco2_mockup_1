@@ -7,25 +7,24 @@ import { useRouter } from "next/navigation";
 import { useMediaQuery } from "react-responsive";
 import NavBar from "./components/NavBar";
 import { stripe, stripePromise } from "./api/stripe-paymentintent";
-import { useEffect } from "react";
+import { useContext, useEffect } from "react";
+import AppContext from "./context/AppContext";
+import { color } from "./components/color";
 
 export default function Home() {
+  const { userInfo } = useContext(AppContext);
   const router = useRouter();
   const isMobile = useMediaQuery({
     query: "(max-width: 500px)",
   });
   const isTablet = useMediaQuery({
-    query: "(max-width: 850px)",
+    query: "(min-width: 500px) and (max-width: 850px)",
   });
-  useEffect(() => {
-    getPaymentData();
-  }, []);
 
   const getPaymentData = async () => {
     const paymentIntents = await stripe.paymentIntents.list({
       limit: 100,
     });
-    console.log("payment =====>", paymentIntents);
   };
 
   const createQueryString = (name, value) => {
@@ -78,10 +77,26 @@ export default function Home() {
           </p>
         </div>
       </div> */}
-      <div className="d-flex justify-content-center mt-5">
-        <Image alt="" src={image.homeQr} width={isMobile ? 350 : 450}
-              height={isMobile ? 200 : 250}/>
-      </div>
+      {/* qrUrl: '',
+    greenCurrencyBalance: 0,
+    userName: '' */}
+      {userInfo.userName ? (
+        <div className="d-flex flex-column justify-content-center align-items-center mt-1">
+          <p style={{ color: color.green, fontSize: isMobile ? 25 : 30 }}>
+            Welcome back, {userInfo.userName}
+          </p>
+          <Image
+            alt=""
+            src={userInfo.qrUrl}
+            width={isMobile ? 200 : 250}
+            height={isMobile ? 200 : 250}
+          />
+          <p style={{ color: color.green, fontSize: isMobile ? 25 : 30 }}>
+            Green Currency Balance: {userInfo.greenCurrencyBalance}
+          </p>
+        </div>
+      ) : null}
+
       <div className="container" style={{ paddingTop: 30 }}>
         <div className="row">
           <div className="col-lg-1"></div>
@@ -143,7 +158,7 @@ export default function Home() {
                 type="button"
                 class="btn btn-success rounded-pill"
                 style={{ width: 150, backgroundColor: "green" }}
-                // onClick={() => router.push("/eco2/shops/scanner")} 
+                onClick={() => router.push("/eco2/program")}
               >
                 Learn More
               </button>

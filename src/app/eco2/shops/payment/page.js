@@ -8,14 +8,43 @@ import React, { useState, useEffect } from "react";
 import { useMediaQuery } from "react-responsive";
 import { StripeApiKey } from "../../../api/StripeApiKey";
 import { stripe } from "../../../api/stripe-paymentintent";
+import { getLocalStorage } from "../../../api/localStorage";
 
 export default function Payment() {
   const router = useRouter();
   const isMobile = useMediaQuery({
     query: "(max-width: 500px)",
   });
-  const [total, setTotal] = useState("4.00");
+  const [total, setTotal] = useState(0);
+  const [orderData, setOrderData] = useState([]);
+  const [reStructureData, setReStructureData] = useState([]);
   // const [buttonIndex, setButtonIndex] = useState(1);
+
+  useEffect(() => {
+    getOrderData()
+  }, [])
+
+  const getOrderData = () => {
+    let orderData = JSON.parse(getLocalStorage("orderData"))
+    let orderTotalAmount = getLocalStorage("totalAmount");
+    var array = [];
+    orderData.map((a) => {
+      a.shopCartDisplayProductDtos.map((b) => {
+        if (b.isGCused) {
+          array.push(b);
+        }
+      });
+    });
+    setReStructureData(array);
+    setOrderData(orderData);
+    setTotal(orderTotalAmount);
+  }
+
+  const GCAmountTotal =  function (arr) {
+      return arr.reduce((sum, i) => {
+        return sum + i.GCAmount;
+      }, 0);
+  }
 
   // const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY, {
   //   apiVersion: '2024-04-10',
@@ -85,7 +114,7 @@ export default function Payment() {
         >
           <p style={{ color: color.grey }}>Green Currency Deductible
 </p>
-          <p style={{ fontWeight: "bold" }}>200</p>
+          <p style={{ fontWeight: "bold" }}>{GCAmountTotal(reStructureData)}</p>
         </div>
         <div
           style={{
@@ -96,7 +125,7 @@ export default function Payment() {
           }}
         >
           <p style={{ color: color.grey }}>Amount Payable</p>
-          <p style={{ fontWeight: "bold" }}>SGD 4</p>
+          <p style={{ fontWeight: "bold" }}>SGD {total}</p>
         </div>
         {/* <div
           style={{
@@ -217,7 +246,7 @@ export default function Payment() {
               {/* <Image alt="" src={image.visaCard} width={50} height={30} />
           <Image alt="" src={image.masterCard} width={50} height={30} /> */}
               {/* <Image alt="" src={image.paypalCard} width={50} height={30} /> */}
-              <Image alt="" src={image.paynowCard} width={50} height={30} />
+              <Image alt="" src={image.paynowCard} width={70} height={40} />
             </div>
           </>
         )}
