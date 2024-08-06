@@ -1,13 +1,16 @@
 'use client'
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import {
   PaymentElement,
   useStripe,
   useElements,
 } from "@stripe/react-stripe-js";
 import { useRouter } from "next/navigation";
-import {EShopController} from "../controller"
+import {BrandController, EShopController} from "../controller"
 import AppContext from "../context/AppContext";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { deleteLocalStorage } from "../api/localStorage";
 
 export default function PaymentForm(orderData) {
   const router = useRouter();
@@ -15,8 +18,18 @@ export default function PaymentForm(orderData) {
   const elements = useElements();
   const [message, setMessage] = React.useState(null);
   const [isLoading, setIsLoading] = React.useState(false);
+  const [brandList, setBrandList] = React.useState([]);
   const {userInfo} = useContext(AppContext);
-  console.log("orderData ====>", orderData)
+  console.log("orderData", orderData)
+
+  useEffect(() => {
+    BrandController.getBrandIdList(data => {
+      if (data.length > 0) {
+        setBrandList(data);
+      }
+    })
+  }, [])
+  
 
   React.useEffect(() => {
     if (!stripe) {
@@ -60,14 +73,6 @@ export default function PaymentForm(orderData) {
 
     setIsLoading(true);
 
-    var obj = {
-      accountItemId: userInfo.userId,
-    }
-    var purchasedData = []
-    // orderData.map((v) => {
-
-    // })
-
     stripe.confirmPayment({
       elements,
       confirmParams: {
@@ -77,15 +82,53 @@ export default function PaymentForm(orderData) {
       },
       redirect: 'if_required',
     }).then( async (result) => {
-      console.log('result====>', result)
-      console.log("intent ====>", result.paymentIntent)
       if (result.paymentIntent.status === "succeeded") {
-        EShopController.createTransaction();
-        router.push("/eco2/shops/order_success")
+        var purchasedData = []
+        orderData.orderData.map((v) => {
+          var obj1 = {};
+          var filterBrand = brandList.filter((b) => b.name === v.brandName);
+          obj1["brandID"] = filterBrand[0].id;
+          obj1["selectedCollectionLocationID"] = v.addressId == 0 || v.addressId == null ? null : v.addressId;
+          var productData = [];
+          v.shopCartDisplayProductDtos.map((p) => {
+            var obj2 = {};
+            obj2["productID"] = p.productID;
+            obj2["quantity"] = p.quantity;
+            obj2["gcRedeemed"] = p.isGCused == true ? p.GCAmount : 0;
+            obj2["discountAmount"] = p.isGCused == true ? p.GCAmount / 100 : 0;
+            productData.push(obj2);
+          });
+          obj1["purchasedProductDtos"] = productData;
+          purchasedData.push(obj1);
+        });
+        var obj = {
+          accountItemId: userInfo.userId,
+          paymentTransactionID: result.paymentIntent.id,
+          purchasedBrandDtos: purchasedData,
+        }
+        EShopController.createTransaction(obj, data => {
+          if (data.accountItemID != null || data.accountItemID != 0) {
+            toast.success("Payment Successfully!", {
+              position: "top-right",
+              onClose: () => {
+                router.push("/eco2/shops/order_success")
+              }
+            })
+            deleteLocalStorage("orderData");
+            deleteLocalStorage("totalAmount");
+          } else {
+            toast.error("Payment Successfully! Transaction saving process doesn't succeed!", {
+              position: "top-right",
+              onClose: () => {
+                router.push("/eco2/shops/order_cancel")
+              }
+            })
+          }
+        });
       } else {
         const stripe1 = require("stripe")(StripeApiKey.STRIPE_SECRET_KEY);
         // The user closed the modal, cancelling payment
-        const payment =  await stripe1.paymentIntents.cancel(paymentIntentId);
+        const payment =  await stripe1.paymentIntents.cancel(result.paymentIntent.id);
         if (payment) {
           router.push("/eco2/shops/order_cancel")
         }
@@ -113,6 +156,7 @@ export default function PaymentForm(orderData) {
 
   return (
     <form id="payment-form" onSubmit={handleSubmit}>
+      <ToastContainer/>
       <PaymentElement id="payment-element" options={paymentElementOptions} />
       <button
         className="btn btn-success"

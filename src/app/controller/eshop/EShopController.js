@@ -32,6 +32,10 @@ const createTransaction = (obj, setData) => {
   postApi(`Shop/CreateTransaction`, obj, data => setData(data))
 }
 
+const getUserTransactionHistory = (userId, setData) => {
+  getApi(`Shop/GetTransactionHistoryByAccountItemID/${userId}`, data => setData(data))
+}
+
 export const EShopController = {
   getSubCategoryOrProduct,
   getProductDetail,
@@ -40,4 +44,5 @@ export const EShopController = {
   updateQuantityInCart,
   deleteProductInCart,
   createTransaction,
+  getUserTransactionHistory
 };

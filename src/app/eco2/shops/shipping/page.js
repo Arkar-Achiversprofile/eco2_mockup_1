@@ -9,11 +9,8 @@ import AppContext from "../../../context/AppContext";
 import { getLocalStorage } from "../../../api/localStorage";
 
 export default function ShippingInfo() {
-  // const { orderData, setOrderData, orderTotalAmount } = useContext(AppContext);
+  const { isMobile, isTablet } = useContext(AppContext);
   const router = useRouter();
-  const isMobile = useMediaQuery({
-    query: "(max-width: 500px)",
-  });
 
   const [deliveryData, setDeliveryData] = useState([]);
   const [collectionData, setCollectionData] = useState([]);
@@ -129,11 +126,11 @@ export default function ShippingInfo() {
 
         <div style={{ width: "90%", margin: "0 auto" }}>
           {deliveryData.map((d, index) => (
-            <div key={index}>
+            <div key={index} style={{marginTop: 20, width: isMobile ? "100%" : isTablet ? "60%" : "40%",}}>
               {d.shopCartDisplayProductDtos.map((p, i) => (
                 <p key={i}>{p.productName}</p>
               ))}
-              <div className="d-flex flex-row">
+              <div className="d-flex flex-row justify-content-between">
                 <p
                   style={{
                     width: isMobile ? "50%" : "30%",
@@ -160,14 +157,13 @@ export default function ShippingInfo() {
         )}
         <div style={{ width: "90%", margin: "0 auto" }}>
           {collectionData.map((c, i) => (
-            <div key={i}>
+            <div key={i} style={{marginTop: 20, width: isMobile ? "100%" : isTablet ? "60%" : "40%",}}>
               {c.shopCartDisplayProductDtos.map((p, index) => (
                 <p key={index}>{p.productName}</p>
               ))}
-              <div className="d-flex flex-row">
+              <div className="d-flex flex-row justify-content-between">
                 <p
                   style={{
-                    width: isMobile ? "50%" : "30%",
                     fontWeight: "bold",
                   }}
                 >
@@ -211,6 +207,7 @@ export default function ShippingInfo() {
                   Show Collection Instruction
                 </div>
               )}
+              <hr/>
             </div>
           ))}
         </div>

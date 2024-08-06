@@ -36,7 +36,7 @@ export default function Cart() {
   // console.log("cartData =====>", cartData);
   // console.log("balance =====>", userInfo.greenCurrencyBalance);
 
-  const plusMinusButton = isMobile ? 20 : 25;
+  const plusMinusButton = isMobile ? 15 : 25;
 
   useEffect(() => {
     getCartByUserId(false);
@@ -506,7 +506,7 @@ export default function Cart() {
                             <p
                               style={{
                                 color: color.grey,
-                                fontSize: isMobile ? 10 : 16,
+                                fontSize: isMobile ? 10 : 14,
                               }}
                             >
                               QUANTITY:
@@ -518,44 +518,13 @@ export default function Cart() {
                                 backgroundColor: color.orange,
                                 width: plusMinusButton,
                                 height: plusMinusButton,
-                                fontSize: 12,
+                                fontSize: isMobile ? 8 : 10,
                                 display: "flex",
                                 justifyContent: "center",
                                 alignItems: "center",
                                 borderRadius: 10,
                                 cursor: "pointer",
-                                margin: "0px 5px",
-                              }}
-                              onClick={() => {
-                                onClickQuantityChange(
-                                  data.productID,
-                                  data.quantity + 1
-                                );
-                              }}
-                            >
-                              +
-                            </div>
-                            <p
-                              style={{
-                                color: color.black,
-                                fontSize: isMobile ? 10 : 16,
-                              }}
-                            >
-                              {data.quantity}
-                            </p>
-                            <div
-                              style={{
-                                color: color.white,
-                                backgroundColor: color.orange,
-                                width: plusMinusButton,
-                                height: plusMinusButton,
-                                fontSize: 12,
-                                display: "flex",
-                                justifyContent: "center",
-                                alignItems: "center",
-                                borderRadius: 10,
-                                cursor: "pointer",
-                                margin: "0px 5px",
+                                margin: isMobile ? "0px 2px" : "0px 5px",
                               }}
                               onClick={() => {
                                 if (data.quantity > 1) {
@@ -567,6 +536,37 @@ export default function Cart() {
                               }}
                             >
                               -
+                            </div>
+                            <p
+                              style={{
+                                color: color.black,
+                                fontSize: isMobile ? 10 : 12,
+                              }}
+                            >
+                              {data.quantity}
+                            </p>
+                            <div
+                              style={{
+                                color: color.white,
+                                backgroundColor: color.orange,
+                                width: plusMinusButton,
+                                height: plusMinusButton,
+                                fontSize: isMobile ? 8 : 10,
+                                display: "flex",
+                                justifyContent: "center",
+                                alignItems: "center",
+                                borderRadius: 10,
+                                cursor: "pointer",
+                                margin: isMobile ? "0px 2px" : "0px 5px",
+                              }}
+                              onClick={() => {
+                                onClickQuantityChange(
+                                  data.productID,
+                                  data.quantity + 1
+                                );
+                              }}
+                            >
+                              +
                             </div>
                           </div>
 
@@ -607,16 +607,21 @@ export default function Cart() {
                                 for={`GC${index1}${data.productName}`}
                                 style={{
                                   color: color.green,
-                                  fontSize: isMobile ? 10 : 14,
+                                  fontSize: isMobile ? 9 : 12,
                                 }}
                               >
-                                Green Currency:{" "}
                                 {greenCreditCalculate(
                                   data.GCAmount != 0
                                     ? data.GCAmount
                                     : data.maxGreenCredit * data.quantity,
                                   data.isGCused
-                                )}
+                                )} Green Currency{" "}for ${greenCreditCalculate(
+                                  data.GCAmount != 0
+                                    ? data.GCAmount
+                                    : data.maxGreenCredit * data.quantity,
+                                  data.isGCused
+                                ) / 100} discount
+                                
                               </label>
                             </div>
                           ) : data.isGCused ||

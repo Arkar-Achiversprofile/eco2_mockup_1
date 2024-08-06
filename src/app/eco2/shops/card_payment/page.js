@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, {useEffect, useState} from "react";
 import ShopNavBar from "../../../components/ShopNavBar";
 import { Elements } from "@stripe/react-stripe-js";
 import PaymentForm from "../../../components/PaymentForm";
@@ -15,6 +15,7 @@ export default function CardPayment() {
   //       setPaymentIntentId("");
   const [total, setTotal] = useState(0);
   const [orderData, setOrderData] = useState([]);
+  console.log("orderData card payment", orderData)
 
   useEffect(() => {
     getOrderData()
