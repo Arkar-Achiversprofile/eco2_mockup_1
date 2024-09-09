@@ -12,6 +12,10 @@ export default function ShopNavBar({ name = "", paymentIntentId = "" }) {
     }
     router.back();
   };
+
+  const onClickCart = () => {
+    router.push("/eco2/shops/cart");
+  };
   return (
     <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom">
       <div style={{ width: "100%", display: "flex", flexDirection: "row" }}>
@@ -36,7 +40,13 @@ export default function ShopNavBar({ name = "", paymentIntentId = "" }) {
           />
           <h5 style={{ marginTop: 10 }}>{name}</h5>
         </div>
-        <div className="col-1 d-flex justify-content-center align-items-center">
+        <div
+          className="col-1 d-flex justify-content-center align-items-center"
+          onClick={() => {
+            onClickCart();
+          }}
+          style={{ cursor: "pointer" }}
+        >
           <i className="bi bi-bag" style={{ fontSize: 25 }}></i>
         </div>
       </div>

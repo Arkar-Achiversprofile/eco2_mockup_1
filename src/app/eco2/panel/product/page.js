@@ -1,7 +1,7 @@
 "use client";
 import React, { useContext, useEffect, useState } from "react";
 import NavBar from "../../../components/NavBar";
-import { CategoryController } from "../../../controller/category/CategoryController";
+import { CategoryController } from "../../../controller";
 import { BrandController, ProductController } from "../../../controller";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -14,21 +14,22 @@ export default function Product() {
     brandID: 0,
     name: "",
     description: "",
-    unitPrice: 0,
-    maxDiscountValue: 0,
-    maxGreenCredit: 0,
+    unitPrice: null,
+    maxDiscountValue: null,
+    maxGreenCredit: null,
     categoryImageUrl: null,
-    maxPurchaseNo: 0,
+    maxPurchaseNo: null,
     productImageUrl: "",
-    imagefilename: "",
-    priority: 0,
+    imageFileName: "",
+    imageName: "",
+    priority: null,
     inStock: true,
     isActive: true,
     createdBy: "",
   });
   const [category, setCategory] = useState([]);
   const [brand, setBrand] = useState([]);
-  // console.log("prodcut", productData);
+  // console.log("prodcut", productData.productImageUrl);
 
   useEffect(() => {
     getCategories();
@@ -65,9 +66,11 @@ export default function Product() {
     } else {
       if (text == "productImageUrl") {
         getBase64(value.files, (result) => {
+          alert(result)
           data.productImageUrl = result;
         });
-        data.imagefilename = value.value;
+        data.imageName = value.value;
+        data.imageFileName = value.files[0].name;
       } else {
         data[text] = value;
       }
@@ -81,12 +84,17 @@ export default function Product() {
       return new Promise((resolve, reject) => {
         const [index, file] = item;
         const reader = new FileReader();
-        reader.readAsDataURL(file);
+        reader.readAsArrayBuffer(file);
 
         reader.onload = function (event) {
           // cb(`data:${file.type};base64,${btoa(event.target.result)}`);
+          const arrayBuffer = event.target.result;
+          const uint8Array = new Uint8Array(arrayBuffer);
+          const base64String = btoa(String.fromCharCode(...uint8Array));
+          // cb(`data:${file.type};base64,${btoa(event.target.result)}`);
 
-          resolve(`${btoa(event.target.result)}`);
+          resolve(`${base64String}`);
+          // resolve(`${btoa(event.target.result)}`);
         };
         reader.onerror = function () {
           console.log("can't read the file");
@@ -98,11 +106,12 @@ export default function Product() {
     Promise.all(filePromises)
       .then((res) => {
         console.log("ready to submit");
+        // console.log("res", res)
         cb(res[0]);
       })
       .catch((error) => {
         console.log(error);
-        console.log("something wrong happened");
+        // console.log("something wrong happened");
       });
   };
 
@@ -111,19 +120,19 @@ export default function Product() {
       toast.warn("Please enter Product Name!", {
         position: "top-right",
       });
-    } else if (productData.unitPrice == 0) {
+    } else if (productData.unitPrice == null) {
       toast.warn("Please set Unit Price!", {
         position: "top-right",
       });
-    } else if (productData.maxDiscountValue == 0) {
+    } else if (productData.maxDiscountValue == null) {
       toast.warn("Please set Maximum Discount!", {
         position: "top-right",
       });
-    } else if (productData.maxGreenCredit == 0) {
+    } else if (productData.maxGreenCredit == null) {
       toast.warn("Please set Maximum Green Credit!", {
         position: "top-right",
       });
-    } else if (productData.maxPurchaseNo == 0) {
+    } else if (productData.maxPurchaseNo == null) {
       toast.warn("Please set Max Purchase No!", {
         position: "top-right",
       });
@@ -131,7 +140,7 @@ export default function Product() {
       toast.warn("Please choose Product Image!", {
         position: "top-right",
       });
-    } else if (productData.priority == 0) {
+    } else if (productData.priority == null) {
       toast.warn("Please set Priority!", {
         position: "top-right",
       });
@@ -155,14 +164,15 @@ export default function Product() {
             brandID: 0,
             name: "",
             description: "",
-            unitPrice: 0,
-            maxDiscountValue: 0,
-            maxGreenCredit: 0,
+            unitPrice: null,
+            maxDiscountValue: null,
+            maxGreenCredit: null,
             categoryImageUrl: null,
-            maxPurchaseNo: 0,
+            maxPurchaseNo: null,
             productImageUrl: "",
-            imagefilename: "",
-            priority: 0,
+            imageFileName: "",
+            imageName: "",
+            priority: null,
             inStock: true,
             isActive: true,
             createdBy: "",
@@ -356,7 +366,7 @@ export default function Product() {
               class="form-control"
               type="file"
               id="formFile"
-              value={productData.imagefilename}
+              value={productData.imageName}
               onChange={(e) => onChangeInfo("productImageUrl", e.target)}
             ></input>
           </div>

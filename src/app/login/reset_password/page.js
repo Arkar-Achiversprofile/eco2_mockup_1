@@ -6,6 +6,7 @@ import { LoginRegisterController } from "../../controller/login_register_control
 import { color } from "../../components/color";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { baseUrl } from "../../controller/baseUrl";
 
 export default function ResetPassword() {
   return (
@@ -56,7 +57,7 @@ function Boundary() {
     } else {
       try {
         fetch(
-          `https://ecoAPIt.achieversprofile.com/api/AccountItems/resetpassword?aId=${userId}&aResetCode=${resetPasswordCode}&aNewPassword=${newPassword}`,
+          `${baseUrl}AccountItems/resetpassword?aId=${userId}&aResetCode=${resetPasswordCode}&aNewPassword=${newPassword}`,
           {
             method: "PATCH",
             headers: {

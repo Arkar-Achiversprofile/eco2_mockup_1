@@ -8,9 +8,10 @@ import { setLocalStorage } from "../../api/localStorage";
 import { useRouter } from "next/navigation";
 import { LoginRegisterController } from "../../controller/login_register_controller/LoginRegister";
 import AppContext from "../../context/AppContext";
+import { baseUrl } from "../../controller/baseUrl";
 
 export default function SignUp() {
-  const { userInfo, setUserInfo } = useContext(AppContext);
+  const { userInfo, setUserInfo, isMobile, isTablet } = useContext(AppContext);
   const [userData, setUserData] = useState({
     userName: "",
     email: "",
@@ -35,6 +36,7 @@ export default function SignUp() {
   });
   const [isShowPassword, setIsShowPassword] = useState(false);
   const [isShowRetypePassword, setIsShowRetypePassword] = useState(false);
+  const [isTerm, setIsTerm] = useState(false);
   const router = useRouter();
   const regax = "^(?=.*[a-z])(?=.*[A-Z])(?=.*d)[a-zA-Zd]{8,}$";
 
@@ -49,6 +51,32 @@ export default function SignUp() {
     params.set(name, value);
 
     return params.toString();
+  };
+
+  const getStreet = async () => {
+    if (userData.postalCode == "") {
+      toast.warn("Please fill the Postal Code And Press 'Get Street'");
+    } else {
+      const response = await fetch(
+        `https://www.onemap.gov.sg/api/common/elastic/search?searchVal=${parseInt(
+          userData.postalCode
+        )}&returnGeom=Y&getAddrDetails=Y&pageNum=1`,
+        { method: "GET" }
+      );
+      const data = response.json();
+      data.then(async (res) => {
+        if (res.results.length > 0) {
+          console.log("street", res.results)
+          const data = { ...userData };
+          data["street"] = res.results[0].ROAD_NAME;
+          setUserData(data);
+        } else {
+          toast.warn(
+            "Postal Code is invalid. Please change to actual postal code!"
+          );
+        }
+      });
+    }
   };
 
   const onClickRegister = async () => {
@@ -99,141 +127,70 @@ export default function SignUp() {
     //   );
     // }
     else {
-      const response = await fetch(
-        `https://www.onemap.gov.sg/api/common/elastic/search?searchVal=${parseInt(
-          userData.postalCode
-        )}&returnGeom=Y&getAddrDetails=Y&pageNum=1`,
-        { method: "GET" }
-      );
-      const data = response.json();
-      data.then(async (res) => {
-        if (res.results.length > 0) {
-          LoginRegisterController.registerAccount(
-            {
-              userName: userData.userName,
-              email: userData.email,
-              mobile: userData.mobile,
-              password: userData.password,
-              street: userData.street,
-              unitNo: userData.unitNo,
-              postalCode: userData.postalCode,
-              housingType: userData.housingType,
-              halalBox: userData.halalBox,
-              role: 0,
-            },
-            (data) => {
-              setLocalStorage("id", data.id);
-              setLocalStorage("password", data.password);
-              setLocalStorage("userName", data.userName);
-              const oldUser = { ...userInfo };
-              oldUser.userId = data.id;
-              setUserInfo(oldUser);
-              try {
-                fetch("https://ecoAPIt.achieversprofile.com/api/Email/send", {
-                  method: "POST",
-                  headers: {
-                    "Content-Type": "application/json;",
-                  },
-                  body: JSON.stringify({
-                    toEmail: `${data.email}`,
-                    subject: "Eco2Balance Email verification",
-                    body: `<html><body><p>Email Verification Code is <b>${data.verificationCode}</b> </p></body></html>`,
-                    isHtml: true,
-                  }),
-                })
-                  .then(async (response) => {
-                    if (response.ok) {
-                      return response.text();
-                    } else {
-                      toast.error("Something went wrong!");
-                    }
-                  })
-                  .then((res) => {
-                    toast.success(res, { position: "top-right" });
-                    router.push(
-                      "/login/verification" +
-                        "?" +
-                        createQueryString("id", data.id)
-                    );
-                  })
-                  .catch((err) => console.log("email error =====>", err));
-              } catch (err) {
-                console.error(err);
-                toast.error("Something went wrond!");
-              }
-            }
-          );
-          // await fetch(
-          //   "https://ecoAPIt.achieversprofile.com/api/AccountItems/signup",
-          //   {
-          //     method: "POST",
-          //     // mode: "no-cors",
-          //     headers: {
-          //       "Content-Type": "application/json;",
-          //       Accept: "application/json",
-          //       // 'Content-Type': 'application/x-www-form-urlencoded',
-          //     },
-          //     body: JSON.stringify({
-          //       userName: userData.userName,
-          //       email: userData.email,
-          //       mobile: userData.mobile,
-          //       password: userData.password,
-          //       street: userData.street,
-          //       unitNo: userData.unitNo,
-          //       postalCode: userData.postalCode,
-          //       housingType: userData.housingType,
-          //       halalBox: userData.halalBox,
-          //       role: 0,
-          //     }),
-          //   }
-          // )
-          //   .then((res) => {
-          //     var data = res.json();
-          //     return data;
-          //   })
-          //   .then(async (data) => {
-          //     SetCookies("id", data.id);
-          //     try {
-          //       await fetch(
-          //         "https://ecoAPIt.achieversprofile.com/api/Email/send",
-          //         {
-          //           method: "POST",
-          //           headers: {
-          //             "Content-Type": "application/json;",
-          //           },
-          //           body: JSON.stringify({
-          //             toEmail: "arkar@achieversprofile.com",
-          //             subject: "Eco2Balance Email verification",
-          //             body: `<html><body><p>Email Verification Code is <b>1234</b> </p></body></html>`,
-          //             isHtml: true,
-          //           }),
-          //         }
-          //       )
-          //         .then(async (response) => {
-          //           if (response.ok) {
-          //             return response.text();
-          //           } else {
-          //             toast.error("Something went wrong!");
-          //           }
-          //         })
-          //         .then((res) => {
-          //           toast.success(res, { position: "top-right" });
-          //         })
-          //         .catch((err) => console.log("email error =====>", err));
-          //     } catch (err) {
-          //       console.error(err);
-          //       toast.error("Something went wrond!");
-          //     }
-          //   })
-          //   .catch((error) => {
-          //     toast.error(error);
-          //   });
-        } else {
-          toast.warn(
-            "Postal Code is invalid. Please change to actual postal code!"
-          );
+      LoginRegisterController.registerAccount(
+        {
+          userName: userData.userName,
+          email: userData.email,
+          mobile: userData.mobile,
+          password: userData.password,
+          street: userData.street,
+          unitNo: userData.unitNo,
+          postalCode: userData.postalCode,
+          housingType: userData.housingType,
+          halalBox: userData.halalBox,
+          role: 0,
+        },
+        (data) => {
+          setLocalStorage("id", data.id);
+          setLocalStorage("password", userData.password);
+          setLocalStorage("userName", userData.userName);
+          const oldUser = { ...userInfo };
+          oldUser.userId = data.id;
+          setUserInfo(oldUser);
+          try {
+            fetch(`${baseUrl}Email/send`, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json;",
+              },
+              body: JSON.stringify({
+                toEmail: `${data.email}`,
+                subject: "Eco2Balance Email verification",
+                body: `<html><body><p>Email Verification Code is <b>${
+                  data.verificationCode
+                }</b> </p>
+                <br/>
+                    <p>Here is the link to enter the verification code.</p>
+                    <a href="https://feak.achieversprofile.com/login/verification?${createQueryString(
+                      "id",
+                      data.id
+                    )}">https://feak.achieversprofile.com/login/verification?${createQueryString(
+                  "id",
+                  data.id
+                )}</a></body></html>`,
+                isHtml: true,
+              }),
+            })
+              .then(async (response) => {
+                if (response.ok) {
+                  return response.text();
+                } else {
+                  toast.error("Something went wrong!");
+                }
+              })
+              .then((res) => {
+                toast.success(res, { position: "top-right" });
+                router.push(
+                  "/login/verification" + "?" + createQueryString("id", data.id)
+                );
+              })
+              .catch((err) => console.log("email error =====>", err));
+          } catch (err) {
+            console.error(err);
+            toast.error("Something went wrond!");
+          }
         }
-      });
+      );
     }
   };
 
@@ -286,73 +243,83 @@ export default function SignUp() {
             className="col-md-6 col-12 px-3 mx-auto"
             style={{ paddingTop: 10 }}
           >
-            <label for="mobile" class="form-label">
-              Mobile No:
-            </label>
-            <input
-              type="text"
-              class="form-control"
-              id="mobile"
-              placeholder="Your Mobile No."
-              value={userData.mobile}
-              onChange={(e) => onChangeInfo("mobile", e.target.value)}
-            />
+            <div className="col-12" style={{ paddingTop: 10 }}>
+              <label for="mobile" class="form-label">
+                Mobile No:
+              </label>
+              <input
+                type="text"
+                class="form-control"
+                id="mobile"
+                placeholder="Your Mobile No."
+                value={userData.mobile}
+                onChange={(e) => onChangeInfo("mobile", e.target.value)}
+              />
+            </div>
+            <div className="col-12" style={{ paddingTop: 10 }}>
+              <label for="unitNumber" class="form-label">
+                Unit Number:{" "}
+                <span style={{ fontSize: 10 }}>
+                  {
+                    "(Accepted format: #01-123 & only one account is allowed per household)"
+                  }
+                </span>
+              </label>
+              <input
+                type="text"
+                class="form-control"
+                id="unitNumber"
+                placeholder="Unit number"
+                value={userData.unitNo}
+                onChange={(e) => onChangeInfo("unitNo", e.target.value)}
+              />
+            </div>
           </div>
           <div
             className="col-md-6 col-12 px-3 mx-auto"
             style={{ paddingTop: 10 }}
           >
-            <label for="postalCode" class="form-label">
-              Postal Code:{" "}
-              <span style={{ fontSize: 10 }}>{"{eg. 123456}"}</span>
-            </label>
-            <input
-              type="number"
-              class="form-control"
-              id="postalCode"
-              placeholder="Your Postal Code"
-              value={userData.postalCode}
-              onChange={(e) => onChangeInfo("postalCode", e.target.value)}
-            />
-          </div>
-        </div>
-        <div className="row">
-          <div
-            className="col-md-6 col-12 px-3 mx-auto"
-            style={{ paddingTop: 10 }}
-          >
-            <label for="street" class="form-label">
-              Street:
-            </label>
-            <input
-              type="text"
-              class="form-control"
-              id="street"
-              placeholder="Street"
-              value={userData.street}
-              onChange={(e) => onChangeInfo("street", e.target.value)}
-            />
-          </div>
-          <div
-            className="col-md-6 col-12 px-3 mx-auto"
-            style={{ paddingTop: 10 }}
-          >
-            <label for="unitNumber" class="form-label">
-              Unit Number:{" "}
-              <span style={{ fontSize: 10 }}>
-                {
-                  "(Accepted format: #01-123 & only one account is allowed per household)"
-                }
-              </span>
-            </label>
-            <input
-              type="text"
-              class="form-control"
-              id="unitNumber"
-              placeholder="Unit number"
-              value={userData.unitNo}
-              onChange={(e) => onChangeInfo("unitNo", e.target.value)}
-            />
+            <div className="col-12" style={{ paddingTop: 10 }}>
+              <div className="row">
+                <div className="col-9">
+                  <label for="postalCode" class="form-label">
+                    Postal Code:{" "}
+                    <span style={{ fontSize: 10 }}>{"{eg. 123456}"}</span>
+                  </label>
+                  <input
+                    type="number"
+                    class="form-control"
+                    id="postalCode"
+                    placeholder="Your Postal Code"
+                    value={userData.postalCode}
+                    onChange={(e) => onChangeInfo("postalCode", e.target.value)}
+                  />
+                </div>
+                <div className="col-3 d-flex align-items-end">
+                  <button
+                    className="btn btn-secondary"
+                    type="button"
+                    onClick={() => getStreet()}
+                    style={{ fontSize: isTablet ? 11 : 14 }}
+                  >
+                    Get Street
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div className="col-12" style={{ paddingTop: 10 }}>
+              <label for="street" class="form-label">
+                Street:
+              </label>
+              <input
+                type="text"
+                class="form-control"
+                id="street"
+                placeholder="Street"
+                value={userData.street}
+                // onChange={(e) => onChangeInfo("street", e.target.value)}
+              />
+            </div>
           </div>
         </div>
         <div className="row">
@@ -489,7 +456,13 @@ export default function SignUp() {
 
         {/* <div className="col-11" style={{ marginLeft: "5%", marginTop: 30 }}> */}
         <div class="form-check mt-3">
-          <input class="form-check-input" type="checkbox" value="" id="terms" />
+          <input
+            class="form-check-input"
+            type="checkbox"
+            checked={isTerm}
+            id="term"
+            onChange={() => setIsTerm(!isTerm)}
+          />
           <label class="form-check-label" for="terms">
             By creating an account you agreed to Eco2Blance Terms and Condition
             & Privacy Policy

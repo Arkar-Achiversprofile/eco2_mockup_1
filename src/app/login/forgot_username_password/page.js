@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { LoginRegisterController } from "../../controller/login_register_controller/LoginRegister";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { baseUrl } from "../../controller/baseUrl";
 
 export default function Forgot() {
   return (
@@ -70,7 +71,7 @@ function Boundary() {
     LoginRegisterController.forgotPassword(forgotPassword, (data) => {
       if (data.id) {
         try {
-          fetch("https://ecoAPIt.achieversprofile.com/api/Email/send", {
+          fetch(`${baseUrl}Email/send`, {
             method: "POST",
             headers: {
               "Content-Type": "application/json;",

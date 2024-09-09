@@ -1,10 +1,11 @@
 "use client";
 import { Elements } from "@stripe/react-stripe-js";
 import ShopNavBar from "../../../components/ShopNavBar";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import PaymentForm from "./components/PaymentForm";
 import {stripePromise} from "../../../api/stripe-paymentintent";
 import { useSearchParams } from "next/navigation";
+import { getLocalStorage } from "../../../api/localStorage";
 
 // const stripePromise = loadStripe(
 //   StripeApiKey.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
@@ -17,6 +18,16 @@ export default function PaynowPaylah() {
   const clientSecret = searchParams.get("clientSecret");
   const paymentIntentId = searchParams.get("paymentIntentId");
   const [qrImage, setQrImage] = useState("");
+  const [orderData, setOrderData] = useState([]);
+
+  useEffect(() => {
+    getOrderData()
+  }, [])
+
+  const getOrderData = () => {
+    let orderData = JSON.parse(getLocalStorage("orderData"))
+    setOrderData(orderData);
+  }
 
   // useEffect(() => {
   //   generatePayNowQR("4.00", setQrImage);
@@ -38,7 +49,7 @@ export default function PaynowPaylah() {
           style={{ width: "100%" }}
         >
           <Elements options={options} stripe={stripePromise}>
-            <PaymentForm clientSecret={clientSecret} paymentIntentId={paymentIntentId} />
+            <PaymentForm orderData={orderData} clientSecret={clientSecret} paymentIntentId={paymentIntentId} />
           </Elements>
         </div>
       )}

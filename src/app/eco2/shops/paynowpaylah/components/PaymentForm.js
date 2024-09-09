@@ -1,5 +1,6 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
-import React from "react";
+import React, { useContext, useEffect } from "react";
 import {
   PaymentElement,
   useStripe,
@@ -7,13 +8,32 @@ import {
 } from "@stripe/react-stripe-js";
 import { useRouter } from "next/navigation";
 import { StripeApiKey } from "../../../../api/StripeApiKey";
+import { BrandController, EShopController } from "../../../../controller";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { deleteLocalStorage } from "../../../../api/localStorage";
+import AppContext from "../../../../context/AppContext";
 
-export default function CheckoutForm({ clientSecret, paymentIntentId }) {
+export default function CheckoutForm({
+  orderData,
+  clientSecret,
+  paymentIntentId,
+}) {
   const router = useRouter();
   const stripe = useStripe();
   const elements = useElements();
   const [message, setMessage] = React.useState(null);
   const [isLoading, setIsLoading] = React.useState(false);
+  const [brandList, setBrandList] = React.useState([]);
+  const { userInfo } = useContext(AppContext);
+
+  useEffect(() => {
+    BrandController.getBrandIdList((data) => {
+      if (data.length > 0) {
+        setBrandList(data);
+      }
+    });
+  }, []);
   //   console.log("paymentForm =====>", clientSecret);
 
   //   React.useEffect(() => {
@@ -47,6 +67,19 @@ export default function CheckoutForm({ clientSecret, paymentIntentId }) {
   //     });
   //   }, [stripe]);
 
+  useEffect(() => {
+    window.addEventListener("beforeunload", async function (e) {
+      e.preventDefault();
+      e.returnValue = "";
+      const stripe1 = require("stripe")(StripeApiKey.STRIPE_SECRET_KEY);
+      // The user closed the modal, cancelling payment
+      const payment = await stripe1.paymentIntents.cancel(paymentIntentId);
+      // if (payment) {
+      //   router.push("/eco2/shops/order_cancel");
+      // }
+    });
+  }, []);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -61,13 +94,61 @@ export default function CheckoutForm({ clientSecret, paymentIntentId }) {
     stripe.confirmPayNowPayment(clientSecret).then(async (res) => {
       // console.log("res =====>", res)
       if (res.paymentIntent.status === "succeeded") {
-        router.push("/eco2/shops/order_success");
+        var purchasedData = [];
+        orderData.map((v) => {
+          var obj1 = {};
+          var filterBrand = brandList.filter((b) => b.name === v.brandName);
+          obj1["brandID"] = filterBrand[0].id;
+          obj1["selectedCollectionLocationID"] =
+            v.addressId == 0 || v.addressId == null ? null : v.addressId;
+          var productData = [];
+          v.shopCartDisplayProductDtos.map((p) => {
+            var obj2 = {};
+            if (p.productCheck == true) {
+              obj2["productID"] = p.productID;
+              obj2["quantity"] = p.quantity;
+              obj2["gcRedeemed"] = p.isGCused == true ? p.GCAmount : 0;
+              obj2["discountAmount"] =
+                p.isGCused == true ? p.GCAmount / 100 : 0;
+              productData.push(obj2);
+            }
+          });
+          obj1["purchasedProductDtos"] = productData;
+          purchasedData.push(obj1);
+        });
+        var obj = {
+          accountItemId: userInfo.userId,
+          paymentTransactionID: res.paymentIntent.id,
+          purchasedBrandDtos: purchasedData,
+        };
+        EShopController.createTransaction(obj, (data) => {
+          if (data.accountItemID != null || data.accountItemID != 0) {
+            toast.success("Payment Successfully!", {
+              position: "top-right",
+              onClose: () => {
+                router.push("/eco2/shops/order_success");
+              },
+            });
+            deleteLocalStorage("orderData");
+            deleteLocalStorage("totalAmount");
+          } else {
+            toast.error(
+              "Payment Successfully! Transaction saving process doesn't succeed!",
+              {
+                position: "top-right",
+                onClose: () => {
+                  router.push("/eco2/shops/order_cancel");
+                },
+              }
+            );
+          }
+        });
       } else {
         const stripe1 = require("stripe")(StripeApiKey.STRIPE_SECRET_KEY);
         // The user closed the modal, cancelling payment
         const payment = await stripe1.paymentIntents.cancel(paymentIntentId);
         if (payment) {
-          router.push("/eco2/shops/order_cancel")
+          router.push("/eco2/shops/order_cancel");
         }
       }
     });
@@ -87,6 +168,7 @@ export default function CheckoutForm({ clientSecret, paymentIntentId }) {
 
   return (
     <form id="payment-form" onSubmit={handleSubmit}>
+      <ToastContainer />
       <PaymentElement id="payment-element" options={paymentElementOptions} />
       <button
         className="btn btn-success"

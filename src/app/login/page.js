@@ -29,7 +29,7 @@ export default function Login() {
       { userName: loginData.userName, password: loginData.password },
       (data) => {
         // console.log("login user info =====>", data)
-        if (data.userName != '') {
+        if (data.userName) {
           setLocalStorage("id", data.id);
           setLocalStorage("password", loginData.password);
           setLocalStorage("userName", loginData.userName);

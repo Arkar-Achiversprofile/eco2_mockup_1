@@ -1,11 +1,12 @@
 import { baseUrl } from "../baseUrl";
 
-export const deleteApi = async (url, setData) => {
+export const deleteApi = async (url, obj, setData) => {
   const requestOptions = {
     method: "DELETE",
     headers: {
       "Content-Type": "application/json;",
     },
+    body: obj != null ? JSON.stringify(obj) : null
   };
   fetch(`${baseUrl}${url}`, requestOptions)
     .then((response) => {

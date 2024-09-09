@@ -36,6 +36,26 @@ const getUserTransactionHistory = (userId, setData) => {
   getApi(`Shop/GetTransactionHistoryByAccountItemID/${userId}`, data => setData(data))
 }
 
+const addToWishlist = (obj, setData) => {
+  postApi(`Shop/CreateWishListItem`, obj, data => setData(data));
+}
+
+const getWishlistByAccountId = (id, setData) => {
+  getApi(`Shop/GetWishListItemsbyAccountItemId/${id}`, data => setData(data))
+}
+
+const getShippingInfo = (id, setData) => {
+  getApi(`AccountItems/GetShippingInfo/${id}`, data => setData(data))
+}
+
+const getProductListForReview = (id, setData) => {
+  getApi(`Shop/GetPurchasedBrandProducts4ReviewByBuyerId/${id}`, data => setData(data))
+}
+
+const createProductReview = (obj, setData) => {
+  postApi("Shop/CreateProductReview", obj, data => setData(data))
+}
+
 export const EShopController = {
   getSubCategoryOrProduct,
   getProductDetail,
@@ -44,5 +64,10 @@ export const EShopController = {
   updateQuantityInCart,
   deleteProductInCart,
   createTransaction,
-  getUserTransactionHistory
+  getUserTransactionHistory,
+  addToWishlist,
+  getWishlistByAccountId,
+  getShippingInfo,
+  getProductListForReview,
+  createProductReview,
 };

@@ -15,7 +15,6 @@ export default function CardPayment() {
   //       setPaymentIntentId("");
   const [total, setTotal] = useState(0);
   const [orderData, setOrderData] = useState([]);
-  console.log("orderData card payment", orderData)
 
   useEffect(() => {
     getOrderData()
@@ -63,7 +62,7 @@ export default function CardPayment() {
           style={{ width: "100%" }}
         >
           <Elements options={options} stripe={stripePromise}>
-            <PaymentForm orderData={orderData} />
+            <PaymentForm orderData={orderData} paymentIntentId={paymentIntentId} />
           </Elements>
         </div>
       ) : (

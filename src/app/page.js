@@ -10,6 +10,7 @@ import { stripe, stripePromise } from "./api/stripe-paymentintent";
 import { useContext, useEffect } from "react";
 import AppContext from "./context/AppContext";
 import { color } from "./components/color";
+import { imageUrl } from "./controller/baseUrl";
 
 export default function Home() {
   const { userInfo } = useContext(AppContext);
@@ -87,7 +88,7 @@ export default function Home() {
           </p>
           <Image
             alt=""
-            src={userInfo.qrUrl}
+            src={imageUrl + userInfo.qrUrl}
             width={isMobile ? 200 : 250}
             height={isMobile ? 200 : 250}
           />

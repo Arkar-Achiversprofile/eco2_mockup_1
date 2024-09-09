@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 import ShopNavBar from "../../../components/ShopNavBar";
 import { color } from "../../../components/color";
@@ -7,18 +8,27 @@ import { useRouter } from "next/navigation";
 import { useMediaQuery } from "react-responsive";
 import AppContext from "../../../context/AppContext";
 import { getLocalStorage } from "../../../api/localStorage";
+import { EShopController } from "../../../controller";
 
 export default function ShippingInfo() {
-  const { isMobile, isTablet } = useContext(AppContext);
+  const { isMobile, isTablet, userInfo } = useContext(AppContext);
   const router = useRouter();
 
   const [deliveryData, setDeliveryData] = useState([]);
   const [collectionData, setCollectionData] = useState([]);
+  const [userData, setUserData] = useState(null);
   // const [totalAmount, setTotalAmount] = useState(0);
 
   useEffect(() => {
     separateOrderData();
+    getShippingInfo();
   }, []);
+
+  const getShippingInfo = () => {
+    EShopController.getShippingInfo(userInfo.userId, data => {
+      setUserData(data);
+    })
+  }
 
   const separateOrderData = () => {
     let orderData = JSON.parse(getLocalStorage("orderData"));
@@ -69,30 +79,14 @@ export default function ShippingInfo() {
             style={{ paddingTop: 10 }}
           >
             <p>Name:</p>
-            <p>Jerry Lim</p>
+            <p>{userData?.userName}</p>
           </div>
           <div
             className="col-md-5 col-11 d-flex flex-row justify-content-between border-bottom px-3 mx-auto"
             style={{ paddingTop: 10 }}
           >
-            <p>Display Name:</p>
-            <p>Jerry</p>
-          </div>
-        </div>
-        <div className="row">
-          <div
-            className="col-md-5 col-11 d-flex flex-row justify-content-between border-bottom px-3 mx-auto"
-            style={{ paddingTop: 10 }}
-          >
-            <p>Mobile Phone:</p>
-            <p>01234241</p>
-          </div>
-          <div
-            className="col-md-5 col-11 d-flex flex-row justify-content-between border-bottom px-3 mx-auto"
-            style={{ paddingTop: 10 }}
-          >
-            <p>Postal Code:</p>
-            <p>54100</p>
+            <p>Mobile Number:</p>
+            <p>{userData?.mobile}</p>
           </div>
         </div>
         <div className="row">
@@ -101,14 +95,28 @@ export default function ShippingInfo() {
             style={{ paddingTop: 10 }}
           >
             <p>Unit Number:</p>
-            <p>02</p>
+            <p>{userData?.unitNo}</p>
           </div>
           <div
             className="col-md-5 col-11 d-flex flex-row justify-content-between border-bottom px-3 mx-auto"
             style={{ paddingTop: 10 }}
           >
+            <p>Postal Code:</p>
+            <p>{userData?.postalCode}</p>
+          </div>
+        </div>
+        <div className="row">
+          <div
+            className="col-md-5 col-11 d-flex flex-row justify-content-between border-bottom px-3 mx-auto"
+            style={{ paddingTop: 10 }}
+          >
             <p>Street:</p>
-            <p>Serangoon avenue 5</p>
+            <p>{userData?.street}</p>
+          </div>
+          <div
+            className="col-md-5 col-11 d-flex flex-row justify-content-between px-3 mx-auto"
+            style={{ paddingTop: 10 }}
+          >
           </div>
         </div>
 

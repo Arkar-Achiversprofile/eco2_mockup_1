@@ -5,11 +5,14 @@ import ShopNavBar from "../../../components/ShopNavBar";
 import AppContext from "../../../context/AppContext";
 import moment from "moment";
 import { EShopController } from "../../../controller";
+import { getLocalStorage } from "../../../api/localStorage";
 
 export default function TransactionHistory() {
   const { isMobile, isTablet, userInfo } = useContext(AppContext);
   const [transactionData, setTransactionData] = useState([]);
   const fontSize = isMobile ? 11 : isTablet ? 13 : 15;
+
+  console.log("data ====>", transactionData);
 
   useEffect(() => {
     getUserTransactionHistory();
@@ -17,10 +20,11 @@ export default function TransactionHistory() {
     return () => {
       setTransactionData([]);
     };
-  }, [userInfo.userId]);
+  }, []);
 
   const getUserTransactionHistory = () => {
-    EShopController.getUserTransactionHistory(userInfo.userId, (data) => {
+    const id = getLocalStorage("id")
+    EShopController.getUserTransactionHistory(id, (data) => {
       if (data.length > 0) {
         setTransactionData(data);
       }
@@ -129,12 +133,12 @@ export default function TransactionHistory() {
                     <p style={{ flex: 2 }}>
                       {
                         pb.transactionStatusHistoryDisplayDtos[0]
-                          .transactionStatusDescription
+                          ?.transactionStatusDescription
                       }{" "}
                       (
                       {moment(
                         pb.transactionStatusHistoryDisplayDtos[0]
-                          .createdDatetime
+                          ?.createdDatetime
                       ).format("DD-MM-YYYY HH:MM:ss A")}
                       )
                     </p>

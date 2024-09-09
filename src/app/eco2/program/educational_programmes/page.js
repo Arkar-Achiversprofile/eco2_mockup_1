@@ -37,7 +37,7 @@ export default function EducationalProgrammes() {
   const isTablet = useMediaQuery({
     query: "(min-width: 500px) and (max-width: 850px)",
   });
-  console.log("size", isMobile, isTablet);
+  // console.log("size", isMobile, isTablet);
   const imageSize = isMobile ? 120 : 200;
   useEffect(() => {}, [isMobile, isTablet]);
   return (

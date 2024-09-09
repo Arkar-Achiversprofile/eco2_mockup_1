@@ -14,10 +14,13 @@ import {
   CategoryController,
   ProductController,
   EShopController,
+  BrandController,
 } from "../../controller";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import AppContext from "../../context/AppContext";
+import { imageUrl } from "../../controller/baseUrl";
+import { color } from "../../components/color";
 
 const responsive = {
   superLargeDesktop: {
@@ -57,20 +60,32 @@ function Shops() {
   const [shopPage, setShopPage] = useState("allproduct");
   const [isCategoryClick, setIsCategoryClick] = useState(false);
   const [allProduct, setAllProduct] = useState([]);
+  const [allProductTemp, setAllProductTemp] = useState([]);
   const [topCategories, setTopCategories] = useState([]);
   const [subCategoryOrProduct, setSubCategoryOrProduct] = useState([]);
   const [breadcrumb, setBreadcrumb] = useState([]);
+  const [brandList, setBrandList] = useState([]);
+  const [searchText, setSearchText] = useState("");
+  // console.log("allproduct", allProduct);
 
   useEffect(() => {
     getAllProduct();
     getTopCategories();
+    getBrandList();
   }, []);
+
+  const getBrandList = () => {
+    BrandController.getBrandIdList((data) => {
+      setBrandList(data);
+    });
+  };
 
   const getAllProduct = () => {
     ProductController.getLandingProducts((data) => {
       if (data.length > 0) {
         var filtered = data.filter((v) => v.isProduct == true);
         setAllProduct(filtered);
+        setAllProductTemp(filtered);
       } else {
         toast.error("There are no product!", {
           position: "top-right",
@@ -106,8 +121,6 @@ function Shops() {
     const startIndex = (subCurrentPage - 1) * pageSize;
     return computedData.slice(startIndex, startIndex + pageSize);
   }, [subCurrentPage, subCategoryOrProduct]);
-
-  console.log("=====>", subProduct);
 
   const onClickCategory = (id, name) => {
     setShopPage("categoryClicked");
@@ -191,7 +204,7 @@ function Shops() {
   };
 
   const onClickAddToCart = (productId) => {
-    if (userInfo.userNam == "") {
+    if (userInfo.userName == "") {
       router.push("/login");
     } else {
       var obj = {};
@@ -210,6 +223,78 @@ function Shops() {
         }
       });
     }
+  };
+
+  const onClickAddToWishlist = (productId) => {
+    if (userInfo.userName == "") {
+      router.push("/login");
+    } else {
+      var obj = {};
+      obj["accountItemId"] = userInfo.userId;
+      obj["productId"] = productId;
+      EShopController.addToWishlist(obj, (data) => {
+        if (data.accountItemId) {
+          toast.success("Add to wishlist successful!", {
+            position: "top-right",
+          });
+        } else {
+          toast.error("Something went wrong!", {
+            position: "top-right",
+          });
+        }
+      });
+    }
+  };
+
+  const onClickSorting = (type) => {
+    var newArray = [...allProductTemp];
+    if (type == "low to high") {
+      newArray.sort(function (a, b) {
+        return parseFloat(a.unitPrice) - parseFloat(b.unitPrice);
+      });
+    } else if (type == "high to low") {
+      newArray.sort(function (a, b) {
+        return parseFloat(b.unitPrice) - parseFloat(a.unitPrice);
+      });
+    } 
+    // else if (type == "a to z") {
+    //   newArray.sort(function (a, b) {
+    //     if (a.name.toLowerCase() < b.name.toLowerCase()) {
+    //       return -1;
+    //     }
+    //     if (a.name.toLowerCase() > b.name.toLowerCase()) {
+    //       return 1;
+    //     }
+    //     return 0;
+    //   });
+    // } else if (type == "z to a") {
+    //   newArray.sort(function (a, b) {
+    //     if (a.name.toLowerCase() < b.name.toLowerCase()) {
+    //       return 1;
+    //     }
+    //     if (a.name.toLowerCase() > b.name.toLowerCase()) {
+    //       return -1;
+    //     }
+    //     return 0;
+    //   });
+    // }
+    setAllProduct(newArray);
+  };
+
+  const onClickFilter = (brandName) => {
+    var productArray = [...allProductTemp];
+    if (brandName == "All") {
+      setAllProduct(productArray);
+    } else {
+      var filter = productArray.filter((v) => v.brandName == brandName);
+      setAllProduct(filter);
+    }
+  };
+
+  const onChangeSearchText = (text) => {
+    setSearchText(text);
+    var productArray = allProductTemp.filter((v) => v.name.toLowerCase().includes(text.toLowerCase()));
+    setAllProduct(productArray);
   };
 
   return (
@@ -236,7 +321,7 @@ function Shops() {
             >
               <Image
                 alt=""
-                src={cData.categoryImageUrl}
+                src={imageUrl + cData.categoryImageUrl}
                 width={categoryImage}
                 height={categoryImage}
                 style={{ borderRadius: 100 }}
@@ -260,6 +345,8 @@ function Shops() {
                 class="form-control form-control-sm"
                 id="autoSizingInputGroup"
                 placeholder="Search Products"
+                value={searchText}
+                onChange={(v) => onChangeSearchText(v.target.value)}
               />
             </div>
           </div>
@@ -290,22 +377,47 @@ function Shops() {
           </button>
           <ul class="dropdown-menu" style={{ fontSize: isMobile ? 12 : 14 }}>
             <li>
-              <button class="dropdown-item" type="button">
-                Date (old to new)
+              <button
+                class="dropdown-item"
+                type="button"
+                onClick={() => onClickSorting("default")}
+              >
+                Default
+              </button>
+            </li>
+            {/* <li>
+              <button
+                class="dropdown-item"
+                type="button"
+                onClick={() => onClickSorting("a to z")}
+              >
+                Name (A to Z)
               </button>
             </li>
             <li>
-              <button class="dropdown-item" type="button">
-                Date (new to old)
+              <button
+                class="dropdown-item"
+                type="button"
+                onClick={() => onClickSorting("z to a")}
+              >
+                Name (Z to A)
               </button>
-            </li>
+            </li> */}
             <li>
-              <button class="dropdown-item" type="button">
+              <button
+                class="dropdown-item"
+                type="button"
+                onClick={() => onClickSorting("low to high")}
+              >
                 Price (Lower to Higher)
               </button>
             </li>
             <li>
-              <button class="dropdown-item" type="button">
+              <button
+                class="dropdown-item"
+                type="button"
+                onClick={() => onClickSorting("high to low")}
+              >
                 Price (Higher to Lower)
               </button>
             </li>
@@ -328,25 +440,25 @@ function Shops() {
           </button>
           <ul class="dropdown-menu" style={{ fontSize: isMobile ? 12 : 14 }}>
             <li>
-              <button class="dropdown-item" type="button">
-                Supplier (Yora)
+              <button
+                class="dropdown-item"
+                type="button"
+                onClick={() => onClickFilter("All")}
+              >
+                All product
               </button>
             </li>
-            <li>
-              <button class="dropdown-item" type="button">
-                Supplier (Mushroom Buddies)
-              </button>
-            </li>
-            <li>
-              <button class="dropdown-item" type="button">
-                Supplier (The Good Kombucha)
-              </button>
-            </li>
-            <li>
-              <button class="dropdown-item" type="button">
-                Supplier (Otolith Enrichment)
-              </button>
-            </li>
+            {brandList.map((v, i) => (
+              <li key={i}>
+                <button
+                  class="dropdown-item"
+                  type="button"
+                  onClick={() => onClickFilter(v.name)}
+                >
+                  Supplier ({v.name})
+                </button>
+              </li>
+            ))}
           </ul>
         </div>
       </div>
@@ -377,7 +489,7 @@ function Shops() {
                     <Image
                       alt=""
                       className={styles.image}
-                      src={v.imageUrl}
+                      src={imageUrl + v.imageUrl}
                       // layout="responsive"
                       width={350}
                       height={420}
@@ -394,11 +506,28 @@ function Shops() {
                       {v.name}
                     </h5>
                     <p class="card-text" style={{ fontSize: 16 }}>
-                      Retail Price: {v.unitPrice}
-                      {"$"}
+                      Retail Price: {"$"}
+                      {v.unitPrice}
                     </p>
+                    {v.discountedUnitPrice != null ? (
+                      <p
+                        class="card-text"
+                        style={{ fontSize: 16, color: color.red }}
+                      >
+                        Discount Price: {"$"}
+                        {v.discountedUnitPrice}
+                      </p>
+                    ) : null}
+
                     <p class="card-text" style={{ fontSize: 16 }}>
                       By: {v.brandName}
+                      <Image
+                        alt=""
+                        src={imageUrl + v.brandLogoUrl}
+                        width={20}
+                        height={20}
+                        style={{ borderRadius: 10, marginLeft: 5 }}
+                      />
                     </p>
                     <div
                       style={{
@@ -426,6 +555,9 @@ function Shops() {
                           // href="/login"
                           class="btn btn-outline-success mt-2"
                           style={{ width: "70%" }}
+                          onClick={() => {
+                            onClickAddToWishlist(v.id);
+                          }}
                         >
                           <i className="bi bi-heart"></i>
                           Add to Wishlist
@@ -524,7 +656,7 @@ function Shops() {
                       <Image
                         alt=""
                         className={styles.image}
-                        src={data.imageUrl}
+                        src={imageUrl + data.imageUrl}
                         // layout="responsive"
                         width={350}
                         height={420}
@@ -541,7 +673,22 @@ function Shops() {
                         {data.name}
                       </h5>
                       <p class="card-text">Retail Price: ${data.unitPrice}</p>
-                      <p class="card-text">By: {data.brandName}</p>
+                      {data.discountedUnitPrice != null ? (
+                        <p class="card-text" style={{ color: color.red }}>
+                          Discount Price: ${data.discountedUnitPrice}
+                        </p>
+                      ) : null}
+
+                      <p class="card-text">
+                        By: {data.brandName}
+                        <Image
+                          alt=""
+                          src={imageUrl + data.brandLogoUrl}
+                          width={20}
+                          height={20}
+                          style={{ borderRadius: 10, marginLeft: 5 }}
+                        />
+                      </p>
                       <div
                         style={{
                           width: "90%",
@@ -562,7 +709,7 @@ function Shops() {
                           </button>
                         ) : (
                           <button
-                            onClick={() => router.push("/login")}
+                            onClick={() => onClickAddToWishlist(data.id)}
                             class="btn btn-outline-success mt-2"
                             style={{ width: "70%" }}
                           >
@@ -591,7 +738,7 @@ function Shops() {
                     <Image
                       alt=""
                       className={styles.image}
-                      src={data.imageUrl}
+                      src={imageUrl + data.imageUrl}
                       // layout="responsive"
                       width={350}
                       height={450}

@@ -75,7 +75,7 @@ export default function Payment() {
         payment_method_data: {
           type: "paynow",
         },
-        amount: 400,
+        amount: total * 100,
         currency: "sgd",
       });
       router.push(

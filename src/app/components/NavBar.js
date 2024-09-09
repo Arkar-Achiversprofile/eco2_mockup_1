@@ -33,7 +33,7 @@ export default function NavBar() {
               color: "white",
               fontWeight: "bold",
               // marginTop: isMobile ? 10 : 0,
-              marginRight: -50,
+              marginRight: isMobile ? 0 : -50,
               textAlign: "center",
               cursor: "pointer",
             }}
@@ -174,9 +174,29 @@ export default function NavBar() {
                       My Cart
                     </a>
                   </li>
+                  <li class="nav-item">
+                    <a
+                      class="nav-link"
+                      href="/eco2/shops/wishlist"
+                      // onClick={() => {}}
+                      // style={{ cursor: "pointer" }}
+                    >
+                      My Wishlist
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a
+                      class="nav-link"
+                      href="/eco2/shops/product_review"
+                      // onClick={() => {}}
+                      // style={{ cursor: "pointer" }}
+                    >
+                      Product Review
+                    </a>
+                  </li>
                   {userInfo.role == 1 ? (
                     <>
-                      <li class="nav-item">
+                      {/* <li class="nav-item">
                         <a
                           class="nav-link"
                           href="/eco2/volunteer_management"
@@ -184,20 +204,52 @@ export default function NavBar() {
                         >
                           Volunteer Management
                         </a>
-                      </li>
-                      <li class="nav-item">
+                      </li> */}
+                      {/* <li class="nav-item">
                         <a
                           class="nav-link"
-                          href="/eco2/admin_panel"
+                          href="/eco2/panel"
                           // style={{ cursor: "pointer" }}
                         >
                           Admin Panel
                         </a>
-                      </li>
-                      <li class="nav-item">
-                        <a class="nav-link" href="/eco2/admin_panel/GCadjust">
-                          GC Adjustment
+                      </li> */}
+                      <li class="nav-item dropdown">
+                        <a
+                          class="nav-link dropdown-toggle"
+                          href="#"
+                          role="button"
+                          data-bs-toggle="dropdown"
+                          aria-expanded="false"
+                        >
+                          Admin Panel
                         </a>
+                        <ul class="dropdown-menu">
+                          <li>
+                            <a
+                              class="dropdown-item"
+                              href="/eco2/panel/admin/GCadjust"
+                            >
+                              GC Adjustment
+                            </a>
+                          </li>
+                          <li>
+                            <a
+                              class="dropdown-item"
+                              href="/eco2/panel/admin/reports"
+                            >
+                              Reports
+                            </a>
+                          </li>
+                          <li>
+                            <a
+                              class="dropdown-item"
+                              href="/eco2/panel/admin/manage_user"
+                            >
+                              Manage User
+                            </a>
+                          </li>
+                        </ul>
                       </li>
                       <li class="nav-item dropdown">
                         <a
@@ -213,7 +265,7 @@ export default function NavBar() {
                           <li>
                             <a
                               class="dropdown-item"
-                              href="/eco2/admin_panel/category"
+                              href="/eco2/panel/category"
                             >
                               Category
                             </a>
@@ -221,7 +273,7 @@ export default function NavBar() {
                           <li>
                             <a
                               class="dropdown-item"
-                              href="/eco2/admin_panel/brand"
+                              href="/eco2/panel/brand"
                             >
                               Brand
                             </a>
@@ -229,7 +281,7 @@ export default function NavBar() {
                           <li>
                             <a
                               class="dropdown-item"
-                              href="/eco2/admin_panel/collection"
+                              href="/eco2/panel/collection"
                             >
                               Collection for Brand
                             </a>
@@ -237,7 +289,7 @@ export default function NavBar() {
                           <li>
                             <a
                               class="dropdown-item"
-                              href="/eco2/admin_panel/product"
+                              href="/eco2/panel/product"
                             >
                               Product
                             </a>
@@ -246,6 +298,51 @@ export default function NavBar() {
                       </li>
                     </>
                   ) : null}
+                  {userInfo.role == 2 ? (
+                    <li class="nav-item">
+                    <a class="nav-link" href="/eco2/panel/supplier_admin">
+                      Supplier Admin Panel
+                    </a>
+                  </li>
+                 ) : userInfo.role == 1 || userInfo.role == 3 ? (
+                  <li class="nav-item dropdown">
+                        <a
+                          class="nav-link dropdown-toggle"
+                          href="#"
+                          role="button"
+                          data-bs-toggle="dropdown"
+                          aria-expanded="false"
+                        >
+                          Staff Panel
+                        </a>
+                        <ul class="dropdown-menu">
+                          <li>
+                            <a
+                              class="dropdown-item"
+                              href="/eco2/panel/staff/user_search"
+                            >
+                              User Search
+                            </a>
+                          </li>
+                          <li>
+                            <a
+                              class="dropdown-item"
+                              href="/eco2/panel/staff/order_management"
+                            >
+                              Order Management
+                            </a>
+                          </li>
+                          <li>
+                            <a
+                              class="dropdown-item"
+                              href="/eco2/panel/staff/manage_project"
+                            >
+                              Manage Project
+                            </a>
+                          </li>
+                        </ul>
+                      </li>
+                 ) : null}
                   <li class="nav-item">
                     <a
                       class="nav-link"
