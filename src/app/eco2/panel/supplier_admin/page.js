@@ -21,8 +21,8 @@ export default function SupplierAdminPanel() {
   const { isMobile, isTablet, userInfo } = useContext(AppContext);
   const [tab, setTab] = useState(0);
   const [removeClick, setRemoveClick] = useState({
-    title: '',
-    text: '',
+    title: "",
+    text: "",
     id: 0,
   });
 
@@ -82,9 +82,10 @@ export default function SupplierAdminPanel() {
     name: "",
     description: "",
     unitPrice: null,
-    maxDiscountValue: null,
-    maxGreenCredit: null,
+    maxDiscountValue: 0,
+    maxGreenCredit: 0,
     categoryImageUrl: null,
+    discountedUnitPrice: null,
     maxPurchaseNo: null,
     productImageUrl: "",
     imageName: "",
@@ -94,11 +95,12 @@ export default function SupplierAdminPanel() {
     isActive: true,
     createdBy: "",
   });
+  const [maxPurchase, setMaxPurchase] = useState(false);
   const [editProductData, setEditProductData] = useState(null);
   const [isEditProduct, setIsEditProduct] = useState(false);
   const [isProductImageChange, setIsProductImageChange] = useState(false);
   const [category, setCategory] = useState([]);
-  console.log("category --->", category, editProductData, productList);
+  // console.log("category --->", newProductData);
   //Product
 
   //Transaction
@@ -280,28 +282,8 @@ export default function SupplierAdminPanel() {
         toast.warn("Please enter Product Name!", {
           position: "top-right",
         });
-      } else if (
-        newProductData.unitPrice == null
-      ) {
+      } else if (newProductData.unitPrice == null) {
         toast.warn("Please set Unit Price!", {
-          position: "top-right",
-        });
-      } else if (
-        newProductData.maxDiscountValue == null
-      ) {
-        toast.warn("Please set Maximum Discount!", {
-          position: "top-right",
-        });
-      } else if (
-        newProductData.maxGreenCredit == null
-      ) {
-        toast.warn("Please set Maximum Green Credit!", {
-          position: "top-right",
-        });
-      } else if (
-        newProductData.maxPurchaseNo == null
-      ) {
-        toast.warn("Please set Max Purchase No!", {
           position: "top-right",
         });
       } else if (newProductData.productImageUrl == "") {
@@ -322,6 +304,7 @@ export default function SupplierAdminPanel() {
       } else {
         newProductData.createdBy = userInfo.userName;
         newProductData.brandID = brandNameAndIdForProduct.id;
+        // console.log("product", newProductData);
         ProductController.createProduct(newProductData, (data) => {
           if (data.id) {
             toast.success("Creating Product successfully!", {
@@ -595,11 +578,16 @@ export default function SupplierAdminPanel() {
         text == "unitPrice" ||
         text == "maxDiscountValue" ||
         text == "maxGreenCredit" ||
+        text == "maxPurchaseNo" ||
+        text == "discountedUnitPrice" ||
         text == "priority" ||
         text == "categoryID" ||
         text == "brandID"
       ) {
-        data[text] = parseInt(value);
+        data[text] =
+          value == NaN || value == undefined || value == ""
+            ? null
+            : parseInt(value);
       } else {
         if (text == "productImageUrl") {
           getBase64(value.files, (result) => {
@@ -619,6 +607,7 @@ export default function SupplierAdminPanel() {
         text == "unitPrice" ||
         text == "maxDiscountValue" ||
         text == "maxGreenCredit" ||
+        text == "discountedUnitPrice" ||
         text == "categoryID" ||
         text == "maxPurchaseNo" ||
         text == "priority"
@@ -1268,7 +1257,11 @@ export default function SupplierAdminPanel() {
                             data-bs-toggle="modal"
                             data-bs-target="#deleteModal"
                             onClick={() => {
-                              setRemoveClick({title: "collection", text: v.address, id: v.id});
+                              setRemoveClick({
+                                title: "collection",
+                                text: v.address,
+                                id: v.id,
+                              });
                             }}
                           >
                             Remove
@@ -1384,6 +1377,102 @@ export default function SupplierAdminPanel() {
                   className="col-md-6 col-12 px-3 mx-auto"
                   style={{ paddingTop: 10 }}
                 >
+                  <label for="supplierDiscountPrice" class="form-label">
+                    Discount Price:
+                  </label>
+                  <input
+                    type="number"
+                    class="form-control"
+                    id="supplierDiscountPrice"
+                    placeholder="Discount Price"
+                    value={newProductData.discountedUnitPrice}
+                    onChange={(e) =>
+                      onChangeProductInfo("discountedUnitPrice", e.target.value)
+                    }
+                  />
+                </div>
+              </div>
+              <div className="row">
+                {maxPurchase ? (
+                  <div
+                    className="col-md-6 col-12 px-3 mx-auto"
+                    style={{ paddingTop: 10, display: "flex" }}
+                  >
+                    <div style={{ width: "80%" }}>
+                      <label for="supplierMaxPurchaseNo" class="form-label">
+                        Max Purchase No:
+                      </label>
+                      <input
+                        type="number"
+                        class="form-control"
+                        id="supplierMaxPurchaseNo"
+                        placeholder="Number"
+                        value={newProductData.maxPurchaseNo}
+                        onChange={(e) =>
+                          onChangeProductInfo("maxPurchaseNo", e.target.value)
+                        }
+                      />
+                    </div>
+                    <div
+                      className="d-flex align-items-end justify-content-center"
+                      style={{ width: "20%" }}
+                    >
+                      <button
+                        type="button"
+                        className="btn btn-secondary"
+                        onClick={() => {
+                          setMaxPurchase(false);
+                          var newData = { ...newProductData };
+                          newData["maxPurchaseNo"] = null;
+                          setNewProductData(newData);
+                        }}
+                        style={{ fontSize: 12 }}
+                      >
+                        Unlimited
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <div
+                    className="col-md-6 col-12 px-3 mx-auto"
+                    style={{ paddingTop: 10, display: "flex" }}
+                  >
+                    <div style={{ width: "80%" }}>
+                      <label for="supplierMaxPurchaseNo1" class="form-label">
+                        Max Purchase No:
+                      </label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="supplierMaxPurchaseNo1"
+                        disabled
+                        value={"Any amount"}
+                      />
+                    </div>
+                    <div
+                      className="d-flex align-items-end justify-content-center"
+                      style={{ width: "20%" }}
+                    >
+                      <button
+                        type="button"
+                        className="btn btn-secondary"
+                        onClick={() => {
+                          setMaxPurchase(true);
+                          var newData = { ...newProductData };
+                          newData["maxPurchaseNo"] = null;
+                          setNewProductData(newData);
+                        }}
+                        style={{ fontSize: 12 }}
+                      >
+                        Set Limit
+                      </button>
+                    </div>
+                  </div>
+                )}
+                <div
+                  className="col-md-6 col-12 px-3 mx-auto"
+                  style={{ paddingTop: 10 }}
+                >
                   <label for="supplierCredit" class="form-label">
                     Max Green Credit:
                   </label>
@@ -1395,45 +1484,6 @@ export default function SupplierAdminPanel() {
                     value={newProductData.maxGreenCredit}
                     onChange={(e) =>
                       onChangeProductInfo("maxGreenCredit", e.target.value)
-                    }
-                  />
-                </div>
-              </div>
-              <div className="row">
-                <div
-                  className="col-md-6 col-12 px-3 mx-auto"
-                  style={{ paddingTop: 10 }}
-                >
-                  <label for="supplierMaxPurchaseNo" class="form-label">
-                    Max Purchase No:
-                  </label>
-                  <input
-                    type="number"
-                    class="form-control"
-                    id="supplierMaxPurchaseNo"
-                    placeholder="Number"
-                    value={newProductData.maxPurchaseNo}
-                    onChange={(e) =>
-                      onChangeProductInfo("maxPurchaseNo", e.target.value)
-                    }
-                  />
-                </div>
-
-                <div
-                  className="col-md-6 col-12 px-3 mx-auto"
-                  style={{ paddingTop: 10 }}
-                >
-                  <label for="supplierPriority" class="form-label">
-                    Priority:
-                  </label>
-                  <input
-                    type="number"
-                    class="form-control"
-                    id="supplierPriority"
-                    placeholder="Priority"
-                    value={newProductData.priority}
-                    onChange={(e) =>
-                      onChangeProductInfo("priority", e.target.value)
                     }
                   />
                 </div>
@@ -1471,15 +1521,18 @@ export default function SupplierAdminPanel() {
                   className="col-md-6 col-12 px-3 mx-auto"
                   style={{ paddingTop: 10 }}
                 >
-                  <label for="supplierBrandProduct" class="form-label">
-                    Brand:
+                  <label for="supplierPriority" class="form-label">
+                    Priority:
                   </label>
                   <input
+                    type="number"
                     class="form-control"
-                    type="text"
-                    id="supplierBrandProduct"
-                    value={brandNameAndIdForProduct?.name}
-                    defaultValue={brandNameAndIdForProduct?.name}
+                    id="supplierPriority"
+                    placeholder="Priority"
+                    value={newProductData.priority}
+                    onChange={(e) =>
+                      onChangeProductInfo("priority", e.target.value)
+                    }
                   />
                 </div>
               </div>
@@ -1506,18 +1559,15 @@ export default function SupplierAdminPanel() {
                   className="col-md-6 col-12 px-3 mx-auto"
                   style={{ paddingTop: 10 }}
                 >
-                  <label for="supplierDescription" class="form-label">
-                    Description:
+                  <label for="supplierBrandProduct" class="form-label">
+                    Brand:
                   </label>
-                  <textarea
-                    type="text"
+                  <input
                     class="form-control"
-                    id="supplierDescription"
-                    placeholder="Description"
-                    value={newProductData.description}
-                    onChange={(e) =>
-                      onChangeProductInfo("description", e.target.value)
-                    }
+                    type="text"
+                    id="supplierBrandProduct"
+                    value={brandNameAndIdForProduct?.name}
+                    defaultValue={brandNameAndIdForProduct?.name}
                   />
                 </div>
               </div>
@@ -1587,7 +1637,24 @@ export default function SupplierAdminPanel() {
                     </div>
                   </div>
                 </div>
-                <div></div>
+                <div
+                  className="col-md-6 col-12 px-3 mx-auto"
+                  style={{ paddingTop: 10 }}
+                >
+                  <label for="supplierDescription" class="form-label">
+                    Description:
+                  </label>
+                  <textarea
+                    type="text"
+                    class="form-control"
+                    id="supplierDescription"
+                    placeholder="Description"
+                    value={newProductData.description}
+                    onChange={(e) =>
+                      onChangeProductInfo("description", e.target.value)
+                    }
+                  />
+                </div>
               </div>
 
               <button
@@ -2133,7 +2200,7 @@ export default function SupplierAdminPanel() {
         aria-labelledby="exampleModalLabelProduct"
         aria-hidden="true"
       >
-        <div class="modal-dialog modal-xl">
+        <div class={isEditProduct ? "modal-dialog modal-xl" : "modal-dialog"}>
           <div class="modal-content">
             <div class="modal-header">
               <h1 class="modal-title fs-5" id="exampleModalLabelProduct">
@@ -2152,387 +2219,446 @@ export default function SupplierAdminPanel() {
             </div>
             <div class="modal-body">
               <div style={{ width: "95%", margin: "0px auto" }}>
-                <div className="row">
-                  <div
-                    className="col-md-6 col-12 px-3 mx-auto"
-                    style={{ paddingTop: 10 }}
-                  >
-                    <label for="supplierProductNameEdit" class="form-label">
-                      Product Name:
-                    </label>
-                    <input
-                      type="text"
-                      class="form-control"
-                      id="supplierProductNameEdit"
-                      placeholder="Product Name"
-                      value={editProductData?.name}
-                      onChange={(e) => {
-                        if (isEditProduct) {
-                          onChangeProductInfo("name", e.target.value, false);
-                        }
-                      }}
-                    />
-                  </div>
-                  <div
-                    className="col-md-6 col-12 px-3 mx-auto"
-                    style={{ paddingTop: 10 }}
-                  >
-                    <label for="supplierPriceEdit" class="form-label">
-                      Unit Price:
-                    </label>
-                    <input
-                      type="number"
-                      class="form-control"
-                      id="supplierPriceEdit"
-                      placeholder="Unit Price"
-                      value={editProductData?.unitPrice}
-                      onChange={(e) => {
-                        if (isEditProduct) {
-                          onChangeProductInfo(
-                            "unitPrice",
-                            e.target.value,
-                            false
-                          );
-                        }
-                      }}
-                    />
-                  </div>
-                </div>
-                <div className="row">
-                  <div
-                    className="col-md-6 col-12 px-3 mx-auto"
-                    style={{ paddingTop: 10 }}
-                  >
-                    <label for="supplierDiscountEdit" class="form-label">
-                      Max Discount Value:
-                    </label>
-                    <input
-                      type="text"
-                      class="form-control"
-                      id="supplierDiscountEdit"
-                      placeholder="Max Discount Value"
-                      value={editProductData?.maxDiscountValue}
-                      onChange={(e) => {
-                        if (isEditProduct) {
-                          onChangeProductInfo(
-                            "maxDiscountValue",
-                            e.target.value,
-                            false
-                          );
-                        }
-                      }}
-                    />
-                  </div>
-                  <div
-                    className="col-md-6 col-12 px-3 mx-auto"
-                    style={{ paddingTop: 10 }}
-                  >
-                    <label
-                      for="supplierDiscountUnitPriceEdit"
-                      class="form-label"
-                    >
-                      Discount Unit Price:
-                    </label>
-                    <input
-                      type="number"
-                      class="form-control"
-                      id="supplierDiscountUnitPriceEdit"
-                      placeholder="Discount Unit Price"
-                      value={editProductData?.discountedUnitPrice}
-                      onChange={(e) => {
-                        if (isEditProduct) {
-                          onChangeProductInfo(
-                            "discountedUnitPrice",
-                            e.target.value,
-                            false
-                          );
-                        }
-                      }}
-                    />
-                  </div>
-                </div>
-                <div className="row">
-                  <div
-                    className="col-md-6 col-12 px-3 mx-auto"
-                    style={{ paddingTop: 10 }}
-                  >
-                    <label for="supplierMaxPurchaseNoEdit" class="form-label">
-                      Max Purchase No:
-                    </label>
-                    <input
-                      type="number"
-                      class="form-control"
-                      id="supplierMaxPurchaseNoEdit"
-                      placeholder="Number"
-                      value={editProductData?.maxPurchaseNo}
-                      onChange={(e) => {
-                        if (isEditProduct) {
-                          onChangeProductInfo(
-                            "maxPurchaseNo",
-                            e.target.value,
-                            false
-                          );
-                        }
-                      }}
-                    />
-                  </div>
-                  <div
-                    className="col-md-6 col-12 px-3 mx-auto"
-                    style={{ paddingTop: 10 }}
-                  >
-                    <label for="supplierCreditEdit" class="form-label">
-                      Max Green Credit:
-                    </label>
-                    <input
-                      type="number"
-                      class="form-control"
-                      id="supplierCreditEdit"
-                      placeholder="Max Green Credit"
-                      value={editProductData?.maxGreenCredit}
-                      onChange={(e) => {
-                        if (isEditProduct) {
-                          onChangeProductInfo(
-                            "maxGreenCredit",
-                            e.target.value,
-                            false
-                          );
-                        }
-                      }}
-                    />
-                  </div>
-                </div>
-
-                <div className="row">
-                  <div
-                    className="col-md-6 col-12 px-3 mx-auto"
-                    style={{ paddingTop: 10 }}
-                  >
-                    <label for="supplierCategoryEdit" class="form-label">
-                      Category:
-                    </label>
-                    <select
-                      class="form-select"
-                      aria-label="Default select example"
-                      value={editProductData?.categoryId}
-                      onChange={(e) => {
-                        if (isEditProduct) {
-                          onChangeProductInfo(
-                            "categoryId",
-                            e.target.value,
-                            false
-                          );
-                        }
-                      }}
-                    >
-                      {category.length > 0
-                        ? category.map((value, index) => (
-                            <option
-                              key={index}
-                              value={value.id}
-                              selected={
-                                value.id == editProductData?.categoryId
-                                  ? true
-                                  : false
-                              }
-                            >
-                              {value.name}
-                            </option>
-                          ))
-                        : null}
-                    </select>
-                  </div>
-                  <div
-                    className="col-md-6 col-12 px-3 mx-auto"
-                    style={{ paddingTop: 10 }}
-                  >
-                    <label for="supplierBrandProductEdit" class="form-label">
-                      Brand:
-                    </label>
-                    <input
-                      class="form-control"
-                      type="text"
-                      id="supplierBrandProduct"
-                      value={brandNameAndIdForProduct?.name}
-                      defaultValue={brandNameAndIdForProduct?.name}
-                    />
-                  </div>
-                </div>
-                <div className="row">
-                  <div
-                    className="col-md-6 col-12 px-3 mx-auto"
-                    style={{ paddingTop: 10 }}
-                  >
-                    <label for="supplierPriorityEdit" class="form-label">
-                      Priority:
-                    </label>
-                    <input
-                      type="number"
-                      class="form-control"
-                      id="supplierPriorityEdit"
-                      placeholder="Priority"
-                      value={editProductData?.priority}
-                      onChange={(e) => {
-                        if (isEditProduct) {
-                          onChangeProductInfo(
-                            "priority",
-                            e.target.value,
-                            false
-                          );
-                        }
-                      }}
-                    />
-                  </div>
-                  <div
-                    className="col-md-6 col-12 px-3 mx-auto"
-                    style={{ paddingTop: 10 }}
-                  >
-                    <label for="supplierDescriptionEdit" class="form-label">
-                      Description:
-                    </label>
-                    <textarea
-                      type="text"
-                      class="form-control"
-                      id="supplierDescriptionEdit"
-                      placeholder="Description"
-                      value={editProductData?.description}
-                      onChange={(e) => {
-                        if (isEditProduct) {
-                          onChangeProductInfo(
-                            "description",
-                            e.target.value,
-                            false
-                          );
-                        }
-                      }}
-                    />
-                  </div>
-                </div>
-                <div className="row">
-                  <div
-                    className="col-md-6 col-12 px-3 mx-auto"
-                    style={{ paddingTop: 10 }}
-                  >
-                    {!isEditProduct ? (
-                      <>
+                {isEditProduct ? (
+                  <div>
+                    <div className="row">
+                      <div
+                        className="col-md-6 col-12 px-3 mx-auto"
+                        style={{ paddingTop: 10 }}
+                      >
+                        <label for="supplierProductNameEdit" class="form-label">
+                          Product Name:
+                        </label>
+                        <input
+                          type="text"
+                          class="form-control"
+                          id="supplierProductNameEdit"
+                          placeholder="Product Name"
+                          value={editProductData?.name}
+                          onChange={(e) => {
+                            onChangeProductInfo("name", e.target.value, false);
+                          }}
+                        />
+                      </div>
+                      <div
+                        className="col-md-6 col-12 px-3 mx-auto"
+                        style={{ paddingTop: 10 }}
+                      >
+                        <label for="supplierPriceEdit" class="form-label">
+                          Unit Price:
+                        </label>
+                        <input
+                          type="number"
+                          class="form-control"
+                          id="supplierPriceEdit"
+                          placeholder="Unit Price"
+                          value={editProductData?.unitPrice}
+                          onChange={(e) => {
+                            onChangeProductInfo(
+                              "unitPrice",
+                              e.target.value,
+                              false
+                            );
+                          }}
+                        />
+                      </div>
+                    </div>
+                    <div className="row">
+                      <div
+                        className="col-md-6 col-12 px-3 mx-auto"
+                        style={{ paddingTop: 10 }}
+                      >
+                        <label for="supplierDiscountEdit" class="form-label">
+                          Max Discount Value:
+                        </label>
+                        <input
+                          type="text"
+                          class="form-control"
+                          id="supplierDiscountEdit"
+                          placeholder="Max Discount Value"
+                          value={editProductData?.maxDiscountValue}
+                          onChange={(e) => {
+                            onChangeProductInfo(
+                              "maxDiscountValue",
+                              e.target.value,
+                              false
+                            );
+                          }}
+                        />
+                      </div>
+                      <div
+                        className="col-md-6 col-12 px-3 mx-auto"
+                        style={{ paddingTop: 10 }}
+                      >
                         <label
-                          for="supplierProductImageView"
+                          for="supplierDiscountUnitPriceEdit"
                           class="form-label"
                         >
-                          Product Image
+                          Discount Unit Price:
                         </label>
+                        <input
+                          type="number"
+                          class="form-control"
+                          id="supplierDiscountUnitPriceEdit"
+                          placeholder="Discount Unit Price"
+                          value={editProductData?.discountedUnitPrice}
+                          onChange={(e) => {
+                            onChangeProductInfo(
+                              "discountedUnitPrice",
+                              e.target.value,
+                              false
+                            );
+                          }}
+                        />
+                      </div>
+                    </div>
+                    <div className="row">
+                      <div
+                        className="col-md-6 col-12 px-3 mx-auto"
+                        style={{ paddingTop: 10 }}
+                      >
+                        <label
+                          for="supplierMaxPurchaseNoEdit"
+                          class="form-label"
+                        >
+                          Max Purchase No:
+                        </label>
+                        <input
+                          type="number"
+                          class="form-control"
+                          id="supplierMaxPurchaseNoEdit"
+                          placeholder="Number"
+                          value={editProductData?.maxPurchaseNo}
+                          onChange={(e) => {
+                            onChangeProductInfo(
+                              "maxPurchaseNo",
+                              e.target.value,
+                              false
+                            );
+                          }}
+                        />
+                      </div>
+                      <div
+                        className="col-md-6 col-12 px-3 mx-auto"
+                        style={{ paddingTop: 10 }}
+                      >
+                        <label for="supplierCreditEdit" class="form-label">
+                          Max Green Credit:
+                        </label>
+                        <input
+                          type="number"
+                          class="form-control"
+                          id="supplierCreditEdit"
+                          placeholder="Max Green Credit"
+                          value={editProductData?.maxGreenCredit}
+                          onChange={(e) => {
+                            onChangeProductInfo(
+                              "maxGreenCredit",
+                              e.target.value,
+                              false
+                            );
+                          }}
+                        />
+                      </div>
+                    </div>
 
-                        <div
-                          style={{
-                            display: "flex",
-                            flexDirection: "row",
-                            alignItems: "center",
+                    <div className="row">
+                      <div
+                        className="col-md-6 col-12 px-3 mx-auto"
+                        style={{ paddingTop: 10 }}
+                      >
+                        <label for="supplierCategoryEdit" class="form-label">
+                          Category:
+                        </label>
+                        <select
+                          class="form-select"
+                          aria-label="Default select example"
+                          value={editProductData?.categoryId}
+                          onChange={(e) => {
+                            onChangeProductInfo(
+                              "categoryId",
+                              e.target.value,
+                              false
+                            );
                           }}
                         >
-                          <Image
-                            alt=""
-                            src={imageUrl + editProductData?.imageUrl}
-                            width={120}
-                            height={120}
-                          />
-                        </div>
-                      </>
-                    ) : isProductImageChange ? (
-                      <div>
-                        <label for="supplierFormFileEdit" class="form-label">
-                          Product Image
+                          {category.length > 0
+                            ? category.map((value, index) => (
+                                <option
+                                  key={index}
+                                  value={value.id}
+                                  selected={
+                                    value.id == editProductData?.categoryId
+                                      ? true
+                                      : false
+                                  }
+                                >
+                                  {value.name}
+                                </option>
+                              ))
+                            : null}
+                        </select>
+                      </div>
+                      <div
+                        className="col-md-6 col-12 px-3 mx-auto"
+                        style={{ paddingTop: 10 }}
+                      >
+                        <label
+                          for="supplierBrandProductEdit"
+                          class="form-label"
+                        >
+                          Brand:
                         </label>
                         <input
                           class="form-control"
-                          type="file"
-                          id="supplierFormFileEdit"
-                          value={editProductData?.imageName}
+                          type="text"
+                          id="supplierBrandProduct"
+                          value={brandNameAndIdForProduct?.name}
+                          defaultValue={brandNameAndIdForProduct?.name}
+                        />
+                      </div>
+                    </div>
+                    <div className="row">
+                      <div
+                        className="col-md-6 col-12 px-3 mx-auto"
+                        style={{ paddingTop: 10 }}
+                      >
+                        <label for="supplierPriorityEdit" class="form-label">
+                          Priority:
+                        </label>
+                        <input
+                          type="number"
+                          class="form-control"
+                          id="supplierPriorityEdit"
+                          placeholder="Priority"
+                          value={editProductData?.priority}
                           onChange={(e) => {
-                            if (isEditProduct) {
-                              onChangeProductInfo("imageName", e.target, false);
-                            }
+                            onChangeProductInfo(
+                              "priority",
+                              e.target.value,
+                              false
+                            );
                           }}
-                        ></input>
+                        />
                       </div>
-                    ) : (
-                      <>
-                        <label
-                          for="supplierProductImageEdit"
-                          class="form-label"
-                        >
-                          Product Image
+                      <div
+                        className="col-md-6 col-12 px-3 mx-auto"
+                        style={{ paddingTop: 10 }}
+                      >
+                        <label for="supplierDescriptionEdit" class="form-label">
+                          Description:
                         </label>
+                        <textarea
+                          type="text"
+                          class="form-control"
+                          id="supplierDescriptionEdit"
+                          placeholder="Description"
+                          value={editProductData?.description}
+                          onChange={(e) => {
+                            onChangeProductInfo(
+                              "description",
+                              e.target.value,
+                              false
+                            );
+                          }}
+                        />
+                      </div>
+                    </div>
+                    <div className="row">
+                      <div
+                        className="col-md-6 col-12 px-3 mx-auto"
+                        style={{ paddingTop: 10 }}
+                      >
+                        {!isEditProduct ? (
+                          <>
+                            <label
+                              for="supplierProductImageView"
+                              class="form-label"
+                            >
+                              Product Image
+                            </label>
 
-                        <div
-                          style={{
-                            display: "flex",
-                            flexDirection: "row",
-                            alignItems: "center",
-                          }}
-                        >
-                          <Image
-                            alt=""
-                            src={imageUrl + editProductData?.imageUrl}
-                            width={120}
-                            height={120}
-                          />
-                          <button
-                            className="btn btn-info"
-                            style={{ color: color.white, marginLeft: 20 }}
-                            onClick={() => setIsProductImageChange(true)}
-                          >
-                            Change
-                          </button>
-                        </div>
-                      </>
-                    )}
-                  </div>
-                  <div
-                    className="col-md-6 col-12 px-3"
-                    style={{ paddingTop: 10 }}
-                  >
-                    <p>Instock</p>
-                    <div className="d-flex flex-column">
-                      <div class="form-check">
-                        <input
-                          class="form-check-input"
-                          type="radio"
-                          name="flexRadioDefault23"
-                          id="Yes23"
-                          checked={
-                            editProductData?.inStock == true ? true : false
-                          }
-                          onClick={() => {
-                            if (isEditProduct) {
-                              onChangeProductInfo("inStock", true, false);
-                            }
-                          }}
-                        />
-                        <label class="form-check-label" for="Yes23">
-                          Yes
-                        </label>
+                            <div
+                              style={{
+                                display: "flex",
+                                flexDirection: "row",
+                                alignItems: "center",
+                              }}
+                            >
+                              <Image
+                                alt=""
+                                src={imageUrl + editProductData?.imageUrl}
+                                width={120}
+                                height={120}
+                              />
+                            </div>
+                          </>
+                        ) : isProductImageChange ? (
+                          <div>
+                            <label
+                              for="supplierFormFileEdit"
+                              class="form-label"
+                            >
+                              Product Image
+                            </label>
+                            <input
+                              class="form-control"
+                              type="file"
+                              id="supplierFormFileEdit"
+                              value={editProductData?.imageName}
+                              onChange={(e) => {
+                                onChangeProductInfo(
+                                  "imageName",
+                                  e.target,
+                                  false
+                                );
+                              }}
+                            ></input>
+                          </div>
+                        ) : (
+                          <>
+                            <label
+                              for="supplierProductImageEdit"
+                              class="form-label"
+                            >
+                              Product Image
+                            </label>
+
+                            <div
+                              style={{
+                                display: "flex",
+                                flexDirection: "row",
+                                alignItems: "center",
+                              }}
+                            >
+                              <Image
+                                alt=""
+                                src={imageUrl + editProductData?.imageUrl}
+                                width={120}
+                                height={120}
+                              />
+                              <button
+                                className="btn btn-info"
+                                style={{ color: color.white, marginLeft: 20 }}
+                                onClick={() => setIsProductImageChange(true)}
+                              >
+                                Change
+                              </button>
+                            </div>
+                          </>
+                        )}
                       </div>
-                      <div class="form-check">
-                        <input
-                          class="form-check-input"
-                          type="radio"
-                          name="flexRadioDefault23"
-                          id="No23"
-                          checked={
-                            editProductData?.inStock == false ? true : false
-                          }
-                          onClick={() => {
-                            if (isEditProduct) {
-                              onChangeProductInfo("inStock", false, false);
-                            }
-                          }}
-                        />
-                        <label class="form-check-label" for="No23">
-                          No
-                        </label>
+                      <div
+                        className="col-md-6 col-12 px-3"
+                        style={{ paddingTop: 10 }}
+                      >
+                        <p>Instock</p>
+                        <div className="d-flex flex-column">
+                          <div class="form-check">
+                            <input
+                              class="form-check-input"
+                              type="radio"
+                              name="flexRadioDefault23"
+                              id="Yes23"
+                              checked={
+                                editProductData?.inStock == true ? true : false
+                              }
+                              onClick={() => {
+                                onChangeProductInfo("inStock", true, false);
+                              }}
+                            />
+                            <label class="form-check-label" for="Yes23">
+                              Yes
+                            </label>
+                          </div>
+                          <div class="form-check">
+                            <input
+                              class="form-check-input"
+                              type="radio"
+                              name="flexRadioDefault23"
+                              id="No23"
+                              checked={
+                                editProductData?.inStock == false ? true : false
+                              }
+                              onClick={() => {
+                                onChangeProductInfo("inStock", false, false);
+                              }}
+                            />
+                            <label class="form-check-label" for="No23">
+                              No
+                            </label>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
+                ) : (
+                  <div>
+                    <div style={{ display: "flex", flexDirection: "row" }}>
+                      <p style={{ flex: 2 }}>Product Image:</p>
+                      <div style={{ flex: 3 }}>
+                        <Image
+                          alt=""
+                          src={imageUrl + editProductData?.imageUrl}
+                          width={100}
+                          height={100}
+                        />
+                      </div>
+                    </div>
+                    <div style={{ display: "flex", flexDirection: "row" }}>
+                      <p style={{ flex: 2 }}>Product Name:</p>
+                      <p style={{ flex: 3 }}>{editProductData?.name}</p>
+                    </div>
+                    <div style={{ display: "flex", flexDirection: "row" }}>
+                      <p style={{ flex: 2 }}>Unit Price:</p>
+                      <p style={{ flex: 3 }}>{editProductData?.unitPrice}</p>
+                    </div>
+                    <div style={{ display: "flex", flexDirection: "row" }}>
+                      <p style={{ flex: 2 }}>Discount Price:</p>
+                      <p style={{ flex: 3 }}>
+                        {editProductData?.discountedUnitPrice ? editProductData?.discountedUnitPrice : 0}
+                      </p>
+                    </div>
+                    <div style={{ display: "flex", flexDirection: "row" }}>
+                      <p style={{ flex: 2 }}>Max Discount Value:</p>
+                      <p style={{ flex: 3 }}>
+                        {editProductData?.maxDiscountValue}
+                      </p>
+                    </div>
+                    <div style={{ display: "flex", flexDirection: "row" }}>
+                      <p style={{ flex: 2 }}>Max Green Credit:</p>
+                      <p style={{ flex: 3 }}>{editProductData?.maxGreenCredit}</p>
+                    </div>
+                    <div style={{ display: "flex", flexDirection: "row" }}>
+                      <p style={{ flex: 2 }}>Max Purchase No:</p>
+                      <p style={{ flex: 3 }}>{editProductData?.maxPurchaseNo ? editProductData?.maxPurchaseNo : "Any Amount"}</p>
+                    </div>
+                    <div style={{ display: "flex", flexDirection: "row" }}>
+                      <p style={{ flex: 2 }}>Category:</p>
+                      <p style={{ flex: 3 }}>
+                        {category.filter(v => v.id == editProductData?.categoryId)[0]?.name}
+                      </p>
+                    </div>
+                    <div style={{ display: "flex", flexDirection: "row" }}>
+                      <p style={{ flex: 2 }}>Brand Name:</p>
+                      <p style={{ flex: 3 }}>
+                        {brandNameAndIdForProduct?.name}
+                      </p>
+                    </div>
+                    <div style={{ display: "flex", flexDirection: "row" }}>
+                      <p style={{ flex: 2 }}>Priority:</p>
+                      <p style={{ flex: 3 }}>{editProductData?.priority}</p>
+                    </div>
+                    <div style={{ display: "flex", flexDirection: "row" }}>
+                      <p style={{ flex: 2 }}>Description:</p>
+                      <p style={{ flex: 3 }}>{editProductData?.description}</p>
+                    </div>
+                    <div style={{ display: "flex", flexDirection: "row" }}>
+                      <p style={{ flex: 2 }}>Instock:</p>
+                      <p style={{ flex: 3 }}>{editProductData?.inStock ? "In Stock" : "Out of Stock"}</p>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
 
@@ -2704,22 +2830,23 @@ export default function SupplierAdminPanel() {
                   setIsProductImageChange(false);
                 }}
               ></button>
-              </div>
-              <div className="modal-body">
-                <p style={{fontSize: 16, fontWeight: 'bold'}}>Are you sure you want to delete &quot;{removeClick.text}&quot;?</p>
-              </div>
-              <div className="modal-footer">
+            </div>
+            <div className="modal-body">
+              <p style={{ fontSize: 16, fontWeight: "bold" }}>
+                Are you sure you want to delete &quot;{removeClick.text}&quot;?
+              </p>
+            </div>
+            <div className="modal-footer">
               <button
-                  type="button"
-                  className="btn btn-danger"
-                  data-bs-dismiss="modal"
-                  style={{ width: 80, alignSelf: "flex-end" }}
-                  onClick={() => onClickRemoveCollection(removeClick.id)}
-                >
-                  Delete
-                </button>
-              </div>
-            
+                type="button"
+                className="btn btn-danger"
+                data-bs-dismiss="modal"
+                style={{ width: 80, alignSelf: "flex-end" }}
+                onClick={() => onClickRemoveCollection(removeClick.id)}
+              >
+                Delete
+              </button>
+            </div>
           </div>
         </div>
       </div>
