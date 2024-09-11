@@ -8,7 +8,8 @@ import "react-toastify/dist/ReactToastify.css";
 import { color } from "../../../../components/color";
 import { getLocalStorage } from "../../../../api/localStorage";
 import AppContext from "../../../../context/AppContext";
-import { baseUrl } from "../../../../controller/baseUrl";
+import { baseUrl, imageUrl } from "../../../../controller/baseUrl";
+import Image from "next/image";
 
 export default function ManageUser() {
   const { isMobile, isTablet } = useContext(AppContext);
@@ -49,7 +50,7 @@ export default function ManageUser() {
   };
 
   const onSelectUserRole = (id) => {
-    console.log("id", id)
+    console.log("id", id);
     setRoleNo(id);
     if (id == "All" || id == "Select User Role") {
       getAccountItems();
@@ -57,9 +58,9 @@ export default function ManageUser() {
       ManageUserController.getAccountItemsByRole(id, (data) => {
         setUsers(data);
         if (data.length < 1) {
-            toast.warn("There is no user data!", {
-                position: 'top-right'
-            })
+          toast.warn("There is no user data!", {
+            position: "top-right",
+          });
         }
       });
     }
@@ -68,17 +69,17 @@ export default function ManageUser() {
   const onClickSearch = () => {
     setRoleNo("Select User Role");
     if (searchText == "") {
-        getAccountItems();
+      getAccountItems();
     } else {
-        ManageUserController.getUserByUserName(searchText, (data) => {
-            if (data.length > 0) {
-                setUsers(data);
-            } else {
-                toast.warn("There is no User for the search name!", {
-                    position: 'top-right'
-                })
-            }
-        });
+      ManageUserController.getUserByUserName(searchText, (data) => {
+        if (data.length > 0) {
+          setUsers(data);
+        } else {
+          toast.warn("There is no User for the search name!", {
+            position: "top-right",
+          });
+        }
+      });
     }
   };
 
@@ -141,7 +142,7 @@ export default function ManageUser() {
     }
   };
 
-   const getStreetEdit = async () => {
+  const getStreetEdit = async () => {
     if (editUserData.postalCode == "") {
       toast.warn("Please fill the Postal Code And Press 'Get Street'");
     } else {
@@ -164,7 +165,7 @@ export default function ManageUser() {
         }
       });
     }
-   }
+  };
 
   const createQueryString = (name, value) => {
     const params = new URLSearchParams();
@@ -709,9 +710,7 @@ export default function ManageUser() {
                   <option value={null} selected>
                     Select User Role
                   </option>
-                  <option value={null}>
-                    All
-                  </option>
+                  <option value={null}>All</option>
                   {userRole.map((value, index) => (
                     <option key={index} value={value.id}>
                       {value.name}
@@ -734,7 +733,10 @@ export default function ManageUser() {
                   value={searchText}
                   onChange={(e) => setSearchText(e.target.value)}
                 />
-                <button className="btn btn-light" onClick={() => onClickSearch()}>
+                <button
+                  className="btn btn-light"
+                  onClick={() => onClickSearch()}
+                >
                   <i class="bi bi-search"></i>
                 </button>
               </div>
@@ -746,6 +748,7 @@ export default function ManageUser() {
                   <tr>
                     <th scope="col">No</th>
                     <th scope="col">Role</th>
+                    <th scope="col">QR Code</th>
                     <th scope="col">User Name</th>
                     <th scope="col">Email</th>
                     <th scope="col">Mobile</th>
@@ -768,6 +771,14 @@ export default function ManageUser() {
                           : v.role == 2
                           ? "Supplier"
                           : "Staff"}
+                      </td>
+                      <td>
+                        <Image
+                          alt=""
+                          src={imageUrl + v.qrUrl}
+                          width={50}
+                          height={50}
+                        />
                       </td>
                       <td>
                         <p
@@ -837,7 +848,7 @@ export default function ManageUser() {
         aria-labelledby="exampleModalLabelUserManage"
         aria-hidden="true"
       >
-        <div class="modal-dialog modal-xl">
+        <div class={isEditUser ? "modal-dialog modal-xl" : "modal-dialog"}>
           <div class="modal-content">
             <div class="modal-header">
               <h1 class="modal-title fs-5" id="exampleModalLabelUserManage">
@@ -856,368 +867,419 @@ export default function ManageUser() {
               ></button>
             </div>
             <div class="modal-body">
-              <div style={{ width: "95%", margin: "0px auto" }}>
-                <div className="row">
-                  <div
-                    className="col-md-6 col-12 px-3 mx-auto"
-                    style={{ paddingTop: 10 }}
-                  >
-                    <label for="adminUsernameEdit" class="form-label">
-                      User Name:
-                    </label>
-                    <input
-                      type="text"
-                      class="form-control"
-                      id="adminUsernameEdit"
-                      placeholder="Username"
-                      value={editUserData?.userName}
-                      onChange={(e) => {
-                        if (isEditUser) {
+              {isEditUser ? (
+                <div style={{ width: "95%", margin: "0px auto" }}>
+                  <div className="row">
+                    <div
+                      className="col-md-6 col-12 px-3 mx-auto"
+                      style={{ paddingTop: 10 }}
+                    >
+                      <label for="adminUsernameEdit" class="form-label">
+                        User Name:
+                      </label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="adminUsernameEdit"
+                        placeholder="Username"
+                        value={editUserData?.userName}
+                        onChange={(e) => {
                           onChangeInfo("userName", e.target.value, true);
-                        }
-                      }}
-                    />
-                  </div>
-                  <div
-                    className="col-md-6 col-12 px-3 mx-auto"
-                    style={{ paddingTop: 10 }}
-                  >
-                    <label for="adminEmailEdit" class="form-label">
-                      Email address:
-                    </label>
-                    <input
-                      type="email"
-                      class="form-control"
-                      id="adminEmailEdit"
-                      placeholder="name@example.com"
-                      value={editUserData?.email}
-                      onChange={(e) => {
-                        if (isEditUser) {
+                        }}
+                      />
+                    </div>
+                    <div
+                      className="col-md-6 col-12 px-3 mx-auto"
+                      style={{ paddingTop: 10 }}
+                    >
+                      <label for="adminEmailEdit" class="form-label">
+                        Email address:
+                      </label>
+                      <input
+                        type="email"
+                        class="form-control"
+                        id="adminEmailEdit"
+                        placeholder="name@example.com"
+                        value={editUserData?.email}
+                        onChange={(e) => {
                           onChangeInfo("email", e.target.value, true);
-                        }
-                      }}
-                    />
+                        }}
+                      />
+                    </div>
                   </div>
-                </div>
-                <div className="row">
-                  <div
-                    className="col-md-6 col-12 px-3 mx-auto"
-                    style={{ paddingTop: 10 }}
-                  >
-                    <div className="col-12" style={{ paddingTop: 10 }}>
-                      <label for="adminMobileEdit" class="form-label">
-                        Mobile No:
-                      </label>
-                      <input
-                        type="text"
-                        class="form-control"
-                        id="adminMobileEdit"
-                        placeholder="Your Mobile No."
-                        value={editUserData?.mobile}
-                        onChange={(e) => {
-                          if (isEditUser) {
+                  <div className="row">
+                    <div
+                      className="col-md-6 col-12 px-3 mx-auto"
+                      style={{ paddingTop: 10 }}
+                    >
+                      <div className="col-12" style={{ paddingTop: 10 }}>
+                        <label for="adminMobileEdit" class="form-label">
+                          Mobile No:
+                        </label>
+                        <input
+                          type="text"
+                          class="form-control"
+                          id="adminMobileEdit"
+                          placeholder="Your Mobile No."
+                          value={editUserData?.mobile}
+                          onChange={(e) => {
                             onChangeInfo("mobile", e.target.value, true);
-                          }
-                        }}
-                      />
-                    </div>
-                    <div className="col-12" style={{ paddingTop: 10 }}>
-                      <label for="adminUnitNumberEdit" class="form-label">
-                        Unit Number:{" "}
-                        <span style={{ fontSize: 10 }}>
-                          {
-                            "(Accepted format: #01-123 & only one account is allowed per household)"
-                          }
-                        </span>
-                      </label>
-                      <input
-                        type="text"
-                        class="form-control"
-                        id="adminUnitNumberEdit"
-                        placeholder="Unit number"
-                        value={editUserData?.unitNo}
-                        onChange={(e) => {
-                          if (isEditUser) {
+                          }}
+                        />
+                      </div>
+                      <div className="col-12" style={{ paddingTop: 10 }}>
+                        <label for="adminUnitNumberEdit" class="form-label">
+                          Unit Number:{" "}
+                          <span style={{ fontSize: 10 }}>
+                            {
+                              "(Accepted format: #01-123 & only one account is allowed per household)"
+                            }
+                          </span>
+                        </label>
+                        <input
+                          type="text"
+                          class="form-control"
+                          id="adminUnitNumberEdit"
+                          placeholder="Unit number"
+                          value={editUserData?.unitNo}
+                          onChange={(e) => {
                             onChangeInfo("unitNo", e.target.value, true);
-                          }
-                        }}
-                      />
+                          }}
+                        />
+                      </div>
                     </div>
-                  </div>
-                  <div
-                    className="col-md-6 col-12 px-3 mx-auto"
-                    style={{ paddingTop: 10 }}
-                  >
-                    <div className="col-12" style={{ paddingTop: 10 }}>
-                      <div className="row">
-                        <div className="col-9">
-                          <label for="adminPostalCodeEdit" class="form-label">
-                            Postal Code:{" "}
-                            <span style={{ fontSize: 10 }}>
-                              {"{eg. 123456}"}
-                            </span>
-                          </label>
-                          <input
-                            type="number"
-                            class="form-control"
-                            id="adminPostalCodeEdit"
-                            placeholder="Your Postal Code"
-                            value={editUserData?.postalCode}
-                            onChange={(e) => {
-                              if (isEditUser) {
+                    <div
+                      className="col-md-6 col-12 px-3 mx-auto"
+                      style={{ paddingTop: 10 }}
+                    >
+                      <div className="col-12" style={{ paddingTop: 10 }}>
+                        <div className="row">
+                          <div className="col-9">
+                            <label for="adminPostalCodeEdit" class="form-label">
+                              Postal Code:{" "}
+                              <span style={{ fontSize: 10 }}>
+                                {"{eg. 123456}"}
+                              </span>
+                            </label>
+                            <input
+                              type="number"
+                              class="form-control"
+                              id="adminPostalCodeEdit"
+                              placeholder="Your Postal Code"
+                              value={editUserData?.postalCode}
+                              onChange={(e) => {
                                 onChangeInfo(
                                   "postalCode",
                                   e.target.value,
                                   true
                                 );
-                              }
+                              }}
+                            />
+                          </div>
+                          <div className="col-3 d-flex align-items-end">
+                            {isEditUser ? (
+                              <button
+                                className="btn btn-secondary"
+                                type="button"
+                                onClick={() => getStreetEdit()}
+                                style={{ fontSize: isTablet ? 11 : 14 }}
+                              >
+                                Get Street
+                              </button>
+                            ) : null}
+                          </div>
+                        </div>
+                      </div>
+                      <div className="col-12" style={{ paddingTop: 10 }}>
+                        <label for="adminStreetEdit" class="form-label">
+                          Street:
+                        </label>
+                        <input
+                          type="text"
+                          class="form-control"
+                          id="adminStreetEdit"
+                          placeholder="Street"
+                          value={editUserData?.street}
+                          // onChange={(e) => onChangeInfo("street", e.target.value)}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div className="row">
+                    <div className="col-md-6 col-12">
+                      <div
+                        className="col-12 px-1 mx-auto"
+                        style={{ paddingTop: 10 }}
+                      >
+                        <label for="adminPasswordEdit" class="form-label">
+                          Password {"(8 characters minimum)"}:
+                        </label>
+                        <div class="input-group">
+                          <input
+                            type={isShowPassword ? "text" : "password"}
+                            class="form-control"
+                            id="adminPasswordEdit"
+                            placeholder="Password"
+                            //   disabled={isEditUser}
+                            value={editPassword}
+                            onChange={(e) => {
+                              setEditPassword(e.target.value);
                             }}
                           />
+                          <span
+                            class="input-group-text"
+                            onClick={() => setIsShowPassword(!isShowPassword)}
+                          >
+                            <i
+                              class={
+                                isShowPassword ? "bi bi-eye-slash" : "bi bi-eye"
+                              }
+                              id="togglePasswordAdminEdit"
+                              style={{ cursor: "pointer" }}
+                            ></i>
+                          </span>
                         </div>
-                        <div className="col-3 d-flex align-items-end">
-                          {isEditUser ? (
-                            <button
-                              className="btn btn-secondary"
-                              type="button"
-                              onClick={() => getStreetEdit()}
-                              style={{ fontSize: isTablet ? 11 : 14 }}
-                            >
-                              Get Street
-                            </button>
-                          ) : null}
+                      </div>
+                      <div
+                        className="col-12 px-1 mx-auto"
+                        style={{ paddingTop: 10 }}
+                      >
+                        <label for="adminRetypePasswordEdit" class="form-label">
+                          Retype Password:
+                        </label>
+                        <div class="input-group">
+                          <input
+                            type={isShowRetypePassword ? "text" : "password"}
+                            class="form-control"
+                            id="adminRetypePasswordEdit"
+                            placeholder="Retype password"
+                            //   disabled={isEditUser}
+                            value={editRetypePassword}
+                            onChange={(e) => {
+                              setEditRetypePassword(e.target.value);
+                            }}
+                          />
+                          <span
+                            class="input-group-text"
+                            onClick={() =>
+                              setIsShowRetypePassword(!isShowRetypePassword)
+                            }
+                          >
+                            <i
+                              class={
+                                isShowRetypePassword
+                                  ? "bi bi-eye-slash"
+                                  : "bi bi-eye"
+                              }
+                              id="togglePasswordAdminEdit"
+                              style={{ cursor: "pointer" }}
+                            ></i>
+                          </span>
                         </div>
                       </div>
                     </div>
-                    <div className="col-12" style={{ paddingTop: 10 }}>
-                      <label for="adminStreetEdit" class="form-label">
-                        Street:
-                      </label>
-                      <input
-                        type="text"
-                        class="form-control"
-                        id="adminStreetEdit"
-                        placeholder="Street"
-                        value={editUserData?.street}
-                        // onChange={(e) => onChangeInfo("street", e.target.value)}
+                    <div className="col-md-6 col-12">
+                      <div
+                        className="col-12 px-1 mx-auto"
+                        style={{ paddingTop: 10 }}
+                      >
+                        <label for="adminUserRoleEdit" class="form-label">
+                          User Role:
+                        </label>
+                        <select
+                          class="form-select"
+                          aria-label="Default select example"
+                          value={editUserData?.role}
+                          onChange={(e) => {
+                            onChangeInfo("role", e.target.value, true);
+                          }}
+                        >
+                          <option value={null} selected>
+                            Select User Role
+                          </option>
+                          {userRole.map((value, index) => (
+                            <option key={index} value={value.id}>
+                              {value.name}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                      <div
+                        className="col-12 px-1 mx-auto"
+                        style={{ paddingTop: 10 }}
+                      >
+                        <label>Type of housing:</label>
+                        <div class="form-check">
+                          <input
+                            class="form-check-input"
+                            type="radio"
+                            name="flexRadioDefault-2"
+                            id="adminPublicEdit"
+                            checked={
+                              editUserData?.housingType == 1 ? true : false
+                            }
+                            onClick={() => {
+                              onChangeInfo("housingType", 1, true);
+                            }}
+                          />
+                          <label class="form-check-label" for="adminPublicEdit">
+                            Public Housing {"(HOB flats)"}
+                          </label>
+                        </div>
+                        <div class="form-check">
+                          <input
+                            class="form-check-input"
+                            type="radio"
+                            name="flexRadioDefault-2"
+                            id="adminPrivateEdit"
+                            checked={
+                              editUserData?.housingType == 2 ? true : false
+                            }
+                            onClick={() => {
+                              onChangeInfo("housingType", 2, true);
+                            }}
+                          />
+                          <label
+                            class="form-check-label"
+                            for="adminPrivateEdit"
+                          >
+                            Private Condominiums / Apartments
+                          </label>
+                        </div>
+                        <div class="form-check">
+                          <input
+                            class="form-check-input"
+                            type="radio"
+                            name="flexRadioDefault-2"
+                            id="adminLandedEdit"
+                            checked={
+                              editUserData?.housingType == 3 ? true : false
+                            }
+                            onClick={() => {
+                              onChangeInfo("housingType", 3, true);
+                            }}
+                          />
+                          <label class="form-check-label" for="adminLandedEdit">
+                            Landed Housing
+                          </label>
+                        </div>
+                      </div>
+                      <div
+                        className="col-12 px-1 mx-auto"
+                        style={{ paddingTop: 10 }}
+                      >
+                        <label>Food Waste Collection Box Type:</label>
+                        <div class="form-check">
+                          <input
+                            class="form-check-input"
+                            type="radio"
+                            name="flexRadioDefault-3"
+                            id="admidHalalEdit"
+                            checked={
+                              editUserData?.halalBox == true ? true : false
+                            }
+                            onClick={() => {
+                              onChangeInfo("halalBox", true, true);
+                            }}
+                          />
+                          <label class="form-check-label" for="adminHalalEdit">
+                            Halal
+                          </label>
+                        </div>
+                        <div class="form-check">
+                          <input
+                            class="form-check-input"
+                            type="radio"
+                            name="flexRadioDefault-3"
+                            id="adminNonHalalEdit"
+                            checked={
+                              editUserData?.halalBox == false ? true : false
+                            }
+                            onClick={() => {
+                              onChangeInfo("halalBox", false, true);
+                            }}
+                          />
+                          <label
+                            class="form-check-label"
+                            for="adminNonHalalEdit"
+                          >
+                            Non Halal
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <div style={{ width: "95%", margin: "0px auto" }}>
+                  <div style={{ display: "flex", flexDirection: "row" }}>
+                    <p style={{ flex: 2 }}>QR Code:</p>
+                    <div style={{ flex: 3 }}>
+                      <Image
+                        alt=""
+                        src={imageUrl + editUserData?.qrUrl}
+                        width={100}
+                        height={100}
                       />
                     </div>
                   </div>
-                </div>
-                <div className="row">
-                  <div className="col-md-6 col-12">
-                    <div
-                      className="col-12 px-1 mx-auto"
-                      style={{ paddingTop: 10 }}
-                    >
-                      <label for="adminPasswordEdit" class="form-label">
-                        Password {"(8 characters minimum)"}:
-                      </label>
-                      <div class="input-group">
-                        <input
-                          type={isShowPassword ? "text" : "password"}
-                          class="form-control"
-                          id="adminPasswordEdit"
-                          placeholder="Password"
-                          //   disabled={isEditUser}
-                          value={editPassword}
-                          onChange={(e) => {
-                            if (isEditUser) {
-                              setEditPassword(e.target.value);
-                            }
-                          }}
-                        />
-                        <span
-                          class="input-group-text"
-                          onClick={() => setIsShowPassword(!isShowPassword)}
-                        >
-                          <i
-                            class={
-                              isShowPassword ? "bi bi-eye-slash" : "bi bi-eye"
-                            }
-                            id="togglePasswordAdminEdit"
-                            style={{ cursor: "pointer" }}
-                          ></i>
-                        </span>
-                      </div>
-                    </div>
-                    <div
-                      className="col-12 px-1 mx-auto"
-                      style={{ paddingTop: 10 }}
-                    >
-                      <label for="adminRetypePasswordEdit" class="form-label">
-                        Retype Password:
-                      </label>
-                      <div class="input-group">
-                        <input
-                          type={isShowRetypePassword ? "text" : "password"}
-                          class="form-control"
-                          id="adminRetypePasswordEdit"
-                          placeholder="Retype password"
-                          //   disabled={isEditUser}
-                          value={editRetypePassword}
-                          onChange={(e) => {
-                            if (isEditUser) {
-                              setEditRetypePassword(e.target.value);
-                            }
-                          }}
-                        />
-                        <span
-                          class="input-group-text"
-                          onClick={() =>
-                            setIsShowRetypePassword(!isShowRetypePassword)
-                          }
-                        >
-                          <i
-                            class={
-                              isShowRetypePassword
-                                ? "bi bi-eye-slash"
-                                : "bi bi-eye"
-                            }
-                            id="togglePasswordAdminEdit"
-                            style={{ cursor: "pointer" }}
-                          ></i>
-                        </span>
-                      </div>
-                    </div>
+                  <div style={{ display: "flex", flexDirection: "row" }}>
+                    <p style={{ flex: 2 }}>User Role:</p>
+                    <p style={{ flex: 3 }}>
+                      {editUserData?.role == 0
+                        ? "User"
+                        : editUserData?.role == 1
+                        ? "Admin"
+                        : editUserData?.role == 2
+                        ? "Supplier"
+                        : "Staff"}
+                    </p>
                   </div>
-                  <div className="col-md-6 col-12">
-                    <div
-                      className="col-12 px-1 mx-auto"
-                      style={{ paddingTop: 10 }}
-                    >
-                      <label for="adminUserRoleEdit" class="form-label">
-                        User Role:
-                      </label>
-                      <select
-                        class="form-select"
-                        aria-label="Default select example"
-                        value={editUserData?.role}
-                        onChange={(e) => {
-                          if (isEditUser) {
-                            onChangeInfo("role", e.target.value, true);
-                          }
-                        }}
-                      >
-                        <option value={null} selected>
-                          Select User Role
-                        </option>
-                        {userRole.map((value, index) => (
-                          <option key={index} value={value.id}>
-                            {value.name}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                    <div
-                      className="col-12 px-1 mx-auto"
-                      style={{ paddingTop: 10 }}
-                    >
-                      <label>Type of housing:</label>
-                      <div class="form-check">
-                        <input
-                          class="form-check-input"
-                          type="radio"
-                          name="flexRadioDefault-2"
-                          id="adminPublicEdit"
-                          checked={
-                            editUserData?.housingType == 1 ? true : false
-                          }
-                          onClick={() => {
-                            if (isEditUser) {
-                              onChangeInfo("housingType", 1, true);
-                            }
-                          }}
-                        />
-                        <label class="form-check-label" for="adminPublicEdit">
-                          Public Housing {"(HOB flats)"}
-                        </label>
-                      </div>
-                      <div class="form-check">
-                        <input
-                          class="form-check-input"
-                          type="radio"
-                          name="flexRadioDefault-2"
-                          id="adminPrivateEdit"
-                          checked={
-                            editUserData?.housingType == 2 ? true : false
-                          }
-                          onClick={() => {
-                            if (isEditUser) {
-                              onChangeInfo("housingType", 2, true);
-                            }
-                          }}
-                        />
-                        <label class="form-check-label" for="adminPrivateEdit">
-                          Private Condominiums / Apartments
-                        </label>
-                      </div>
-                      <div class="form-check">
-                        <input
-                          class="form-check-input"
-                          type="radio"
-                          name="flexRadioDefault-2"
-                          id="adminLandedEdit"
-                          checked={
-                            editUserData?.housingType == 3 ? true : false
-                          }
-                          onClick={() => {
-                            if (isEditUser) {
-                              onChangeInfo("housingType", 3, true);
-                            }
-                          }}
-                        />
-                        <label class="form-check-label" for="adminLandedEdit">
-                          Landed Housing
-                        </label>
-                      </div>
-                    </div>
-                    <div
-                      className="col-12 px-1 mx-auto"
-                      style={{ paddingTop: 10 }}
-                    >
-                      <label>Food Waste Collection Box Type:</label>
-                      <div class="form-check">
-                        <input
-                          class="form-check-input"
-                          type="radio"
-                          name="flexRadioDefault-3"
-                          id="admidHalalEdit"
-                          checked={
-                            editUserData?.halalBox == true ? true : false
-                          }
-                          onClick={() => {
-                            if (isEditUser) {
-                              onChangeInfo("halalBox", true, true);
-                            }
-                          }}
-                        />
-                        <label class="form-check-label" for="adminHalalEdit">
-                          Halal
-                        </label>
-                      </div>
-                      <div class="form-check">
-                        <input
-                          class="form-check-input"
-                          type="radio"
-                          name="flexRadioDefault-3"
-                          id="adminNonHalalEdit"
-                          checked={
-                            editUserData?.halalBox == false ? true : false
-                          }
-                          onClick={() => {
-                            if (isEditUser) {
-                              onChangeInfo("halalBox", false, true);
-                            }
-                          }}
-                        />
-                        <label class="form-check-label" for="adminNonHalalEdit">
-                          Non Halal
-                        </label>
-                      </div>
-                    </div>
+                  <div style={{ display: "flex", flexDirection: "row" }}>
+                    <p style={{ flex: 2 }}>User Name:</p>
+                    <p style={{ flex: 3 }}>{editUserData?.userName}</p>
+                  </div>
+
+                  <div style={{ display: "flex", flexDirection: "row" }}>
+                    <p style={{ flex: 2 }}>Email:</p>
+                    <p style={{ flex: 3 }}>{editUserData?.email}</p>
+                  </div>
+                  <div style={{ display: "flex", flexDirection: "row" }}>
+                    <p style={{ flex: 2 }}>Mobile:</p>
+                    <p style={{ flex: 3 }}>{editUserData?.mobile}</p>
+                  </div>
+                  <div style={{ display: "flex", flexDirection: "row" }}>
+                    <p style={{ flex: 2 }}>Postal Code:</p>
+                    <p style={{ flex: 3 }}>{editUserData?.postalCode}</p>
+                  </div>
+                  <div style={{ display: "flex", flexDirection: "row" }}>
+                    <p style={{ flex: 2 }}>Street:</p>
+                    <p style={{ flex: 3 }}>{editUserData?.street}</p>
+                  </div>
+                  <div style={{ display: "flex", flexDirection: "row" }}>
+                    <p style={{ flex: 2 }}>Unit No:</p>
+                    <p style={{ flex: 3 }}>{editUserData?.unitNo}</p>
+                  </div>
+                  <div style={{ display: "flex", flexDirection: "row" }}>
+                    <p style={{ flex: 2 }}>Type of Housing:</p>
+                    <p style={{ flex: 3 }}>
+                      {editUserData?.housingType == 1
+                        ? "Public Housing (HOB flats)"
+                        : editUserData?.housingType == 2
+                        ? "Private Condominiums / Apartments"
+                        : editUserData?.housingType == 3
+                        ? "Landed Housing"
+                        : null}
+                    </p>
+                  </div>
+                  <div style={{ display: "flex", flexDirection: "row" }}>
+                    <p style={{ flex: 2 }}>Collection Box Type:</p>
+                    <p style={{ flex: 3 }}>
+                      {editUserData?.halalBox ? "Halal" : "Non-Halal"}
+                    </p>
                   </div>
                 </div>
-              </div>
+              )}
             </div>
 
             {isEditUser ? (
