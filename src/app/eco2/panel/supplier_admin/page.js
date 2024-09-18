@@ -15,7 +15,7 @@ import moment from "moment";
 import Pagination from "../../../components/Pagination";
 import { getLocalStorage } from "../../../api/localStorage";
 import Image from "next/image";
-import { imageUrl } from "../../../controller/baseUrl";
+import { baseUrl, imageUrl } from "../../../controller/baseUrl";
 
 export default function SupplierAdminPanel() {
   const { isMobile, isTablet, userInfo } = useContext(AppContext);
@@ -100,7 +100,7 @@ export default function SupplierAdminPanel() {
   const [isEditProduct, setIsEditProduct] = useState(false);
   const [isProductImageChange, setIsProductImageChange] = useState(false);
   const [category, setCategory] = useState([]);
-  // console.log("category --->", newProductData);
+  const [previousInStock, setPreviousInStock] = useState(true);
   //Product
 
   //Transaction
@@ -397,24 +397,6 @@ export default function SupplierAdminPanel() {
         }
       );
     } else if (type == "product") {
-      //       '{
-      //   "id": 8,
-      //   "categoryID": 13,
-      //   "brandID": 4,
-      //   "name": "red gas",
-      //   "description": "gas in red",
-      //   "unitPrice": 30,
-      //   "discountedUnitPrice": 25,
-      //   "maxDiscountValue": 5,
-      //   "maxGreenCredit": 500,
-      //   "maxPurchaseNo": 2,
-      //   "productImageUrl": #based64 string# or URL from DB,
-      //   "imageFileName": "8gasRed.png",
-      //   "inStock": true,
-      //   "priority": 2,
-      //   "editBy": "5",
-      //   "isActive": true
-      // }'
       var obj = {
         id: editProductData.id,
         categoryID: parseInt(editProductData.categoryId),
@@ -442,6 +424,58 @@ export default function SupplierAdminPanel() {
         setIsProductImageChange(false);
         setEditProductData(null);
         getProductBySupplierId();
+        if (data.length > 0) {
+          if (previousInStock == false && obj.inStock == true) {
+            SupplierAdminController.getUserListWhoWishlistTheProduct(
+              obj.id,
+              async (userList) => {
+                if (userList.length > 0) {
+                  await userList.map((u) => {
+                    try {
+                      fetch(`${baseUrl}Email/send`, {
+                        method: "POST",
+                        headers: {
+                          "Content-Type": "application/json;",
+                        },
+
+                        body: JSON.stringify({
+                          toEmail: `${u.userEmail}`,
+                          subject: "Your wish has come true!",
+                          body: `<html><body><h4>Dear <b>${u.userName}</b>,</h4>
+                              <p>The item <b>${data[0].productName}</b> is now available! You can now purchase it from our eShop:</p>
+                              <br/>
+                              <a href="https://feak.achieversprofile.com/eco2/shops/productsdetail/?productId=${data[0].productId}">https://feak.achieversprofile.com/eco2/shops/productsdetail/?productId=${data[0].productId}</a>
+                              </body></html>`,
+                          isHtml: true,
+                        }),
+                      })
+                        .then(async (response) => {
+                          if (response.ok) {
+                            return response.text();
+                          } else {
+                            toast.error("Something went wrong!");
+                          }
+                        })
+                        .then((res) => {
+                          toast.success(`${u.userName} ${res}`, {
+                            position: "top-right",
+                          });
+                        })
+                        .catch((err) => console.log("email error =====>", err));
+                    } catch (err) {
+                      console.error(err);
+                      toast.error("Something went wrong!");
+                    }
+                  });
+                  SupplierAdminController.removeAllWishlistWhenProductInstock(
+                    obj.id,
+                    (data) => {}
+                  );
+                }
+              }
+            );
+          }
+        }
       });
     }
   };
@@ -671,6 +705,7 @@ export default function SupplierAdminPanel() {
         var obj = { ...data };
         obj.imageName = "";
         obj.imageFileName = "";
+        setPreviousInStock(obj.inStock);
         setEditProductData(obj);
       }
     });
@@ -701,7 +736,7 @@ export default function SupplierAdminPanel() {
     );
   };
 
-  const onClickNextStage = (transactionHistoryId) => {
+  const onClickNextStage = (transactionHistoryId, status, detail) => {
     SupplierAdminController.updateTransactionStatusBySupplier(
       transactionHistoryId,
       (data) => {
@@ -710,6 +745,153 @@ export default function SupplierAdminPanel() {
             position: "top-right",
           });
           getTransactionBySupplierId();
+          if (status == "Fulfilled") {
+            try {
+              fetch(`${baseUrl}Email/send`, {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json;",
+                },
+                body: JSON.stringify({
+                  toEmail: `${detail.buyerEmail}`,
+                  subject: "Purchase ready for collection!",
+                  body: `<html><body><h4>Dear <b>${detail.buyerName}</b>,</h4>
+                        <p>The following items ${
+                          detail.selectedCollectionLocation == null
+                            ? "have been sent"
+                            : "are ready for your collection"
+                        }.</p>
+                        <br/>
+                        <div>
+                          <h4>Product Information</h4>
+                                        <ul>
+                                          ${detail.purchasedProductDisplayDtos
+                                            .map((productData, index1) => {
+                                              return `
+                                              <li key=${index1}>
+                                                <span>Product Name: ${
+                                                  productData.productName
+                                                }</span>
+                                                <ul>
+                                                  <li>Quantity: <span>${
+                                                    productData.quantity
+                                                  }</span></li>
+                                                  <li>Unit Price: <span>${
+                                                    productData.discountedUnitPrice
+                                                      ? productData.discountedUnitPrice
+                                                      : productData.unitPrice
+                                                  }</span></li>
+                                                  <li>SubTotal: <span>${
+                                                    productData.discountedUnitPrice
+                                                      ? productData.discountedUnitPrice *
+                                                        productData.quantity
+                                                      : productData.quantity *
+                                                        productData.unitPrice
+                                                  }</span></li>
+                                                  ${
+                                                    productData.gcRedeemed != 0
+                                                      ? `
+                                                    <li>GC Redeemed: <span>${
+                                                      productData.gcRedeemed
+                                                    }</span></li>
+                                                    <li>Discount Amount: <span>${
+                                                      productData.discountAmount /
+                                                      100
+                                                    }</span></li>
+                                                `
+                                                      : ""
+                                                  }
+                                                  <li>Net Payable: <span>${
+                                                    productData.gcRedeemed == 0
+                                                      ? (productData.discountedUnitPrice
+                                                          ? productData.discountedUnitPrice *
+                                                            productData.quantity
+                                                          : productData.quantity *
+                                                            productData.unitPrice) -
+                                                        productData.gcRedeemed
+                                                      : productData.discountedUnitPrice
+                                                      ? productData.discountedUnitPrice *
+                                                        productData.quantity
+                                                      : productData.quantity *
+                                                        productData.unitPrice
+                                                  }</span></li>
+                                                </ul>
+                                            </li>
+                                            `;
+                                            })
+                                            .join("")}
+                                        </ul>
+                                        <h4>Brand Shipment and Collection Information</h4>
+                                        <ul>
+                                          <li>Shipment Mode: <span>${
+                                            detail.selectedCollectionLocation ==
+                                            null
+                                              ? "Delivery"
+                                              : "Self Collection"
+                                          }</span></li>
+                                          ${
+                                            detail.selectedCollectionLocation !=
+                                            null
+                                              ? `
+                                            <li>Collection Location: <span>${detail.selectedCollectionLocation.address}</span></li>
+                                            <li>Collection Instruction: <span>${detail.selectedCollectionLocation.instructions}</span></li>
+                                          `
+                                              : ""
+                                          }
+                                        </ul>
+                                      </div>
+                        </body></html>`,
+                  isHtml: true,
+                }),
+              })
+                .then(async (response) => {
+                  if (response.ok) {
+                    return response.text();
+                  } else {
+                    toast.error("Something went wrong!");
+                  }
+                })
+                .then((res) => {
+                  toast.success(res, { position: "top-right" });
+                  try {
+                    fetch(`${baseUrl}Email/send`, {
+                      method: "POST",
+                      headers: {
+                        "Content-Type": "application/json;",
+                      },
+                      body: JSON.stringify({
+                        toEmail: `${detail.buyerEmail}`,
+                        subject: "Please give us your feedback!",
+                        body: `<html><body><h4>Dear <b>${detail.buyerName}</b>,</h4>
+                                <p>We hope you are happy your purchase/s. Do share your feedback with us:</p>
+                                <br/>
+                                <a href="https://feak.achieversprofile.com/eco2/shops/product_review">https://feak.achieversprofile.com/eco2/shops/product_review</a>
+                                </body></html>`,
+                        isHtml: true,
+                      }),
+                    })
+                      .then(async (response) => {
+                        if (response.ok) {
+                          return response.text();
+                        } else {
+                          toast.error("Something went wrong!");
+                        }
+                      })
+                      .then((res) => {
+                        toast.success(res, { position: "top-right" });
+                      })
+                      .catch((err) => console.log("email error =====>", err));
+                  } catch (err) {
+                    console.error(err);
+                    toast.error("Something went wrong!");
+                  }
+                })
+                .catch((err) => console.log("email error =====>", err));
+            } catch (err) {
+              console.error(err);
+              toast.error("Something went wrong!");
+            }
+          }
         } else {
           toast.error("Something is wrong updating the status!", {
             position: "top-right",
@@ -1880,6 +2062,8 @@ export default function SupplierAdminPanel() {
         tabindex="-1"
         aria-labelledby="exampleModalLabelBrand"
         aria-hidden="true"
+        data-bs-backdrop="static"
+        data-bs-keyboard="false"
       >
         <div class="modal-dialog">
           <div class="modal-content">
@@ -2070,6 +2254,8 @@ export default function SupplierAdminPanel() {
         tabindex="-1"
         aria-labelledby="exampleModalLabelCollection"
         aria-hidden="true"
+        data-bs-backdrop="static"
+        data-bs-keyboard="false"
       >
         <div class="modal-dialog">
           <div class="modal-content">
@@ -2199,6 +2385,8 @@ export default function SupplierAdminPanel() {
         tabindex="-1"
         aria-labelledby="exampleModalLabelProduct"
         aria-hidden="true"
+        data-bs-backdrop="static"
+        data-bs-keyboard="false"
       >
         <div class={isEditProduct ? "modal-dialog modal-xl" : "modal-dialog"}>
           <div class="modal-content">
@@ -2214,6 +2402,7 @@ export default function SupplierAdminPanel() {
                 onClick={() => {
                   setEditProductData(null);
                   setIsProductImageChange(false);
+                  setPreviousInStock(true);
                 }}
               ></button>
             </div>
@@ -2616,7 +2805,9 @@ export default function SupplierAdminPanel() {
                     <div style={{ display: "flex", flexDirection: "row" }}>
                       <p style={{ flex: 2 }}>Discount Price:</p>
                       <p style={{ flex: 3 }}>
-                        {editProductData?.discountedUnitPrice ? editProductData?.discountedUnitPrice : 0}
+                        {editProductData?.discountedUnitPrice
+                          ? editProductData?.discountedUnitPrice
+                          : 0}
                       </p>
                     </div>
                     <div style={{ display: "flex", flexDirection: "row" }}>
@@ -2627,16 +2818,26 @@ export default function SupplierAdminPanel() {
                     </div>
                     <div style={{ display: "flex", flexDirection: "row" }}>
                       <p style={{ flex: 2 }}>Max Green Credit:</p>
-                      <p style={{ flex: 3 }}>{editProductData?.maxGreenCredit}</p>
+                      <p style={{ flex: 3 }}>
+                        {editProductData?.maxGreenCredit}
+                      </p>
                     </div>
                     <div style={{ display: "flex", flexDirection: "row" }}>
                       <p style={{ flex: 2 }}>Max Purchase No:</p>
-                      <p style={{ flex: 3 }}>{editProductData?.maxPurchaseNo ? editProductData?.maxPurchaseNo : "Any Amount"}</p>
+                      <p style={{ flex: 3 }}>
+                        {editProductData?.maxPurchaseNo
+                          ? editProductData?.maxPurchaseNo
+                          : "Any Amount"}
+                      </p>
                     </div>
                     <div style={{ display: "flex", flexDirection: "row" }}>
                       <p style={{ flex: 2 }}>Category:</p>
                       <p style={{ flex: 3 }}>
-                        {category.filter(v => v.id == editProductData?.categoryId)[0]?.name}
+                        {
+                          category.filter(
+                            (v) => v.id == editProductData?.categoryId
+                          )[0]?.name
+                        }
                       </p>
                     </div>
                     <div style={{ display: "flex", flexDirection: "row" }}>
@@ -2655,7 +2856,9 @@ export default function SupplierAdminPanel() {
                     </div>
                     <div style={{ display: "flex", flexDirection: "row" }}>
                       <p style={{ flex: 2 }}>Instock:</p>
-                      <p style={{ flex: 3 }}>{editProductData?.inStock ? "In Stock" : "Out of Stock"}</p>
+                      <p style={{ flex: 3 }}>
+                        {editProductData?.inStock ? "In Stock" : "Out of Stock"}
+                      </p>
                     </div>
                   </div>
                 )}
@@ -2684,6 +2887,8 @@ export default function SupplierAdminPanel() {
         tabindex="-1"
         aria-labelledby="exampleModalLabel"
         aria-hidden="true"
+        data-bs-backdrop="static"
+        data-bs-keyboard="false"
       >
         <div class="modal-dialog">
           <div class="modal-content">
@@ -2792,7 +2997,10 @@ export default function SupplierAdminPanel() {
                   onClick={() => {
                     onClickNextStage(
                       transactionDetail?.transactionStatusHistoryDisplayDtos[0]
-                        .transactionHistoryId
+                        .transactionHistoryId,
+                      transactionDetail?.transactionStatusHistoryDisplayDtos[0]
+                        .nextStageDescription,
+                      transactionDetail
                     );
                   }}
                 >
@@ -2813,6 +3021,8 @@ export default function SupplierAdminPanel() {
         tabindex="-1"
         aria-labelledby="exampleModalLabelDelete"
         aria-hidden="true"
+        data-bs-backdrop="static"
+        data-bs-keyboard="false"
       >
         <div class="modal-dialog modal-sm">
           <div class="modal-content">

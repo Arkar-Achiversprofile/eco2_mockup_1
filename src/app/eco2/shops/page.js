@@ -233,7 +233,7 @@ function Shops() {
       obj["accountItemId"] = userInfo.userId;
       obj["productId"] = productId;
       EShopController.addToWishlist(obj, (data) => {
-        if (data.accountItemId) {
+        if (data.id) {
           toast.success("Add to wishlist successful!", {
             position: "top-right",
           });

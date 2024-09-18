@@ -19,13 +19,16 @@ export default function PaynowPaylah() {
   const paymentIntentId = searchParams.get("paymentIntentId");
   const [qrImage, setQrImage] = useState("");
   const [orderData, setOrderData] = useState([]);
+  const [totalAmount, setTotalAmount] = useState(0)
 
   useEffect(() => {
     getOrderData()
   }, [])
 
   const getOrderData = () => {
-    let orderData = JSON.parse(getLocalStorage("orderData"))
+    let orderData = JSON.parse(getLocalStorage("orderData"));
+    let orderTotalAmount = getLocalStorage("totalAmount");
+    setTotalAmount(orderTotalAmount)
     setOrderData(orderData);
   }
 
@@ -49,7 +52,7 @@ export default function PaynowPaylah() {
           style={{ width: "100%" }}
         >
           <Elements options={options} stripe={stripePromise}>
-            <PaymentForm orderData={orderData} clientSecret={clientSecret} paymentIntentId={paymentIntentId} />
+            <PaymentForm orderData={orderData} totalAmount={totalAmount} clientSecret={clientSecret} paymentIntentId={paymentIntentId} />
           </Elements>
         </div>
       )}

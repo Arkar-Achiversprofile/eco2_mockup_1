@@ -44,6 +44,10 @@ const getWishlistByAccountId = (id, setData) => {
   getApi(`Shop/GetWishListItemsbyAccountItemId/${id}`, data => setData(data))
 }
 
+const removeWishlistByUser = (id, setData) => {
+  patchApi(`Shop/RemoveWishListItemById/${id}`, null, data => setData(data))
+}
+
 const getShippingInfo = (id, setData) => {
   getApi(`AccountItems/GetShippingInfo/${id}`, data => setData(data))
 }
@@ -67,6 +71,7 @@ export const EShopController = {
   getUserTransactionHistory,
   addToWishlist,
   getWishlistByAccountId,
+  removeWishlistByUser,
   getShippingInfo,
   getProductListForReview,
   createProductReview,

@@ -61,6 +61,14 @@ const getClosedTransaction = (id, setData) => {
   getApi(`Supplier/GetClosedTransactionsBySupplierId/${id}`, data => setData(data))
 }
 
+const getUserListWhoWishlistTheProduct = (id, setData) => {
+  getApi(`Shop/GetWishListSubscribersByProductId/${id}`, data => setData(data))
+} 
+
+const removeAllWishlistWhenProductInstock = (productId, setData) => {
+  patchApi(`Shop/RemoveWishListItems/${productId}`, null, data => setData(data));
+}
+
 export const SupplierAdminController = {
   getBrandRecord,
   updateBrandBySupplier,
@@ -76,4 +84,6 @@ export const SupplierAdminController = {
   getTransactionDetailByPurchasedBrandId,
   updateTransactionStatusBySupplier,
   getClosedTransaction,
+  getUserListWhoWishlistTheProduct,
+  removeAllWishlistWhenProductInstock,
 };

@@ -7,6 +7,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useRouter, useSearchParams } from "next/navigation";
 import AppContext from "../../context/AppContext";
+import { setLocalStorage } from "../../api/localStorage";
 
 export default function Verification() {
   return (
@@ -38,6 +39,15 @@ function Boundary() {
         },
         (verifyData) => {
           if (verifyData.userName) {
+            setLocalStorage("userName", verifyData.userName);
+            setLocalStorage("id", verifyData.id)
+            setLocalStorage("email", verifyData.email);
+            setLocalStorage("qrUrl", verifyData.qrURL);
+            setLocalStorage(
+              "greenCurrencyBalance",
+              verifyData.greenCurrencyBalance
+            );
+            setLocalStorage("role", verifyData.role);
             const oldUser = { ...userInfo };
             oldUser.userId = verifyData.id;
             oldUser.qrUrl = verifyData.qrURL;

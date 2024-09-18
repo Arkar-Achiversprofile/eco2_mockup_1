@@ -10,7 +10,6 @@ import "react-toastify/dist/ReactToastify.css";
 export default function Wishlist() {
   const { userInfo } = useContext(AppContext);
   const [wishlistData, setWishlistData] = useState([]);
-  // console.log("userInf0 ====>", userInfo.userId)
 
   useEffect(() => {
     getWishlistData();
@@ -24,12 +23,11 @@ export default function Wishlist() {
     });
   };
 
-//   {
-//     "productName": "Salmon",
-//     "brandName": "OtoTesting",
-//     "categoryName": "Local",
-//     "unitPrice": 6
-//   }
+  const removeWishlist = (id) => {
+    EShopController.removeWishlistByUser(id, data => {
+      getWishlistData();
+    })
+  }
 
   return (
     <div>
@@ -59,7 +57,7 @@ export default function Wishlist() {
                 {/* <button class="btn btn-primary" style={{marginRight: 10, fontSize: 14}}>
                     Add to Cart
                 </button> */}
-                <button class="btn btn-dark" style={{fontSize: 14}}>
+                <button class="btn btn-dark" style={{fontSize: 14}} onClick={() => removeWishlist(w.wishListId)}>
                     Remove
                 </button>
                 </div>

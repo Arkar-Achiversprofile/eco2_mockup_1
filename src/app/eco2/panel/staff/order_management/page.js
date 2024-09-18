@@ -1,14 +1,18 @@
 "use client";
-import React, { useContext, useMemo, useState } from "react";
+import React, { useContext, useEffect, useMemo, useState } from "react";
 import NavBar from "../../../../components/NavBar";
 import AppContext from "../../../../context/AppContext";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { SupplierAdminController } from "../../../../controller";
+import {
+  BrandController,
+  OrderManagementController,
+} from "../../../../controller";
 import Pagination from "../../../../components/Pagination";
 import { color } from "../../../../components/color";
 import { getLocalStorage } from "../../../../api/localStorage";
 import moment from "moment";
+import { baseUrl } from "../../../../controller/baseUrl";
 
 export default function OrderManagement() {
   const { isMobile, isTablet } = useContext(AppContext);
@@ -18,20 +22,37 @@ export default function OrderManagement() {
   const [currentPage, setCurrentPage] = useState(1);
   const [closedTransaction, setClosedTransaction] = useState([]);
   const [closedCurrentPage, setClosedCurrentPage] = useState(1);
+  const [brandList, setBrandList] = useState([]);
+  const [selectedBrandId, setSelectBrandId] = useState(0);
+  const [selectedClosedBrandId, setSelectClosedBrandId] = useState(0);
   const pageSize = 10;
+  console.log("detail == >", transactionDetail);
+
+  useEffect(() => {
+    getBrand();
+    setSelectClosedBrandId(0);
+    setSelectBrandId(0);
+  }, [tab]);
 
   const onClickTabs = (value) => {
     if (value == 1) {
-      getTransactionBySupplierId();
+      getAllActiveTransaction();
     } else if (value == 2) {
-      getClosedTransaction();
+      getAllClosedTransaction();
     }
     setTab(value);
   };
 
-  const getTransactionBySupplierId = () => {
-    const id = getLocalStorage("id");
-    SupplierAdminController.getTransactionBySupplierId(id, (data) => {
+  const getBrand = () => {
+    BrandController.getBrandIdList((data) => {
+      if (data.length > 0) {
+        setBrandList(data);
+      }
+    });
+  };
+
+  const getAllActiveTransaction = () => {
+    OrderManagementController.getAllActiveTransaction((data) => {
       if (data.length > 0) {
         data.sort(function (a, b) {
           return new Date(a.stage) - new Date(b.stage);
@@ -41,9 +62,8 @@ export default function OrderManagement() {
     });
   };
 
-  const getClosedTransaction = () => {
-    const id = getLocalStorage("id");
-    SupplierAdminController.getClosedTransaction(id, (data) => {
+  const getAllClosedTransaction = () => {
+    OrderManagementController.getAllClosedTransaction((data) => {
       if (data.length > 0) {
         setClosedTransaction(data);
       }
@@ -51,7 +71,7 @@ export default function OrderManagement() {
   };
 
   const onClickDetail = (id) => {
-    SupplierAdminController.getTransactionDetailByPurchasedBrandId(
+    OrderManagementController.getTransactionDetailByPurchasedBrandId(
       id,
       (data) => {
         setTransactionDetail(data);
@@ -59,15 +79,198 @@ export default function OrderManagement() {
     );
   };
 
-  const onClickNextStage = (transactionHistoryId) => {
-    SupplierAdminController.updateTransactionStatusBySupplier(
+  //   {
+  //     "buyerName": "Arkar",
+  //     "buyerEmail": "arkarphonemyat99@gmail.com",
+  //     "purchasedBrandID": 24,
+  //     "selectedCollectionLocation": {
+  //         "id": 3,
+  //         "brandID": 4,
+  //         "brand": null,
+  //         "address": "Guess water lane",
+  //         "instructions": "Weekend 5pm-5am",
+  //         "createdDatetime": "2024-08-02T09:16:51.4569161",
+  //         "createdBy": "5",
+  //         "editedDatetime": null,
+  //         "editedBy": null,
+  //         "isActive": true
+  //     },
+  //     "purchasedProductDisplayDtos": [
+  //         {
+  //             "productName": "red gas",
+  //             "unitPrice": 30,
+  //             "discountedUnitPrice": 25,
+  //             "quantity": 1,
+  //             "gcRedeemed": 0,
+  //             "discountAmount": 0
+  //         }
+  //     ],
+  //     "transactionStatusHistoryDisplayDtos": [
+  //         {
+  //             "transactionHistoryId": 10048,
+  //             "stage": 1,
+  //             "transactionStatusDescription": "Processing",
+  //             "nextStageDescription": "Processed",
+  //             "createdDatetime": "2024-09-13T17:47:32.7826253"
+  //         }
+  //     ]
+  // }
+  const onClickNextStage = (transactionHistoryId, status, detail) => {
+    OrderManagementController.updateTransactionStatusByStaff(
       transactionHistoryId,
       (data) => {
         if (data.transactionHistoryId > 0) {
           toast.success("Status update successful!", {
             position: "top-right",
           });
-          getTransactionBySupplierId();
+          getAllActiveTransaction();
+          if (status == "Fulfilled") {
+            try {
+              fetch(`${baseUrl}Email/send`, {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json;",
+                },
+                body: JSON.stringify({
+                  toEmail: `${detail.buyerEmail}`,
+                  subject: "Purchase ready for collection!",
+                  body: `<html><body><h4>Dear <b>${detail.buyerName}</b>,</h4>
+                        <p>The following items ${
+                          detail.selectedCollectionLocation == null
+                            ? "have been sent"
+                            : "are ready for your collection"
+                        }.</p>
+                        <br/>
+                        <div>
+                          <h4>Product Information</h4>
+                                        <ul>
+                                          ${detail.purchasedProductDisplayDtos
+                                            .map((productData, index1) => {
+                                              return `
+                                              <li key=${index1}>
+                                                <span>Product Name: ${
+                                                  productData.productName
+                                                }</span>
+                                                <ul>
+                                                  <li>Quantity: <span>${
+                                                    productData.quantity
+                                                  }</span></li>
+                                                  <li>Unit Price: <span>${
+                                                    productData.discountedUnitPrice
+                                                      ? productData.discountedUnitPrice
+                                                      : productData.unitPrice
+                                                  }</span></li>
+                                                  <li>SubTotal: <span>${
+                                                    productData.discountedUnitPrice
+                                                      ? productData.discountedUnitPrice *
+                                                        productData.quantity
+                                                      : productData.quantity *
+                                                        productData.unitPrice
+                                                  }</span></li>
+                                                  ${
+                                                    productData.gcRedeemed != 0
+                                                      ? `
+                                                    <li>GC Redeemed: <span>${
+                                                      productData.gcRedeemed
+                                                    }</span></li>
+                                                    <li>Discount Amount: <span>${
+                                                      productData.discountAmount /
+                                                      100
+                                                    }</span></li>
+                                                `
+                                                      : ""
+                                                  }
+                                                  <li>Net Payable: <span>${
+                                                    productData.gcRedeemed == 0
+                                                      ? (productData.discountedUnitPrice
+                                                          ? productData.discountedUnitPrice *
+                                                            productData.quantity
+                                                          : productData.quantity *
+                                                            productData.unitPrice) -
+                                                        productData.gcRedeemed
+                                                      : productData.discountedUnitPrice
+                                                      ? productData.discountedUnitPrice *
+                                                        productData.quantity
+                                                      : productData.quantity *
+                                                        productData.unitPrice
+                                                  }</span></li>
+                                                </ul>
+                                            </li>
+                                            `;
+                                            })
+                                            .join("")}
+                                        </ul>
+                                        <h4>Brand Shipment and Collection Information</h4>
+                                        <ul>
+                                          <li>Shipment Mode: <span>${
+                                            detail.selectedCollectionLocation ==
+                                            null
+                                              ? "Delivery"
+                                              : "Self Collection"
+                                          }</span></li>
+                                          ${
+                                            detail.selectedCollectionLocation !=
+                                            null
+                                              ? `
+                                            <li>Collection Location: <span>${detail.selectedCollectionLocation.address}</span></li>
+                                            <li>Collection Instruction: <span>${detail.selectedCollectionLocation.instructions}</span></li>
+                                          `
+                                              : ""
+                                          }
+                                        </ul>
+                                      </div>
+                        </body></html>`,
+                  isHtml: true,
+                }),
+              })
+                .then(async (response) => {
+                  if (response.ok) {
+                    return response.text();
+                  } else {
+                    toast.error("Something went wrong!");
+                  }
+                })
+                .then((res) => {
+                  toast.success(res, { position: "top-right" });
+                  try {
+                    fetch(`${baseUrl}Email/send`, {
+                      method: "POST",
+                      headers: {
+                        "Content-Type": "application/json;",
+                      },
+                      body: JSON.stringify({
+                        toEmail: `${detail.buyerEmail}`,
+                        subject: "Looking forward to your response!!",
+                        body: `<html><body><h4>Dear <b>${detail.buyerName}</b>,</h4>
+                                <p>Hope you're enjoying your new product/s. We value your opinion - let us know:</p>
+                                <br/>
+                                <a href="https://feak.achieversprofile.com/eco2/shops/product_review">https://feak.achieversprofile.com/eco2/shops/product_review</a>
+                                </body></html>`,
+                        isHtml: true,
+                      }),
+                    })
+                      .then(async (response) => {
+                        if (response.ok) {
+                          return response.text();
+                        } else {
+                          toast.error("Something went wrong!");
+                        }
+                      })
+                      .then((res) => {
+                        toast.success(res, { position: "top-right" });
+                      })
+                      .catch((err) => console.log("email error =====>", err));
+                  } catch (err) {
+                    console.error(err);
+                    toast.error("Something went wrong!");
+                  }
+                })
+                .catch((err) => console.log("email error =====>", err));
+            } catch (err) {
+              console.error(err);
+              toast.error("Something went wrong!");
+            }
+          }
         } else {
           toast.error("Something is wrong updating the status!", {
             position: "top-right",
@@ -89,6 +292,38 @@ export default function OrderManagement() {
     return computedData.slice(startIndex, startIndex + pageSize);
   }, [closedCurrentPage, closedTransaction]);
 
+  const onSelectActiveBrandName = (brand) => {
+    setSelectBrandId(brand);
+    if (brand == 0) {
+      getAllActiveTransaction();
+    } else {
+      OrderManagementController.getActiveTransactionByBrandId(brand, (data) => {
+        setTransaction(data);
+        if (data.length < 1) {
+          toast.warn("There is no transaction for this brand!", {
+            position: "top-right",
+          });
+        }
+      });
+    }
+  };
+
+  const onSelectClosedBrandName = (brand) => {
+    setSelectClosedBrandId(brand);
+    if (brand == 0) {
+      getAllClosedTransaction();
+    } else {
+      OrderManagementController.getClosedTransactionByBrandId(brand, (data) => {
+        setClosedTransaction(data);
+        if (data.length < 1) {
+          toast.warn("There is no transaction for this brand!", {
+            position: "top-right",
+          });
+        }
+      });
+    }
+  };
+
   const onPageChange = (page) => {
     setCurrentPage(page);
   };
@@ -109,7 +344,7 @@ export default function OrderManagement() {
             flexDirection: "row",
             flexWrap: "wrap",
             // justifyContent: "center",
-            paddingLeft: 20,
+            // paddingLeft: 20,
           }}
         >
           <button
@@ -148,6 +383,35 @@ export default function OrderManagement() {
             ) : (
               <h4 style={{ marginTop: 20 }}>Manage Transaction</h4>
             )}
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "flex-end",
+                marginTop: 10,
+              }}
+            >
+              <div>
+                <label className="form-label" for="active">
+                  Select Brand
+                </label>
+                <select
+                  id="active"
+                  name="active"
+                  class="form-select"
+                  aria-label="Default select example 1"
+                  style={{ width: 220, height: 35, marginRight: 10 }}
+                  value={selectedBrandId}
+                  onChange={(e) => onSelectActiveBrandName(e.target.value)}
+                >
+                  <option value={0}>All Brand</option>
+                  {brandList.map((value, index) => (
+                    <option key={index} value={value.id}>
+                      {value.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
             <div class="table-responsive" style={{ margin: "30px 0px" }}>
               <table class="table table-striped">
                 <thead>
@@ -201,6 +465,35 @@ export default function OrderManagement() {
             ) : (
               <h4 style={{ marginTop: 20 }}>Closed Transaction</h4>
             )}
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "flex-end",
+                marginTop: 10,
+              }}
+            >
+              <div>
+                <label className="form-label" for="closed">
+                  Select Brand
+                </label>
+                <select
+                  id="closed"
+                  name="closed"
+                  class="form-select"
+                  aria-label="Default select example"
+                  style={{ width: 220, height: 35, marginRight: 10 }}
+                  value={selectedClosedBrandId}
+                  onChange={(e) => onSelectClosedBrandName(e.target.value)}
+                >
+                  <option value={0}>All Brand</option>
+                  {brandList.map((value, index) => (
+                    <option key={index} value={value.id}>
+                      {value.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
             <div class="table-responsive" style={{ margin: "30px 0px" }}>
               <table class="table table-striped">
                 <thead>
@@ -353,7 +646,10 @@ export default function OrderManagement() {
                   onClick={() => {
                     onClickNextStage(
                       transactionDetail?.transactionStatusHistoryDisplayDtos[0]
-                        .transactionHistoryId
+                        .transactionHistoryId,
+                      transactionDetail?.transactionStatusHistoryDisplayDtos[0]
+                        .nextStageDescription,
+                      transactionDetail
                     );
                   }}
                 >

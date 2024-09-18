@@ -32,6 +32,10 @@ export default function Login() {
           setLocalStorage("id", data.id);
           setLocalStorage("password", loginData.password);
           setLocalStorage("userName", loginData.userName);
+          setLocalStorage("email", data.email)
+          setLocalStorage("qrUrl", data.qrURL);
+          setLocalStorage("greenCurrencyBalance", data.greenCurrencyBalance);
+          setLocalStorage("role", data.role)
           const oldUser = { ...userInfo };
           oldUser.userId = data.id;
           oldUser.qrUrl = data.qrURL;

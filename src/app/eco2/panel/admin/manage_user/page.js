@@ -50,7 +50,6 @@ export default function ManageUser() {
   };
 
   const onSelectUserRole = (id) => {
-    console.log("id", id);
     setRoleNo(id);
     if (id == "All" || id == "Select User Role") {
       getAccountItems();

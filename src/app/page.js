@@ -11,10 +11,14 @@ import { useContext, useEffect } from "react";
 import AppContext from "./context/AppContext";
 import { color } from "./components/color";
 import { imageUrl } from "./controller/baseUrl";
+import { getLocalStorage } from "./api/localStorage";
 
 export default function Home() {
   const { userInfo } = useContext(AppContext);
   const router = useRouter();
+  // const userName = getLocalStorage("userName");
+  // const qrUrl = getLocalStorage("qrUrl");
+  // const greenCurrencyBalance = getLocalStorage("greenCurrencyBalance")
   const isMobile = useMediaQuery({
     query: "(max-width: 500px)",
   });

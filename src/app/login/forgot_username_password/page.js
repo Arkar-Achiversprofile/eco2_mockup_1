@@ -30,7 +30,7 @@ function Boundary() {
     LoginRegisterController.forgotUsername(forgotUsername, (data) => {
       if (data.id) {
         try {
-          fetch("https://ecoAPIt.achieversprofile.com/api/Email/send", {
+          fetch(`${baseUrl}Email/send`, {
             method: "POST",
             headers: {
               "Content-Type": "application/json;",

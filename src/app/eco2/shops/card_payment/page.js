@@ -1,11 +1,11 @@
 "use client";
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import ShopNavBar from "../../../components/ShopNavBar";
 import { Elements } from "@stripe/react-stripe-js";
 import PaymentForm from "../../../components/PaymentForm";
-import {stripe, stripePromise} from "../../../api/stripe-paymentintent";
+import { stripe, stripePromise } from "../../../api/stripe-paymentintent";
 import { getLocalStorage } from "../../../api/localStorage";
-
+import { baseUrl } from "../../../controller/baseUrl";
 
 export default function CardPayment() {
   const [clientSecret, setClientSecret] = React.useState("");
@@ -17,16 +17,15 @@ export default function CardPayment() {
   const [orderData, setOrderData] = useState([]);
 
   useEffect(() => {
-    getOrderData()
-  }, [])
+    getOrderData();
+  }, []);
 
   const getOrderData = () => {
-    let orderData = JSON.parse(getLocalStorage("orderData"))
+    let orderData = JSON.parse(getLocalStorage("orderData"));
     let orderTotalAmount = getLocalStorage("totalAmount");
     setOrderData(orderData);
     setTotal(orderTotalAmount);
-  }
-
+  };
 
   const onClickButton = async () => {
     try {
@@ -40,7 +39,7 @@ export default function CardPayment() {
       } catch (error) {
         console.log("paymentIntent error =====>", error);
       }
-  }
+  };
 
   const appearance = {
     theme: "stripe",
@@ -62,7 +61,11 @@ export default function CardPayment() {
           style={{ width: "100%" }}
         >
           <Elements options={options} stripe={stripePromise}>
-            <PaymentForm orderData={orderData} paymentIntentId={paymentIntentId} />
+            <PaymentForm
+              orderData={orderData}
+              totalAmount={total}
+              paymentIntentId={paymentIntentId}
+            />
           </Elements>
         </div>
       ) : (

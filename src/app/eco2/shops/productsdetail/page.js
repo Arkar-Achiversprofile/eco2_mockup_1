@@ -24,7 +24,6 @@ export default function ProductDetail() {
   const [productDetailData, setProductDetailData] = useState({});
   const [quantityCount, setQuantityCount] = useState(1);
   const [quantityClick, setQuantityClick] = useState(false);
-  console.log("product detail", productDetailData);
 
   useEffect(() => {
     getProductDetail();
@@ -322,25 +321,27 @@ export default function ProductDetail() {
             </div>
           </div>
         </div>
-        <div style={{ width: "100%", paddingLeft: isMobile ? 20 : 100 }}>
-          <h4>Customer Reviews</h4>
-          {productDetailData?.reviews?.map((value, index) => (
-            <div key={index} style={{ width: isMobile ? "100%" : "60%" }}>
-              <div style={{ marginTop: 20 }}>
-                <ReactStarsRating
-                  value={value.rating}
-                  size={25}
-                  starGap={10}
-                  isHalf={false}
-                />
+        {productDetailData?.reviews?.length > 0 ? (
+          <div style={{ width: "100%", paddingLeft: isMobile ? 20 : 100 }}>
+            <h4>Customer Reviews</h4>
+            {productDetailData?.reviews?.map((value, index) => (
+              <div key={index} style={{ width: isMobile ? "100%" : "60%" }}>
+                <div style={{ marginTop: 20 }}>
+                  <ReactStarsRating
+                    value={value.rating}
+                    size={25}
+                    starGap={10}
+                    isHalf={false}
+                  />
+                </div>
+                <p style={{ fontSize: isMobile ? 14 : 16 }}>{value.review}</p>
+                {index == productDetailData?.reviews?.length - 1 ? null : (
+                  <hr />
+                )}
               </div>
-              <p style={{ fontSize: isMobile ? 14 : 16 }}>
-                {value.review}
-              </p>
-              {index == productDetailData?.reviews?.length - 1 ? null : <hr />}
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        ) : null}
       </div>
     </div>
   );

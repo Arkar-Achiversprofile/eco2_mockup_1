@@ -11,10 +11,15 @@ import { BrandController, EShopController } from "../controller";
 import AppContext from "../context/AppContext";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { deleteLocalStorage } from "../api/localStorage";
+import { deleteLocalStorage, getLocalStorage } from "../api/localStorage";
 import { StripeApiKey } from "../api/StripeApiKey";
+import { baseUrl } from "../controller/baseUrl";
 
-export default function PaymentForm({ orderData, paymentIntentId }) {
+export default function PaymentForm({
+  orderData,
+  totalAmount,
+  paymentIntentId,
+}) {
   const router = useRouter();
   const stripe = useStripe();
   const elements = useElements();
@@ -134,6 +139,136 @@ export default function PaymentForm({ orderData, paymentIntentId }) {
                   router.push("/eco2/shops/order_success");
                 },
               });
+              const userName = getLocalStorage("userName");
+              const email = getLocalStorage("email");
+              try {
+                fetch(`${baseUrl}Email/send`, {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json;",
+                  },
+                  body: JSON.stringify({
+                    toEmail: `${email}`,
+                    subject: "Thanks for shopping with Eco2 eShop!",
+                    body: `<html><body><h4>Dear <b>${userName}</b>,</h4>
+                          <p>You have purchased the following item/s from us. Your payment ID is <b>${
+                            result.paymentIntent.id
+                          }</b>.</p>
+                          <p>Here is a summary of your purchase/s. Supplier/s of the item/s will update you on the status of your purchase/s.</p>
+                          <br/>
+                          <div>
+                          ${orderData
+                            .map((brandData, index) => {
+                              return `
+                                        <div key=${index}>
+                                          <h3>Supplier: ${
+                                            brandData.brandName
+                                          }</h3>
+                                          <ul>
+                                            ${brandData.shopCartDisplayProductDtos
+                                              .map((productData, index1) => {
+                                                return `
+                                                <li key=${index1}>
+                                                  <span>Product Name: ${
+                                                    productData.productName
+                                                  }</span>
+                                                  <ul>
+                                                    <li>Quantity: <span>${
+                                                      productData.quantity
+                                                    }</span></li>
+                                                    <li>Unit Price: <span>${
+                                                      productData.discountedUnitPrice
+                                                        ? productData.discountedUnitPrice
+                                                        : productData.unitPrice
+                                                    }</span></li>
+                                                    <li>SubTotal: <span>${
+                                                      productData.discountedUnitPrice
+                                                        ? productData.discountedUnitPrice *
+                                                          productData.quantity
+                                                        : productData.quantity *
+                                                          productData.unitPrice
+                                                    }</span></li>
+                                                    ${
+                                                      productData.isGCused
+                                                        ? `
+                                                      <li>GC Redeemed: <span>${
+                                                        productData.GCAmount
+                                                      }</span></li>
+                                                      <li>Discount Amount: <span>${
+                                                        productData.GCAmount /
+                                                        100
+                                                      }</span></li>
+                                                  `
+                                                        : ""
+                                                    }
+                                                    <li>Net Payable: <span>${
+                                                      productData.isGCused
+                                                        ? (productData.discountedUnitPrice
+                                                            ? productData.discountedUnitPrice *
+                                                              productData.quantity
+                                                            : productData.quantity *
+                                                              productData.unitPrice) -
+                                                          productData.GCAmount
+                                                        : productData.discountedUnitPrice
+                                                        ? productData.discountedUnitPrice *
+                                                          productData.quantity
+                                                        : productData.quantity *
+                                                          productData.unitPrice
+                                                    }</span></li>
+                                                  </ul>
+                                              </li>
+                                              `;
+                                              })
+                                              .join("")}
+                                          </ul>
+                                          <h4>Brand Shipment and Collection Information</h4>
+                                          <ul>
+                                            <li>Shipment Mode: <span>${
+                                              brandData.isDelivery
+                                                ? "Delivery"
+                                                : "Self Collection"
+                                            }</span></li>
+                                            ${
+                                              brandData.isDelivery == false
+                                                ? `
+                                              <li>Collection Location: <span>${
+                                                brandData.address
+                                              }</span></li>
+                                              <li>Collection Instruction: <span>${
+                                                brandData.collectionLocations.filter(
+                                                  (v) =>
+                                                    v.id == brandData.addressId
+                                                )[0].instructions
+                                              }</span></li>
+                                            `
+                                                : ""
+                                            }
+                                          </ul>
+                                        </div>
+                                      `;
+                            })
+                            .join("")}
+                          </div>
+                          <h3>Total cost: ${totalAmount}</h3>
+                          </body></html>`,
+                    isHtml: true,
+                  }),
+                })
+                  .then(async (response) => {
+                    if (response.ok) {
+                      return response.text();
+                    } else {
+                      toast.error("Something went wrong!");
+                    }
+                  })
+                  .then((res) => {
+                    toast.success(res, { position: "top-right" });
+                  })
+                  .catch((err) => console.log("email error =====>", err));
+              } catch (err) {
+                console.error(err);
+                toast.error("Something went wrond!");
+              }
               deleteLocalStorage("orderData");
               deleteLocalStorage("totalAmount");
             } else {

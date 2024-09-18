@@ -8,6 +8,7 @@ import { SupplierAdminController } from "./supplier_admin/SupplierAdminControlle
 import { ReportsController } from "./admin/ReportsController";
 import { ManageUserController } from "./admin/ManageUserController";
 import { ManageProjectController } from "./admin/ManageProjectController";
+import { OrderManagementController } from "./admin/OrderManagementController";
 
 export {
   LoginRegisterController,
@@ -19,5 +20,6 @@ export {
   SupplierAdminController,
   ReportsController,
   ManageUserController,
-  ManageProjectController
+  ManageProjectController,
+  OrderManagementController,
 };
