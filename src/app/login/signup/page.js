@@ -148,7 +148,7 @@ export default function SignUp() {
           oldUser.userId = data.id;
           setUserInfo(oldUser);
           try {
-            fetch(`${baseUrl}Email/send`, {
+            fetch(`${baseUrl}/api/Email/send`, {
               method: "POST",
               headers: {
                 "Content-Type": "application/json;",

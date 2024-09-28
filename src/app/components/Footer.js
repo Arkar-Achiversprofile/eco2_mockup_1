@@ -32,17 +32,17 @@ function Footer() {
                 </a>
               </p>
               <p>
-                <a href="#!" className={styles.aTag}>
+                <a href="/eco2/shops" className={styles.aTag}>
                   Our Eco²Balance Shop
                 </a>
               </p>
               <p>
-                <a href="#!" className={styles.aTag}>
+                <a href="/eco2/program" className={styles.aTag}>
                   Our Programs
                 </a>
               </p>
               <p>
-                <a href="#!" className={styles.aTag}>
+                <a href="/eco2/project" className={styles.aTag}>
                   Our Sustainability Projects
                 </a>
               </p>

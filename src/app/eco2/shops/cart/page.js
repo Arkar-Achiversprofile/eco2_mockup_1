@@ -16,7 +16,7 @@ import {
   getLocalStorage,
   setLocalStorage,
 } from "../../../api/localStorage";
-import { imageUrl } from "../../../controller/baseUrl";
+import { baseUrl } from "../../../controller/baseUrl";
 
 export default function Cart() {
   const { userInfo, GCBalance, setGCBalance } = useContext(AppContext);
@@ -719,7 +719,7 @@ export default function Cart() {
                         width={150}
                         height={140}
                         layout="responsive"
-                        src={imageUrl + data.productImageUrl}
+                        src={baseUrl + data.productImageUrl}
                       />
                     </div>
                     <div className="col-8">

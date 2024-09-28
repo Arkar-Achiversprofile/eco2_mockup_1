@@ -10,7 +10,7 @@ import { stripe, stripePromise } from "./api/stripe-paymentintent";
 import { useContext, useEffect } from "react";
 import AppContext from "./context/AppContext";
 import { color } from "./components/color";
-import { imageUrl } from "./controller/baseUrl";
+import { baseUrl } from "./controller/baseUrl";
 import { getLocalStorage } from "./api/localStorage";
 
 export default function Home() {
@@ -39,18 +39,6 @@ export default function Home() {
     return params.toString();
   };
 
-  const onClickJoinNow = async () => {
-    const paymentIntent = await stripe.paymentIntents.retrieve(
-      "pi_3PIkChJYYD0LqRPz1YDwgGKP"
-    );
-    router.push(
-      "/eco2/shops/paynowpaylah" +
-        "?" +
-        createQueryString("clientSecret", paymentIntent.client_secret) +
-        "&" +
-        createQueryString("paymentIntentId", paymentIntent.id)
-    );
-  };
   return (
     <div className="">
       <NavBar />
@@ -92,7 +80,7 @@ export default function Home() {
           </p>
           <Image
             alt=""
-            src={imageUrl + userInfo.qrUrl}
+            src={baseUrl + userInfo.qrUrl}
             width={isMobile ? 200 : 250}
             height={isMobile ? 200 : 250}
           />
@@ -134,7 +122,9 @@ export default function Home() {
                 type="button"
                 class="btn btn-success rounded-pill"
                 style={{ width: 150, backgroundColor: "green" }}
-                onClick={() => onClickJoinNow()}
+                onClick={() => {
+                  router.push("/eco2/project")
+                }}
               >
                 Join Now
               </button>

@@ -11,7 +11,7 @@ import { EShopController } from "../../../controller";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import AppContext from "../../../context/AppContext";
-import { imageUrl } from "../../../controller/baseUrl";
+import { baseUrl } from "../../../controller/baseUrl";
 import ReactStarsRating from "react-awesome-stars-rating";
 
 export default function ProductDetail() {
@@ -128,7 +128,7 @@ export default function ProductDetail() {
           <Image
             alt=""
             className={styles.image}
-            src={imageUrl + productDetailData?.imageUrl}
+            src={baseUrl + productDetailData?.imageUrl}
             width={isMobile ? 350 : isTablet ? 400 : 450}
             height={isMobile ? 450 : isTablet ? 450 : 500}
             //   layout="responsive"

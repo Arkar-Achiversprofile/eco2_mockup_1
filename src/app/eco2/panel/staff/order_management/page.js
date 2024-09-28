@@ -124,9 +124,9 @@ export default function OrderManagement() {
             position: "top-right",
           });
           getAllActiveTransaction();
-          if (status == "Fulfilled") {
+          if (status == "Processed") {
             try {
-              fetch(`${baseUrl}Email/send`, {
+              fetch(`${baseUrl}/api/Email/send`, {
                 method: "POST",
                 headers: {
                   "Content-Type": "application/json;",
@@ -232,38 +232,39 @@ export default function OrderManagement() {
                 })
                 .then((res) => {
                   toast.success(res, { position: "top-right" });
-                  try {
-                    fetch(`${baseUrl}Email/send`, {
-                      method: "POST",
-                      headers: {
-                        "Content-Type": "application/json;",
-                      },
-                      body: JSON.stringify({
-                        toEmail: `${detail.buyerEmail}`,
-                        subject: "Looking forward to your response!!",
-                        body: `<html><body><h4>Dear <b>${detail.buyerName}</b>,</h4>
-                                <p>Hope you're enjoying your new product/s. We value your opinion - let us know:</p>
-                                <br/>
-                                <a href="https://feak.achieversprofile.com/eco2/shops/product_review">https://feak.achieversprofile.com/eco2/shops/product_review</a>
-                                </body></html>`,
-                        isHtml: true,
-                      }),
-                    })
-                      .then(async (response) => {
-                        if (response.ok) {
-                          return response.text();
-                        } else {
-                          toast.error("Something went wrong!");
-                        }
-                      })
-                      .then((res) => {
-                        toast.success(res, { position: "top-right" });
-                      })
-                      .catch((err) => console.log("email error =====>", err));
-                  } catch (err) {
-                    console.error(err);
+                })
+                .catch((err) => console.log("email error =====>", err));
+            } catch (err) {
+              console.error(err);
+              toast.error("Something went wrong!");
+            }
+          } else if (status == "Fulfilled") {
+            try {
+              fetch(`${baseUrl}/api/Email/send`, {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json;",
+                },
+                body: JSON.stringify({
+                  toEmail: `${detail.buyerEmail}`,
+                  subject: "Looking forward to your response!!",
+                  body: `<html><body><h4>Dear <b>${detail.buyerName}</b>,</h4>
+                          <p>Hope you're enjoying your new product/s. We value your opinion - let us know:</p>
+                          <br/>
+                          <a href="https://feak.achieversprofile.com/eco2/shops/product_review">https://feak.achieversprofile.com/eco2/shops/product_review</a>
+                          </body></html>`,
+                  isHtml: true,
+                }),
+              })
+                .then(async (response) => {
+                  if (response.ok) {
+                    return response.text();
+                  } else {
                     toast.error("Something went wrong!");
                   }
+                })
+                .then((res) => {
+                  toast.success(res, { position: "top-right" });
                 })
                 .catch((err) => console.log("email error =====>", err));
             } catch (err) {

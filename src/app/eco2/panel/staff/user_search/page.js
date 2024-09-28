@@ -7,7 +7,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { color } from "../../../../components/color";
 import Image from "next/image";
-import { imageUrl } from "../../../../controller/baseUrl";
+import { baseUrl } from "../../../../controller/baseUrl";
 import AppContext from "../../../../context/AppContext";
 
 export default function UserSearch() {
@@ -243,7 +243,7 @@ export default function UserSearch() {
                   <div style={{ flex: 3 }}>
                     <Image
                       alt=""
-                      src={imageUrl + userDetail?.qrUrl}
+                      src={baseUrl + userDetail?.qrUrl}
                       width={100}
                       height={100}
                     />

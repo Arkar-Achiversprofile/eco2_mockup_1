@@ -38,7 +38,13 @@ export default function CheckoutForm({
         setBrandList(data);
       }
     });
+    // return () => {
+    //   window.addEventListener('unload', function(event) {
+    //     event.returnValue = undefined;
+    //   });
+    // }
   }, []);
+
   //   console.log("paymentForm =====>", clientSecret);
 
   //   React.useEffect(() => {
@@ -73,16 +79,16 @@ export default function CheckoutForm({
   //   }, [stripe]);
 
   useEffect(() => {
-    window.addEventListener("beforeunload", async function (e) {
-      e.preventDefault();
-      e.returnValue = "";
-      const stripe1 = require("stripe")(StripeApiKey.STRIPE_SECRET_KEY);
-      // The user closed the modal, cancelling payment
-      const payment = await stripe1.paymentIntents.cancel(paymentIntentId);
-      // if (payment) {
-      //   router.push("/eco2/shops/order_cancel");
-      // }
-    });
+    // window.addEventListener("beforeunload", async function (e) {
+    //   e.preventDefault();
+    //   e.returnValue = "";
+    //   const stripe1 = require("stripe")(StripeApiKey.STRIPE_SECRET_KEY);
+    //   // The user closed the modal, cancelling payment
+    //   const payment = await stripe1.paymentIntents.cancel(paymentIntentId);
+    //   // if (payment) {
+    //   //   router.push("/eco2/shops/order_cancel");
+    //   // }
+    // });
   }, []);
 
   const handleSubmit = async (e) => {
@@ -137,7 +143,7 @@ export default function CheckoutForm({
             const userName = getLocalStorage("userName");
             const email = getLocalStorage("email");
             try {
-              fetch(`${baseUrl}Email/send`, {
+              fetch(`${baseUrl}/api/Email/send`, {
                 method: "POST",
                 headers: {
                   "Content-Type": "application/json;",
@@ -262,7 +268,7 @@ export default function CheckoutForm({
                 .catch((err) => console.log("email error =====>", err));
             } catch (err) {
               console.error(err);
-              toast.error("Something went wrond!");
+              toast.error("Something went wrong!");
             }
             deleteLocalStorage("orderData");
             deleteLocalStorage("totalAmount");

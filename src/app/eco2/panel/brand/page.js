@@ -8,7 +8,7 @@ import { BrandController } from "../../../controller";
 import Image from "next/image";
 import { color } from "../../../components/color";
 import Pagination from "../../../components/Pagination";
-import { imageUrl } from "../../../controller/baseUrl";
+import { baseUrl } from "../../../controller/baseUrl";
 
 export default function Brand() {
   const { userInfo, isMobile, isTablet } = useContext(AppContext);
@@ -42,6 +42,10 @@ export default function Brand() {
   });
   const [isBrandNew, setIsBrandNew] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
+  const [removeClick, setRemoveClick] = useState({
+    text: "",
+    id: 0
+  })
   const pageSize = 10;
 
   useEffect(() => {
@@ -446,7 +450,7 @@ export default function Brand() {
                         <td>
                           <Image
                             alt=""
-                            src={imageUrl + v.logoPath}
+                            src={baseUrl + v.logoPath}
                             width={50}
                             height={50}
                           />
@@ -474,9 +478,14 @@ export default function Brand() {
                           </button>
                           <button
                             className="btn btn-danger btn-sm"
+                            data-bs-toggle="modal"
+                          data-bs-target="#deleteAdminBrandModal"
                             style={{ color: color.white, width: 70 }}
                             onClick={() => {
-                              onClickRemoveBrand(v.id);
+                              setRemoveClick({
+                                text: v.name,
+                                id: v.id,
+                              })
                             }}
                           >
                             Remove
@@ -622,7 +631,7 @@ export default function Brand() {
                     >
                       <Image
                         alt=""
-                        src={imageUrl + editBrandData.logoPath}
+                        src={baseUrl + editBrandData.logoPath}
                         width={120}
                         height={120}
                       />
@@ -683,6 +692,50 @@ export default function Brand() {
                 onClick={() => onClickEdit()}
               >
                 Edit
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="modal fade"
+        id="deleteAdminBrandModal"
+        tabindex="-1"
+        aria-labelledby="exampleModalLabelDeleteAdminBrand"
+        aria-hidden="true"
+        data-bs-backdrop="static"
+        data-bs-keyboard="false"
+      >
+        <div class="modal-dialog modal-sm">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h1 class="modal-title fs-5" id="exampleModalLabelDeleteAdminBrand">
+                Brand
+              </h1>
+              <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+                onClick={() => {
+                  setRemoveClick({ text: "", id: "" });
+                }}
+              ></button>
+            </div>
+            <div className="modal-body">
+              <p style={{ fontSize: 16, fontWeight: "bold" }}>
+                Are you sure you want to delete &quot;{removeClick.text}&quot;?
+              </p>
+            </div>
+            <div className="modal-footer">
+              <button
+                type="button"
+                className="btn btn-danger"
+                data-bs-dismiss="modal"
+                style={{ width: 80, alignSelf: "flex-end" }}
+                onClick={() => onClickRemoveBrand(removeClick.id)}
+              >
+                Delete
               </button>
             </div>
           </div>

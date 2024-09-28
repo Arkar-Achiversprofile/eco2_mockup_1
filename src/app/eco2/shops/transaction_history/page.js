@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 import React, { useContext, useEffect, useState } from "react";
-import ShopNavBar from "../../../components/ShopNavBar";
+import NavBar from "../../../components/NavBar";
 import AppContext from "../../../context/AppContext";
 import moment from "moment";
 import { EShopController } from "../../../controller";
@@ -11,8 +11,6 @@ export default function TransactionHistory() {
   const { isMobile, isTablet, userInfo } = useContext(AppContext);
   const [transactionData, setTransactionData] = useState([]);
   const fontSize = isMobile ? 11 : isTablet ? 13 : 15;
-
-  console.log("data ====>", transactionData);
 
   useEffect(() => {
     getUserTransactionHistory();
@@ -101,8 +99,9 @@ export default function TransactionHistory() {
   //   ]
   return (
     <div>
-      <ShopNavBar name="Transaction History" />
+      <NavBar />
       <div>
+      <h3 style={{marginTop: 20, marginLeft: 20}}>Transaction History</h3>
         <div
           style={{
             width: isMobile ? "90%" : isTablet ? "80%" : "50%",

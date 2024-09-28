@@ -30,7 +30,7 @@ function Boundary() {
     LoginRegisterController.forgotUsername(forgotUsername, (data) => {
       if (data.id) {
         try {
-          fetch(`${baseUrl}Email/send`, {
+          fetch(`${baseUrl}/api/Email/send`, {
             method: "POST",
             headers: {
               "Content-Type": "application/json;",
@@ -71,7 +71,7 @@ function Boundary() {
     LoginRegisterController.forgotPassword(forgotPassword, (data) => {
       if (data.id) {
         try {
-          fetch(`${baseUrl}Email/send`, {
+          fetch(`${baseUrl}/api/Email/send`, {
             method: "POST",
             headers: {
               "Content-Type": "application/json;",

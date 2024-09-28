@@ -10,12 +10,14 @@ export default function ShopNavBar({ name = "", paymentIntentId = "" }) {
     if (paymentIntentId != "") {
       const payment = await stripe.paymentIntents.cancel(paymentIntentId);
     }
-    router.back();
+    // router.back();
+    router.replace("/eco2/shops");
   };
 
   const onClickCart = () => {
     router.push("/eco2/shops/cart");
   };
+  
   return (
     <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom">
       <div style={{ width: "100%", display: "flex", flexDirection: "row" }}>

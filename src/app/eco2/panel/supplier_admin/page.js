@@ -15,7 +15,7 @@ import moment from "moment";
 import Pagination from "../../../components/Pagination";
 import { getLocalStorage } from "../../../api/localStorage";
 import Image from "next/image";
-import { baseUrl, imageUrl } from "../../../controller/baseUrl";
+import { baseUrl } from "../../../controller/baseUrl";
 
 export default function SupplierAdminPanel() {
   const { isMobile, isTablet, userInfo } = useContext(AppContext);
@@ -432,7 +432,7 @@ export default function SupplierAdminPanel() {
                 if (userList.length > 0) {
                   await userList.map((u) => {
                     try {
-                      fetch(`${baseUrl}Email/send`, {
+                      fetch(`${baseUrl}/api/Email/send`, {
                         method: "POST",
                         headers: {
                           "Content-Type": "application/json;",
@@ -507,16 +507,6 @@ export default function SupplierAdminPanel() {
     setEditBrandData(newData);
   };
 
-  const onClickRemoveBrand = (brandId) => {
-    var obj = {
-      actorId: userInfo.userId,
-      recordId: brandId,
-    };
-    SupplierAdminController.deleteBrandBySupplier(obj, (data) => {
-      getBrandRecord();
-    });
-  };
-
   const getCollectionRecord = () => {
     const id = getLocalStorage("id");
     SupplierAdminController.getBrandRecord(id, (data) => {
@@ -552,16 +542,6 @@ export default function SupplierAdminPanel() {
     const newData = { ...editCollectionData };
     newData[text] = value;
     setEditCollectionData(newData);
-  };
-
-  const onClickRemoveCollection = (collectionId) => {
-    var obj = {
-      actorId: userInfo.userId,
-      recordId: collectionId,
-    };
-    SupplierAdminController.deleteCollectionBySupplier(obj, (data) => {
-      getCollectionRecord();
-    });
   };
 
   const collectionData = useMemo(() => {
@@ -712,13 +692,21 @@ export default function SupplierAdminPanel() {
   };
 
   const onClickRemove = (id, type) => {
-    if (type == "product") {
-      var obj = {
-        actorId: userInfo.userId,
-        recordId: id,
-      };
+    var obj = {
+      actorId: userInfo.userId,
+      recordId: id,
+    };
+    if (type == "Product") {
       SupplierAdminController.deleteProductBySupplier(obj, (data) => {
         getProductBySupplierId();
+      });
+    } else if (type == "Collection") {
+      SupplierAdminController.deleteCollectionBySupplier(obj, (data) => {
+        getCollectionRecord();
+      });
+    } else if (type == "Brand") {
+      SupplierAdminController.deleteBrandBySupplier(obj, (data) => {
+        getBrandRecord();
       });
     }
   };
@@ -745,9 +733,9 @@ export default function SupplierAdminPanel() {
             position: "top-right",
           });
           getTransactionBySupplierId();
-          if (status == "Fulfilled") {
+          if (status == "Processed") {
             try {
-              fetch(`${baseUrl}Email/send`, {
+              fetch(`${baseUrl}/api/Email/send`, {
                 method: "POST",
                 headers: {
                   "Content-Type": "application/json;",
@@ -853,38 +841,39 @@ export default function SupplierAdminPanel() {
                 })
                 .then((res) => {
                   toast.success(res, { position: "top-right" });
-                  try {
-                    fetch(`${baseUrl}Email/send`, {
-                      method: "POST",
-                      headers: {
-                        "Content-Type": "application/json;",
-                      },
-                      body: JSON.stringify({
-                        toEmail: `${detail.buyerEmail}`,
-                        subject: "Please give us your feedback!",
-                        body: `<html><body><h4>Dear <b>${detail.buyerName}</b>,</h4>
-                                <p>We hope you are happy your purchase/s. Do share your feedback with us:</p>
-                                <br/>
-                                <a href="https://feak.achieversprofile.com/eco2/shops/product_review">https://feak.achieversprofile.com/eco2/shops/product_review</a>
-                                </body></html>`,
-                        isHtml: true,
-                      }),
-                    })
-                      .then(async (response) => {
-                        if (response.ok) {
-                          return response.text();
-                        } else {
-                          toast.error("Something went wrong!");
-                        }
-                      })
-                      .then((res) => {
-                        toast.success(res, { position: "top-right" });
-                      })
-                      .catch((err) => console.log("email error =====>", err));
-                  } catch (err) {
-                    console.error(err);
+                })
+                .catch((err) => console.log("email error =====>", err));
+            } catch (err) {
+              console.error(err);
+              toast.error("Something went wrong!");
+            }
+          } else if (status == "Fulfilled") {
+            try {
+              fetch(`${baseUrl}/api/Email/send`, {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json;",
+                },
+                body: JSON.stringify({
+                  toEmail: `${detail.buyerEmail}`,
+                  subject: "Please give us your feedback!",
+                  body: `<html><body><h4>Dear <b>${detail.buyerName}</b>,</h4>
+                          <p>We hope you are happy your purchase/s. Do share your feedback with us:</p>
+                          <br/>
+                          <a href="https://feak.achieversprofile.com/eco2/shops/product_review">https://feak.achieversprofile.com/eco2/shops/product_review</a>
+                          </body></html>`,
+                  isHtml: true,
+                }),
+              })
+                .then(async (response) => {
+                  if (response.ok) {
+                    return response.text();
+                  } else {
                     toast.error("Something went wrong!");
                   }
+                })
+                .then((res) => {
+                  toast.success(res, { position: "top-right" });
                 })
                 .catch((err) => console.log("email error =====>", err));
             } catch (err) {
@@ -1236,7 +1225,7 @@ export default function SupplierAdminPanel() {
                           <td>
                             <Image
                               alt=""
-                              src={imageUrl + v.logoPath}
+                              src={baseUrl + v.logoPath}
                               width={50}
                               height={50}
                             />
@@ -1264,9 +1253,15 @@ export default function SupplierAdminPanel() {
                             </button>
                             <button
                               className="btn btn-danger btn-sm"
+                              data-bs-toggle="modal"
+                              data-bs-target="#deleteModal"
                               style={{ color: color.white, width: 70 }}
                               onClick={() => {
-                                onClickRemoveBrand(v.id);
+                                setRemoveClick({
+                                  title: "Brand",
+                                  text: v.name,
+                                  id: v.id,
+                                });
                               }}
                             >
                               Remove
@@ -1440,7 +1435,7 @@ export default function SupplierAdminPanel() {
                             data-bs-target="#deleteModal"
                             onClick={() => {
                               setRemoveClick({
-                                title: "collection",
+                                title: "Collection",
                                 text: v.address,
                                 id: v.id,
                               });
@@ -1885,7 +1880,7 @@ export default function SupplierAdminPanel() {
                         <td>
                           <Image
                             alt=""
-                            src={imageUrl + v.imageUrl}
+                            src={baseUrl + v.imageUrl}
                             width={50}
                             height={50}
                           />
@@ -1928,9 +1923,15 @@ export default function SupplierAdminPanel() {
                           </button>
                           <button
                             className="btn btn-danger btn-sm"
+                            data-bs-toggle="modal"
+                            data-bs-target="#deleteModal"
                             style={{ color: color.white, width: 70 }}
                             onClick={() => {
-                              onClickRemove(v.id, "product");
+                              setRemoveClick({
+                                title: "Product",
+                                text: v.name,
+                                id: v.id,
+                              });
                             }}
                           >
                             Remove
@@ -2182,7 +2183,7 @@ export default function SupplierAdminPanel() {
                     >
                       <Image
                         alt=""
-                        src={imageUrl + editBrandData.logoPath}
+                        src={baseUrl + editBrandData.logoPath}
                         width={120}
                         height={120}
                       />
@@ -2676,7 +2677,7 @@ export default function SupplierAdminPanel() {
                             >
                               <Image
                                 alt=""
-                                src={imageUrl + editProductData?.imageUrl}
+                                src={baseUrl + editProductData?.imageUrl}
                                 width={120}
                                 height={120}
                               />
@@ -2722,7 +2723,7 @@ export default function SupplierAdminPanel() {
                             >
                               <Image
                                 alt=""
-                                src={imageUrl + editProductData?.imageUrl}
+                                src={baseUrl + editProductData?.imageUrl}
                                 width={120}
                                 height={120}
                               />
@@ -2788,7 +2789,7 @@ export default function SupplierAdminPanel() {
                       <div style={{ flex: 3 }}>
                         <Image
                           alt=""
-                          src={imageUrl + editProductData?.imageUrl}
+                          src={baseUrl + editProductData?.imageUrl}
                           width={100}
                           height={100}
                         />
@@ -3028,7 +3029,7 @@ export default function SupplierAdminPanel() {
           <div class="modal-content">
             <div class="modal-header">
               <h1 class="modal-title fs-5" id="exampleModalLabelDelete">
-                {removeClick.title == "collection" ? "Collection" : ""}
+                {removeClick.title}
               </h1>
               <button
                 type="button"
@@ -3052,7 +3053,7 @@ export default function SupplierAdminPanel() {
                 className="btn btn-danger"
                 data-bs-dismiss="modal"
                 style={{ width: 80, alignSelf: "flex-end" }}
-                onClick={() => onClickRemoveCollection(removeClick.id)}
+                onClick={() => onClickRemove(removeClick.id, removeClick.title)}
               >
                 Delete
               </button>

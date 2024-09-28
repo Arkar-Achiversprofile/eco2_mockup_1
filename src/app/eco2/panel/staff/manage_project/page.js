@@ -5,7 +5,7 @@ import AppContext from "../../../../context/AppContext";
 import Pagination from "../../../../components/Pagination";
 import { getLocalStorage } from "../../../../api/localStorage";
 import Image from "next/image";
-import { imageUrl } from "../../../../controller/baseUrl";
+import { baseUrl } from "../../../../controller/baseUrl";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { ManageProjectController } from "../../../../controller";
@@ -347,7 +347,7 @@ export default function ManageProject() {
                         <td>
                           <Image
                             alt=""
-                            src={imageUrl + v.projectImagePath}
+                            src={baseUrl + v.projectImagePath}
                             width={50}
                             height={50}
                           />
@@ -508,7 +508,7 @@ export default function ManageProject() {
                         >
                           <Image
                             alt=""
-                            src={imageUrl + editProjectData?.projectImagePath}
+                            src={baseUrl + editProjectData?.projectImagePath}
                             width={120}
                             height={120}
                           />
@@ -553,7 +553,7 @@ export default function ManageProject() {
                       <div style={{ flex: 3 }}>
                         <Image
                           alt=""
-                          src={imageUrl + viewProjectData?.projectImagePath}
+                          src={baseUrl + viewProjectData?.projectImagePath}
                           width={100}
                           height={100}
                         />

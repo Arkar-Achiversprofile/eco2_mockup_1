@@ -19,7 +19,7 @@ import {
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import AppContext from "../../context/AppContext";
-import { imageUrl } from "../../controller/baseUrl";
+import { baseUrl } from "../../controller/baseUrl";
 import { color } from "../../components/color";
 
 const responsive = {
@@ -72,7 +72,9 @@ function Shops() {
     getAllProduct();
     getTopCategories();
     getBrandList();
+    
   }, []);
+  
 
   const getBrandList = () => {
     BrandController.getBrandIdList((data) => {
@@ -321,7 +323,7 @@ function Shops() {
             >
               <Image
                 alt=""
-                src={imageUrl + cData.categoryImageUrl}
+                src={baseUrl + cData.categoryImageUrl}
                 width={categoryImage}
                 height={categoryImage}
                 style={{ borderRadius: 100 }}
@@ -489,7 +491,7 @@ function Shops() {
                     <Image
                       alt=""
                       className={styles.image}
-                      src={imageUrl + v.imageUrl}
+                      src={baseUrl + v.imageUrl}
                       // layout="responsive"
                       width={350}
                       height={420}
@@ -523,7 +525,7 @@ function Shops() {
                       By: {v.brandName}
                       <Image
                         alt=""
-                        src={imageUrl + v.brandLogoUrl}
+                        src={baseUrl + v.brandLogoUrl}
                         width={20}
                         height={20}
                         style={{ borderRadius: 10, marginLeft: 5 }}
@@ -656,7 +658,7 @@ function Shops() {
                       <Image
                         alt=""
                         className={styles.image}
-                        src={imageUrl + data.imageUrl}
+                        src={baseUrl + data.imageUrl}
                         // layout="responsive"
                         width={350}
                         height={420}
@@ -683,7 +685,7 @@ function Shops() {
                         By: {data.brandName}
                         <Image
                           alt=""
-                          src={imageUrl + data.brandLogoUrl}
+                          src={baseUrl + data.brandLogoUrl}
                           width={20}
                           height={20}
                           style={{ borderRadius: 10, marginLeft: 5 }}
@@ -738,7 +740,7 @@ function Shops() {
                     <Image
                       alt=""
                       className={styles.image}
-                      src={imageUrl + data.imageUrl}
+                      src={baseUrl + data.imageUrl}
                       // layout="responsive"
                       width={350}
                       height={450}

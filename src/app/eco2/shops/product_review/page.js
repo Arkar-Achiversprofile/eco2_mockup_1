@@ -9,7 +9,7 @@ import { getLocalStorage } from "../../../api/localStorage";
 import AppContext from "../../../context/AppContext";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { imageUrl } from "../../../controller/baseUrl";
+import { baseUrl } from "../../../controller/baseUrl";
 
 export default function ProductReview() {
   const { userInfo } = useContext(AppContext);
@@ -119,32 +119,6 @@ export default function ProductReview() {
     }
   };
 
-  // {
-  //   "purchasedBrandId": 15,
-  //   "shopGalleryDisplayDtos": [
-  //     {
-  //       "id": 1,
-  //       "isProduct": true,
-  //       "imageUrl": "https://ecoAPIt.achieversprofile.com/images/Shop/product/Tilapia.png",
-  //       "name": "Tilapia",
-  //       "unitPrice": 6,
-  //       "brandName": "OtoTesting",
-  //       "inStock": true,
-  //       "priority": 2
-  //     },
-  //     {
-  //       "id": 3,
-  //       "isProduct": true,
-  //       "imageUrl": "https://ecoAPIt.achieversprofile.com/images/Shop/product/ContainerSeabass.png",
-  //       "name": "Sea bass",
-  //       "unitPrice": 2,
-  //       "brandName": "OtoTesting",
-  //       "inStock": true,
-  //       "priority": 1
-  //     }
-  //   ]
-  // }
-
   return (
     <div>
       <ToastContainer />
@@ -186,7 +160,7 @@ export default function ProductReview() {
             >
               <div className="col-md-4 col-12 d-flex justify-content-center align-items-center">
                 <Image
-                  src={imageUrl + p.imageUrl}
+                  src={baseUrl + p.imageUrl}
                   alt=""
                   width={280}
                   height={210}

@@ -11,7 +11,7 @@ import "react-toastify/dist/ReactToastify.css";
 import AppContext from "../../../context/AppContext";
 import Pagination from "../../../components/Pagination";
 import Image from "next/image";
-import { baseUrl, imageUrl } from "../../../controller/baseUrl";
+import { baseUrl } from "../../../controller/baseUrl";
 import { color } from "../../../components/color";
 
 export default function Product() {
@@ -45,6 +45,10 @@ export default function Product() {
   const [isProductImageChange, setIsProductImageChange] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [previousInStock, setPreviousInStock] = useState(true);
+  const [removeClick, setRemoveClick] = useState({
+    text: "",
+    id: 0,
+  });
   const pageSize = 10;
   // console.log("prodcut", productData.productImageUrl);
 
@@ -269,7 +273,7 @@ export default function Product() {
               if (userList.length > 0) {
                 await userList.map((u) => {
                   try {
-                    fetch(`${baseUrl}Email/send`, {
+                    fetch(`${baseUrl}/api/Email/send`, {
                       method: "POST",
                       headers: {
                         "Content-Type": "application/json;",
@@ -772,7 +776,7 @@ export default function Product() {
                       <td>
                         <Image
                           alt=""
-                          src={imageUrl + v.imageUrl}
+                          src={baseUrl + v.imageUrl}
                           width={50}
                           height={50}
                         />
@@ -815,9 +819,14 @@ export default function Product() {
                         </button>
                         <button
                           className="btn btn-danger btn-sm"
+                          data-bs-toggle="modal"
+                          data-bs-target="#deleteAdminModal"
                           style={{ color: color.white, width: 70 }}
                           onClick={() => {
-                            onClickRemove(v.id, "product");
+                            setRemoveClick({
+                              id: v.id,
+                              text: v.name,
+                            });
                           }}
                         >
                           Remove
@@ -1107,7 +1116,7 @@ export default function Product() {
                             >
                               <Image
                                 alt=""
-                                src={imageUrl + editProductData?.imageUrl}
+                                src={baseUrl + editProductData?.imageUrl}
                                 width={120}
                                 height={120}
                               />
@@ -1143,7 +1152,7 @@ export default function Product() {
                             >
                               <Image
                                 alt=""
-                                src={imageUrl + editProductData?.imageUrl}
+                                src={baseUrl + editProductData?.imageUrl}
                                 width={120}
                                 height={120}
                               />
@@ -1209,7 +1218,7 @@ export default function Product() {
                       <div style={{ flex: 3 }}>
                         <Image
                           alt=""
-                          src={imageUrl + editProductData?.imageUrl}
+                          src={baseUrl + editProductData?.imageUrl}
                           width={100}
                           height={100}
                         />
@@ -1297,6 +1306,51 @@ export default function Product() {
                 </button>
               </div>
             ) : null}
+          </div>
+        </div>
+      </div>
+      <div
+        class="modal fade"
+        id="deleteAdminModal"
+        tabindex="-1"
+        aria-labelledby="exampleModalLabelDeleteAdmin"
+        aria-hidden="true"
+        data-bs-backdrop="static"
+        data-bs-keyboard="false"
+      >
+        <div class="modal-dialog modal-sm">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h1 class="modal-title fs-5" id="exampleModalLabelDeleteAdmin">
+                Product
+              </h1>
+              <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+                onClick={() => {
+                  setEditProductData(null);
+                  setRemoveClick({ text: "", id: "" });
+                }}
+              ></button>
+            </div>
+            <div className="modal-body">
+              <p style={{ fontSize: 16, fontWeight: "bold" }}>
+                Are you sure you want to delete &quot;{removeClick.text}&quot;?
+              </p>
+            </div>
+            <div className="modal-footer">
+              <button
+                type="button"
+                className="btn btn-danger"
+                data-bs-dismiss="modal"
+                style={{ width: 80, alignSelf: "flex-end" }}
+                onClick={() => onClickRemove(removeClick.id)}
+              >
+                Delete
+              </button>
+            </div>
           </div>
         </div>
       </div>

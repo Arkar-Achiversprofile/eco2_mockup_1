@@ -67,18 +67,18 @@ export default function PaymentForm({
     });
   }, [stripe]);
 
-  useEffect(() => {
-    window.addEventListener("beforeunload", async function (e) {
-      e.preventDefault();
-      e.returnValue = "";
-      const stripe1 = require("stripe")(StripeApiKey.STRIPE_SECRET_KEY);
-      // The user closed the modal, cancelling payment
-      const payment = await stripe1.paymentIntents.cancel(paymentIntentId);
-      // if (payment) {
-      //   router.push("/eco2/shops/order_cancel");
-      // }
-    });
-  }, []);
+  // useEffect(() => {
+  //   window.addEventListener("beforeunload", async function (e) {
+  //     e.preventDefault();
+  //     e.returnValue = "";
+  //     const stripe1 = require("stripe")(StripeApiKey.STRIPE_SECRET_KEY);
+  //     // The user closed the modal, cancelling payment
+  //     const payment = await stripe1.paymentIntents.cancel(paymentIntentId);
+  //     // if (payment) {
+  //     //   router.push("/eco2/shops/order_cancel");
+  //     // }
+  //   });
+  // }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -142,7 +142,7 @@ export default function PaymentForm({
               const userName = getLocalStorage("userName");
               const email = getLocalStorage("email");
               try {
-                fetch(`${baseUrl}Email/send`, {
+                fetch(`${baseUrl}/api/Email/send`, {
                   method: "POST",
                   headers: {
                     "Content-Type": "application/json;",

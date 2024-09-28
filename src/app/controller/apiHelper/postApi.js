@@ -10,7 +10,12 @@ export const postApi = async (url, obj, setData) => {
   };
   fetch(`${baseUrl}${url}`, requestOptions)
     .then((response) => {
-      return response.json();
+      if (response.status == 200) {
+        return response.json();
+      } else {
+        return []
+      }
+      
     })
     .then((data) => setData(data))
     .catch((error) => {

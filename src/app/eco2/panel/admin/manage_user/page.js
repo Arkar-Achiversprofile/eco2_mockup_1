@@ -8,7 +8,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { color } from "../../../../components/color";
 import { getLocalStorage } from "../../../../api/localStorage";
 import AppContext from "../../../../context/AppContext";
-import { baseUrl, imageUrl } from "../../../../controller/baseUrl";
+import { baseUrl } from "../../../../controller/baseUrl";
 import Image from "next/image";
 
 export default function ManageUser() {
@@ -231,7 +231,7 @@ export default function ManageUser() {
       ManageUserController.createUser(obj, (data) => {
         if (data.id) {
           try {
-            fetch(`${baseUrl}Email/send`, {
+            fetch(`${baseUrl}/api/Email/send`, {
               method: "POST",
               headers: {
                 "Content-Type": "application/json;",
@@ -244,10 +244,10 @@ export default function ManageUser() {
                 }</b> </p>
                     <br/>
                     <p>Here is the link to enter the verification code.</p>
-                    <a href="http://localhost:3000/login/verification?${createQueryString(
+                    <a href="https://feak.achieversprofile.com/login/verification?${createQueryString(
                       "id",
                       data.id
-                    )}">http://localhost:3000/login/verification?${createQueryString(
+                    )}">https://feak.achieversprofile.com/login/verification?${createQueryString(
                   "id",
                   data.id
                 )}</a></body></html>`,
@@ -774,7 +774,7 @@ export default function ManageUser() {
                       <td>
                         <Image
                           alt=""
-                          src={imageUrl + v.qrUrl}
+                          src={baseUrl + v.qrUrl}
                           width={50}
                           height={50}
                         />
@@ -1216,7 +1216,7 @@ export default function ManageUser() {
                     <div style={{ flex: 3 }}>
                       <Image
                         alt=""
-                        src={imageUrl + editUserData?.qrUrl}
+                        src={baseUrl + editUserData?.qrUrl}
                         width={100}
                         height={100}
                       />
