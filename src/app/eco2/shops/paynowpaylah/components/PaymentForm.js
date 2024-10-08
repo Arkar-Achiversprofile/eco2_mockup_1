@@ -262,8 +262,133 @@ export default function CheckoutForm({
                     toast.error("Something went wrong!");
                   }
                 })
-                .then((res) => {
-                  toast.success(res, { position: "top-right" });
+                .then((response) => {
+                  toast.success(response, { position: "top-right" });
+                  orderData.map((brandData, i) => {
+                    try {
+                      fetch(`${baseUrl}/api/Email/send`, {
+                        method: "POST",
+                        headers: {
+                          "Content-Type": "application/json;",
+                        },
+                        body: JSON.stringify({
+                          toEmail: `${brandData.brandEmail}`,
+                          subject: "An order has been placed!",
+                          body: `<html><body><h4>Dear <b>${
+                            brandData.brandName
+                          }</b>,</h4>
+                                <p>${userName} have purchased the following item/s from you. The payment ID is <b>${
+                            res.paymentIntent.id
+                          }</b>.</p>
+                                <p>Here is a summary of your purchase/s.</p>
+                                <br/>
+                                <div>
+                                
+                                              <div>
+                                                <ul>
+                                                  ${brandData.shopCartDisplayProductDtos
+                                                    .map(
+                                                      (productData, index1) => {
+                                                        return `
+                                                      <li key=${index1}>
+                                                        <span>Product Name: ${
+                                                          productData.productName
+                                                        }</span>
+                                                        <ul>
+                                                          <li>Quantity: <span>${
+                                                            productData.quantity
+                                                          }</span></li>
+                                                          <li>Unit Price: <span>${
+                                                            productData.discountedUnitPrice
+                                                              ? productData.discountedUnitPrice
+                                                              : productData.unitPrice
+                                                          }</span></li>
+                                                          <li>SubTotal: <span>${
+                                                            productData.discountedUnitPrice
+                                                              ? productData.discountedUnitPrice *
+                                                                productData.quantity
+                                                              : productData.quantity *
+                                                                productData.unitPrice
+                                                          }</span></li>
+                                                          ${
+                                                            productData.isGCused
+                                                              ? `
+                                                            <li>GC Redeemed: <span>${
+                                                              productData.GCAmount
+                                                            }</span></li>
+                                                            <li>Discount Amount: <span>${
+                                                              productData.GCAmount /
+                                                              100
+                                                            }</span></li>
+                                                        `
+                                                              : ""
+                                                          }
+                                                          <li>Net Payable: <span>${
+                                                            productData.isGCused
+                                                              ? (productData.discountedUnitPrice
+                                                                  ? productData.discountedUnitPrice *
+                                                                    productData.quantity
+                                                                  : productData.quantity *
+                                                                    productData.unitPrice) -
+                                                                productData.GCAmount
+                                                              : productData.discountedUnitPrice
+                                                              ? productData.discountedUnitPrice *
+                                                                productData.quantity
+                                                              : productData.quantity *
+                                                                productData.unitPrice
+                                                          }</span></li>
+                                                        </ul>
+                                                    </li>
+                                                    `;
+                                                      }
+                                                    )
+                                                    .join("")}
+                                                </ul>
+                                                <h4>Brand Shipment and Collection Information</h4>
+                                                <ul>
+                                                  <li>Shipment Mode: <span>${
+                                                    brandData.isDelivery
+                                                      ? "Delivery"
+                                                      : "Self Collection"
+                                                  }</span></li>
+                                                  ${
+                                                    brandData.isDelivery ==
+                                                    false
+                                                      ? `
+                                                    <li>Collection Location: <span>${
+                                                      brandData.address
+                                                    }</span></li>
+                                                    <li>Collection Instruction: <span>${
+                                                      brandData.collectionLocations.filter(
+                                                        (v) =>
+                                                          v.id ==
+                                                          brandData.addressId
+                                                      )[0].instructions
+                                                    }</span></li>
+                                                  `
+                                                      : ""
+                                                  }
+                                                </ul>
+                                              </div>
+                                </div>
+                                </body></html>`,
+                          isHtml: true,
+                        }),
+                      })
+                        .then(async (response) => {
+                          if (response.ok) {
+                            return response.text();
+                          } else {
+                            toast.error("Something went wrong!");
+                          }
+                        })
+                        .then((res) => {})
+                        .catch((err) => console.log("email error =====>", err));
+                    } catch (err) {
+                      console.error(err);
+                      toast.error("Something went wrond!");
+                    }
+                  });
                 })
                 .catch((err) => console.log("email error =====>", err));
             } catch (err) {

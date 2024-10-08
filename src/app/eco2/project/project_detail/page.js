@@ -42,8 +42,8 @@ export default function ProjectDetail() {
             alt=""
             // className={styles.image}
             src={baseUrl + projectDetailData?.projectImagePath}
-            width={isTablet ? 400 : 450}
-            height={isTablet ? 450 : 500}
+            width={isTablet ? 370 : 450}
+            height={isTablet ? 420 : 500}
             //   layout="responsive"
             // onMouseOut={(e) => {
             //   e.target.style.transform = "scale(1)";
@@ -59,12 +59,12 @@ export default function ProjectDetail() {
               padding: 10,
             }}
           >
-            <h2 style={{fontSize: 42}}>{projectDetailData?.projectTitle}</h2>
-            <h5 style={{color: color.grey}}>
+            <h2 style={{fontSize: isMobile ? 23 : 42}}>{projectDetailData?.projectTitle}</h2>
+            <h5 style={{color: color.grey, fontSize: isMobile ? 18 : 35}}>
               Date Published :{" "}
               {moment(projectDetailData?.createdDatetime).format("DD-MM-YYYY")}
             </h5>
-            <h5 style={{color: color.grey}}>Descriptions : </h5>
+            <h5 style={{color: color.grey, fontSize: isMobile ? 18 : 35 }}>Descriptions : </h5>
             <p>{projectDetailData?.projectDescription}</p>
 
             <div className="d-flex flex-row mt-3">
@@ -81,7 +81,7 @@ export default function ProjectDetail() {
                 type="button"
                 class="btn btn-outline-primary"
                 // style={{ color: color.white}}
-                onClick={() => {}}
+                onClick={() => {router.push("/eco2/contactus")}}
               >
                 More Information
               </button>

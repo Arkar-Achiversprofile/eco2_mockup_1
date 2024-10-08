@@ -91,6 +91,16 @@ export default function ManageProject() {
     setEditProjectData(data);
   };
 
+  function arrayBufferToBase64(buffer) {
+    let binary = '';
+    const bytes = new Uint8Array(buffer);
+    const len = bytes.byteLength;
+    for (let i = 0; i < len; i++) {
+      binary += String.fromCharCode(bytes[i]);
+    }
+    return btoa(binary);
+  }
+
   const getBase64 = (files, cb) => {
     const filePromises = Object.entries(files).map((item) => {
       return new Promise((resolve, reject) => {
@@ -100,8 +110,9 @@ export default function ManageProject() {
 
         reader.onload = function (event) {
           const arrayBuffer = event.target.result;
-          const uint8Array = new Uint8Array(arrayBuffer);
-          const base64String = btoa(String.fromCharCode(...uint8Array));
+          // const uint8Array = new Uint8Array(arrayBuffer);
+          // const base64String = btoa(String.fromCharCode(...uint8Array));
+          const base64String = arrayBufferToBase64(arrayBuffer)
           // cb(`data:${file.type};base64,${btoa(event.target.result)}`);
 
           resolve(`${base64String}`);

@@ -5,7 +5,6 @@ import { ManageProjectController } from "../../controller";
 import Image from "next/image";
 import { image } from "../../assets";
 import Pagination from "../../components/Pagination";
-import styles from "../shops/shops.module.css"
 import { baseUrl } from "../../controller/baseUrl";
 import AppContext from "../../context/AppContext";
 import Footer from "../../components/Footer";
@@ -14,8 +13,8 @@ import { color } from "../../components/color";
 import { useRouter } from "next/navigation";
 
 export default function Project() {
-    const {isMobile} = useContext(AppContext);
-    const router = useRouter();
+  const { isMobile, isTablet } = useContext(AppContext);
+  const router = useRouter();
   const [allProjects, setAllProjects] = useState([]);
   const [allProjectsTemp, setAllProjectsTemp] = useState([]);
   const [searchText, setSearchText] = useState("");
@@ -35,8 +34,8 @@ export default function Project() {
   }, [currentPage, allProjects]);
 
   const onPageChange = (page) => {
-    setCurrentPage(page)
-  }
+    setCurrentPage(page);
+  };
 
   const createQueryString = (name, value) => {
     const params = new URLSearchParams();
@@ -46,28 +45,55 @@ export default function Project() {
   };
 
   const onClickProjectDetail = (id) => {
-   router.push("/eco2/project/project_detail" +  "?" + createQueryString("projectId", id))
-  }
+    router.push(
+      "/eco2/project/project_detail" + "?" + createQueryString("projectId", id)
+    );
+  };
 
   const onChangeSearchText = (text) => {
     setSearchText(text);
-    var projectArray = allProjectsTemp.filter((v) => v.projectTitle.toLowerCase().includes(text.toLowerCase()));
+    var projectArray = allProjectsTemp.filter((v) =>
+      v.projectTitle.toLowerCase().includes(text.toLowerCase())
+    );
     setAllProjects(projectArray);
-  }
+  };
+
+  const onClickSorting = (type) => {
+    var newArray = [...allProjectsTemp];
+    if (type == "old to new") {
+      newArray.sort(function (a, b) {
+        return new Date(a.createdDatetime) - new Date(b.createdDatetime);
+      });
+    } else if (type == "new to old") {
+      newArray.sort(function (a, b) {
+        return new Date(b.createdDatetime) - new Date(a.createdDatetime);
+      });
+    }
+    setAllProjects(newArray);
+  };
 
   return (
     <div>
       <NavBar />
-      <div className="" style={{ width: "100vw" }}>
+      <div className="" style={{ width: "100%" }}>
         <Image
           alt=""
           src={image.background1}
           width={1500}
           height={550}
-          style={{opacity: 0.8}}
-          // layout="responsive"
+          style={{ opacity: 0.8 }}
+          layout="responsive"
         />
-        <h1 style={{position: 'absolute', top: "50%", left: '44%', color: color.white}}>Projects</h1>
+        <h1
+          style={{
+            position: "absolute",
+            top: isMobile ? "18%" : isTablet ? "25%" : "50%",
+            left: isMobile ? "35%" : isTablet ? "42%" : "44%",
+            color: color.white,
+          }}
+        >
+          Projects
+        </h1>
       </div>
 
       <div className="d-flex mt-5">
@@ -111,85 +137,85 @@ export default function Project() {
               <button
                 class="dropdown-item"
                 type="button"
-                // onClick={() => onClickFilter("All")}
+                onClick={() => onClickSorting("new to old")}
               >
-                All project
+                Date (new to old)
               </button>
             </li>
-            {/* {brandList.map((v, i) => (
-              <li key={i}>
-                <button
-                  class="dropdown-item"
-                  type="button"
-                  onClick={() => onClickFilter(v.name)}
-                >
-                  Supplier ({v.name})
-                </button>
-              </li>
-            ))} */}
+            <li>
+              <button
+                class="dropdown-item"
+                type="button"
+                onClick={() => onClickSorting("old to new")}
+              >
+                Date (old to new)
+              </button>
+            </li>
           </ul>
         </div>
       </div>
 
       <div>
-          <div
-            className="d-flex flex-row justify-content-evenly flex-wrap card-group"
-            style={{ width: "98%", marginBottom: 50, margin: "0px auto" }}
-          >
-            {projectData.map((v, i) => (
+        <div
+          className="d-flex flex-row justify-content-evenly flex-wrap card-group"
+          style={{ width: "98%", marginBottom: 50, margin: "0px auto" }}
+        >
+          {projectData.map((v, i) => (
+            <div
+              key={i}
+              style={{
+                width: 400,
+                marginLeft: 5,
+                marginRight: 5,
+                marginTop: 30,
+                cursor: "pointer",
+              }}
+              onClick={() => {
+                onClickProjectDetail(v.id);
+              }}
+            >
               <div
-                key={i}
-                style={{
-                  width: 400,
-                  marginLeft: 5,
-                  marginRight: 5,
-                  marginTop: 30,
-                  cursor: 'pointer'
-                }}
-                onClick={() => {
-                    onClickProjectDetail(v.id);
-                  }}
+                class="card border-light"
+                style={{ width: "100%", minHeight: 550 }}
               >
-                <div class="card border-light" style={{ width: "100%", minHeight: 550 }}>
-                  <div
-                  >
-
-                    <Image
-                      alt=""
+                <div>
+                  <Image
+                    alt=""
                     //   className={styles.image}
-                      src={baseUrl + v.projectImagePath}
-                      // layout="responsive"
-                      width={400}
-                      height={450}
-                      // onMouseOut={(e) => {
-                      //   e.target.style.transform = "scale(1)";
-                      // }}
-                    />
-                  </div>
-                  <div class="card-body d-flex flex-column">
-                    <h5
-                      class="card-title"
-                      style={{ fontSize: v.projectTitle.length > 32 ? 20 : 22 }}
-                    >
-                      {v.projectTitle}
-                    </h5>
-                    <p class="card-text" style={{ fontSize: 16 }}>
-                    Date Published: {moment(v.createdDatetime).format("DD-MM-YYYY")}
-                    </p>
-                  </div>
+                    src={baseUrl + v.projectImagePath}
+                    // layout="responsive"
+                    width={370}
+                    height={420}
+                    // onMouseOut={(e) => {
+                    //   e.target.style.transform = "scale(1)";
+                    // }}
+                  />
+                </div>
+                <div class="card-body d-flex flex-column">
+                  <h5
+                    class="card-title"
+                    style={{ fontSize: v.projectTitle.length > 32 ? 20 : 22 }}
+                  >
+                    {v.projectTitle}
+                  </h5>
+                  <p class="card-text" style={{ fontSize: 16 }}>
+                    Date Published:{" "}
+                    {moment(v.createdDatetime).format("DD-MM-YYYY")}
+                  </p>
                 </div>
               </div>
-            ))}
-          </div>
-          <Pagination
-            items={allProjects.length} // 12
-            currentPage={currentPage} // 1
-            setCurrentPage={setCurrentPage}
-            pageSize={pageSize} // 6
-            onPageChange={onPageChange}
-          />
+            </div>
+          ))}
         </div>
-        <Footer/>
+        <Pagination
+          items={allProjects.length} // 12
+          currentPage={currentPage} // 1
+          setCurrentPage={setCurrentPage}
+          pageSize={pageSize} // 6
+          onPageChange={onPageChange}
+        />
+      </div>
+      <Footer />
     </div>
   );
 }

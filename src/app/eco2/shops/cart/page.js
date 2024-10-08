@@ -35,7 +35,7 @@ export default function Cart() {
     .fill(0)
     .map((_, index) => (index + 1) * 100);
   const arrayNum = Array.from({ length: 10 }, (_, i) => 1000 - i * 100);
-  // console.log("cartData =====>", cartData);
+  console.log("cartData =====>", cartData);
   // console.log("balance =====>", userInfo.greenCurrencyBalance);
   // console.log("array num", arrayNum)
 
@@ -272,6 +272,7 @@ export default function Cart() {
         return index !== parentIndex
           ? item
           : {
+              brandEmail: item.brandEmail,
               brandName: item.brandName,
               deliveryFee: item.deliveryFee,
               freeShipping: item.freeShipping,
@@ -321,6 +322,7 @@ export default function Cart() {
         return index !== parentIndex
           ? item
           : {
+              brandEmail: item.brandEmail,
               brandName: item.brandName,
               deliveryFee: item.deliveryFee,
               freeShipping: item.freeShipping,
@@ -364,6 +366,7 @@ export default function Cart() {
         return index !== parentIndex
           ? item
           : {
+              brandEmail: item.brandEmail,
               brandName: item.brandName,
               deliveryFee: item.deliveryFee,
               freeShipping: item.freeShipping,
@@ -385,6 +388,7 @@ export default function Cart() {
         return index !== parentIndex
           ? item
           : {
+              brandEmail: item.brandEmail,
               brandName: item.brandName,
               deliveryFee: item.deliveryFee,
               freeShipping: item.freeShipping,
@@ -526,6 +530,7 @@ export default function Cart() {
         return index !== parentIndex
           ? item
           : {
+              brandEmail: item.brandEmail,
               brandName: item.brandName,
               deliveryFee: item.deliveryFee,
               freeShipping: item.freeShipping,

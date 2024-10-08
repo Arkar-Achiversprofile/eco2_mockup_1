@@ -643,7 +643,7 @@ export default function ManageUser() {
                       class="form-check-input"
                       type="radio"
                       name="flexRadioDefault-1"
-                      id="admidHalal"
+                      id="adminHalal"
                       checked={newUserData.halalBox == true ? true : false}
                       onClick={() => onChangeInfo("halalBox", true)}
                     />

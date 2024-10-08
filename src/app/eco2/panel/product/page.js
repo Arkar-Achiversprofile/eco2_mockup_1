@@ -37,9 +37,11 @@ export default function Product() {
   });
   const [category, setCategory] = useState([]);
   const [brand, setBrand] = useState([]);
+  const [selectedBrandId, setSelectBrandId] = useState(null)
   const [maxPurchase, setMaxPurchase] = useState(false);
   const [isProductNew, setIsProductNew] = useState(false);
   const [allProduct, setAllProduct] = useState([]);
+  const [tempAllProduct, setTempAllProduct] = useState([]);
   const [editProductData, setEditProductData] = useState(null);
   const [isEditProduct, setIsEditProduct] = useState(false);
   const [isProductImageChange, setIsProductImageChange] = useState(false);
@@ -50,7 +52,6 @@ export default function Product() {
     id: 0,
   });
   const pageSize = 10;
-  // console.log("prodcut", productData.productImageUrl);
 
   useEffect(() => {
     getLandingProducts();
@@ -62,6 +63,7 @@ export default function Product() {
     ProductController.getLandingProducts((data) => {
       if (data.length > 0) {
         setAllProduct(data);
+        setTempAllProduct(data);
       } else {
         toast.warn("There is no product!", {
           position: "top-right",
@@ -85,6 +87,16 @@ export default function Product() {
       }
     });
   };
+
+  const onSelectBrandName = (brand) => {
+    setSelectBrandId(brand);
+    if (brand == "All") {
+      setAllProduct(tempAllProduct);
+    } else {
+      const filter = tempAllProduct.filter(v => v.brandName == brand)
+      setAllProduct(filter)
+    }
+  }
 
   const onChangeInfo = (text, value) => {
     const data = { ...productData };
@@ -116,6 +128,16 @@ export default function Product() {
     setProductData(data);
   };
 
+  function arrayBufferToBase64(buffer) {
+    let binary = '';
+    const bytes = new Uint8Array(buffer);
+    const len = bytes.byteLength;
+    for (let i = 0; i < len; i++) {
+      binary += String.fromCharCode(bytes[i]);
+    }
+    return btoa(binary);
+  }
+
   const getBase64 = (files, cb) => {
     const filePromises = Object.entries(files).map((item) => {
       return new Promise((resolve, reject) => {
@@ -126,8 +148,9 @@ export default function Product() {
         reader.onload = function (event) {
           // cb(`data:${file.type};base64,${btoa(event.target.result)}`);
           const arrayBuffer = event.target.result;
-          const uint8Array = new Uint8Array(arrayBuffer);
-          const base64String = btoa(String.fromCharCode(...uint8Array));
+          // const uint8Array = new Uint8Array(arrayBuffer);
+          // const base64String = btoa(String.fromCharCode(...uint8Array));
+          const base64String = arrayBufferToBase64(arrayBuffer)
           // cb(`data:${file.type};base64,${btoa(event.target.result)}`);
 
           resolve(`${base64String}`);
@@ -741,17 +764,50 @@ export default function Product() {
           </div>
         ) : (
           <div className="d-flex flex-column">
-            <button
-              className="btn btn-info"
+            <div
               style={{
-                color: color.white,
-                width: 120,
-                alignSelf: "flex-end",
+                display: "flex",
+                flexDirection: 'row',
+                justifyContent: "flex-end",
+                alignItems: 'flex-end',
+                flexWrap: 'wrap',
+                marginTop: 10,
               }}
-              onClick={() => setIsProductNew(true)}
             >
-              Create New
-            </button>
+              <div>
+                <label className="form-label" for="active">
+                  Select Brand
+                </label>
+                <select
+                  id="active"
+                  name="active"
+                  class="form-select"
+                  aria-label="Default select example 1"
+                  style={{ width: 220, height: 35, marginRight: 10 }}
+                  value={selectedBrandId}
+                  onChange={(e) => onSelectBrandName(e.target.value)}
+                >
+                  <option value={"All"}>All Brand</option>
+                  {brand.map((value, index) => (
+                    <option key={index} value={value.name}>
+                      {value.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <button
+                className="btn btn-info"
+                style={{
+                  color: color.white,
+                  width: 120,
+                  height: 40
+                  // alignSelf: "flex-end",
+                }}
+                onClick={() => setIsProductNew(true)}
+              >
+                Create New
+              </button>
+            </div>
 
             <div class="table-responsive" style={{ margin: "30px 0px" }}>
               <table class="table table-striped">

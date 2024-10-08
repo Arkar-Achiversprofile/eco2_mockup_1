@@ -78,7 +78,7 @@ export default function GCAdjust() {
       GCInfo.createdBy = userInfo.userName;
       // console.log("GCINfo ====>", GCInfo)
       GreenCreditAdjustController.updateGCAdjust(GCInfo, (data) => {
-        if (data.accountItemId != 0) {
+        if (data.accountItemId != 0 || data.accountItemId != null || data.accountItemId ) {
           toast.success("Green credit adjustment is successful!", {
             position: "top-right",
             onClose: () => {

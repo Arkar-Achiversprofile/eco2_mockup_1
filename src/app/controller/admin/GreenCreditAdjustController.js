@@ -1,4 +1,4 @@
-import { getApi, postApi } from "../apiHelper"
+import { getApi, patchApi, postApi } from "../apiHelper"
 
 const getAccounts = (setData) => {
     getApi("/api/AccountItems/GetAccountNameId", data => setData(data))
@@ -12,4 +12,8 @@ const updateGCAdjust = (obj, setData) => {
     postApi("/api/AccountItems/CreateGCAdjustment", obj, data => setData(data))
 }
 
-export const GreenCreditAdjustController = {getAccounts, getAdjustReason, updateGCAdjust}
+const updateBoxAdjust = (obj, setData) => {
+    patchApi("/api/AccountItems/BoxTransactionAdjust", obj, data => setData(data))
+}
+
+export const GreenCreditAdjustController = {getAccounts, getAdjustReason, updateGCAdjust, updateBoxAdjust}

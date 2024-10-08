@@ -47,7 +47,7 @@ function Footer() {
                 </a>
               </p>
               <p>
-                <a href="#!" className={styles.aTag}>
+                <a href="/eco2/contactus" className={styles.aTag}>
                   Contact Us
                 </a>
               </p>

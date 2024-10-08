@@ -21,6 +21,7 @@ import "react-toastify/dist/ReactToastify.css";
 import AppContext from "../../context/AppContext";
 import { baseUrl } from "../../controller/baseUrl";
 import { color } from "../../components/color";
+import { getLocalStorage } from "../../api/localStorage";
 
 const responsive = {
   superLargeDesktop: {
@@ -66,7 +67,6 @@ function Shops() {
   const [breadcrumb, setBreadcrumb] = useState([]);
   const [brandList, setBrandList] = useState([]);
   const [searchText, setSearchText] = useState("");
-  // console.log("allproduct", allProduct);
 
   useEffect(() => {
     getAllProduct();
@@ -227,10 +227,11 @@ function Shops() {
     }
   };
 
-  const onClickAddToWishlist = (productId) => {
+  const onClickAddToWishlist = (productId, brandName, productName, brandEmail) => {
     if (userInfo.userName == "") {
       router.push("/login");
     } else {
+      const userName = getLocalStorage("userName")
       var obj = {};
       obj["accountItemId"] = userInfo.userId;
       obj["productId"] = productId;
@@ -239,6 +240,37 @@ function Shops() {
           toast.success("Add to wishlist successful!", {
             position: "top-right",
           });
+          try {
+            fetch(`${baseUrl}/api/Email/send`, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json;",
+              },
+              body: JSON.stringify({
+                toEmail: `${brandEmail}`,
+                subject: ` Your ${productName} has been wishlisted!`,
+                body: `<html><body><h4>Dear <b>${
+                  brandName
+                }</b>,</h4>
+                      <p>${productName} has been wishlisted by ${userName}! .</p>
+                      <p>${userName} will be informed that ${productName} is available for purchase once its status is updated to ‘In Stock’.</p>
+                      </body></html>`,
+                isHtml: true,
+              }),
+            })
+              .then(async (response) => {
+                if (response.ok) {
+                  return response.text();
+                } else {
+                  toast.error("Something went wrong!");
+                }
+              })
+              .then((res) => {})
+              .catch((err) => console.log("email error =====>", err));
+          } catch (err) {
+            console.error(err);
+            toast.error("Something went wrond!");
+          }
         } else {
           toast.error("Something went wrong!", {
             position: "top-right",
@@ -558,7 +590,7 @@ function Shops() {
                           class="btn btn-outline-success mt-2"
                           style={{ width: "70%" }}
                           onClick={() => {
-                            onClickAddToWishlist(v.id);
+                            onClickAddToWishlist(v.id, v.brandName, v.name, v.brandEmail);
                           }}
                         >
                           <i className="bi bi-heart"></i>
@@ -711,7 +743,7 @@ function Shops() {
                           </button>
                         ) : (
                           <button
-                            onClick={() => onClickAddToWishlist(data.id)}
+                            onClick={() => onClickAddToWishlist(data.id, data.brandName, data.name, data.brandEmail)}
                             class="btn btn-outline-success mt-2"
                             style={{ width: "70%" }}
                           >

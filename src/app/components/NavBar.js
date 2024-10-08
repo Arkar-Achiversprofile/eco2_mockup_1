@@ -92,7 +92,9 @@ export default function NavBar() {
             </h1>
           )}
         </div>
-        {userInfo.userId == 0 || userInfo.userId == undefined || userInfo.userId == "" ? (
+        {userInfo.userId == 0 ||
+        userInfo.userId == undefined ||
+        userInfo.userId == "" ? (
           <div
             style={{
               // width: "13%",
@@ -264,6 +266,16 @@ export default function NavBar() {
                           </li>
                         </ul>
                       </li>
+                    </>
+                  ) : null}
+                  {userInfo.role == 2 ? (
+                    <li class="nav-item">
+                      <a class="nav-link" href="/eco2/panel/supplier_admin">
+                        Supplier Admin Panel
+                      </a>
+                    </li>
+                  ) : userInfo.role == 1 || userInfo.role == 3 ? (
+                    <>
                       <li class="nav-item dropdown">
                         <a
                           class="nav-link dropdown-toggle"
@@ -272,17 +284,17 @@ export default function NavBar() {
                           data-bs-toggle="dropdown"
                           aria-expanded="false"
                         >
-                          E Shop Product and Category
+                          E Shop Product, Category and Brand
                         </a>
                         <ul class="dropdown-menu">
-                          {/* <li>
+                          <li>
                             <a
                               class="dropdown-item"
                               href="/eco2/panel/category"
                             >
                               Category
                             </a>
-                          </li> */}
+                          </li>
                           <li>
                             <a class="dropdown-item" href="/eco2/panel/brand">
                               Brand
@@ -303,52 +315,52 @@ export default function NavBar() {
                           </li>
                         </ul>
                       </li>
+                      <li class="nav-item dropdown">
+                        <a
+                          class="nav-link dropdown-toggle"
+                          href="#"
+                          role="button"
+                          data-bs-toggle="dropdown"
+                          aria-expanded="false"
+                        >
+                          Staff Panel
+                        </a>
+                        <ul class="dropdown-menu">
+                          <li>
+                            <a
+                              class="dropdown-item"
+                              href="/eco2/panel/staff/user_search"
+                            >
+                              User Search
+                            </a>
+                          </li>
+                          <li>
+                            <a
+                              class="dropdown-item"
+                              href="/eco2/panel/staff/order_management"
+                            >
+                              Order Management
+                            </a>
+                          </li>
+                          <li>
+                            <a
+                              class="dropdown-item"
+                              href="/eco2/panel/staff/manage_project"
+                            >
+                              Manage Project
+                            </a>
+                          </li>
+                          <li>
+                            <a
+                              class="dropdown-item"
+                              href="/eco2/panel/admin/Boxadjust"
+                            >
+                              Box Adjustment
+                            </a>
+                          </li>
+                        </ul>
+                      </li>
                     </>
-                  ) : null}
-                  {userInfo.role == 2 ? (
-                    <li class="nav-item">
-                      <a class="nav-link" href="/eco2/panel/supplier_admin">
-                        Supplier Admin Panel
-                      </a>
-                    </li>
-                  ) : userInfo.role == 1 || userInfo.role == 3 ? (
-                    <li class="nav-item dropdown">
-                      <a
-                        class="nav-link dropdown-toggle"
-                        href="#"
-                        role="button"
-                        data-bs-toggle="dropdown"
-                        aria-expanded="false"
-                      >
-                        Staff Panel
-                      </a>
-                      <ul class="dropdown-menu">
-                        <li>
-                          <a
-                            class="dropdown-item"
-                            href="/eco2/panel/staff/user_search"
-                          >
-                            User Search
-                          </a>
-                        </li>
-                        <li>
-                          <a
-                            class="dropdown-item"
-                            href="/eco2/panel/staff/order_management"
-                          >
-                            Order Management
-                          </a>
-                        </li>
-                        <li>
-                          <a
-                            class="dropdown-item"
-                            href="/eco2/panel/staff/manage_project"
-                          >
-                            Manage Project
-                          </a>
-                        </li>
-                      </ul>
-                    </li>
                   ) : null}
                   <li class="nav-item">
                     <a
