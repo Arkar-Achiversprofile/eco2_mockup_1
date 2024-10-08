@@ -66,7 +66,6 @@ export default function SignUp() {
       const data = response.json();
       data.then(async (res) => {
         if (res.results.length > 0) {
-          console.log("street", res.results)
           const data = { ...userData };
           data["street"] = res.results[0].ROAD_NAME;
           setUserData(data);
@@ -127,8 +126,12 @@ export default function SignUp() {
     //   );
     // }
     else {
-      LoginRegisterController.registerAccount(
-        {
+      fetch(baseUrl + "/api/AccountItems/signup", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json;",
+        },
+        body: JSON.stringify({
           userName: userData.userName,
           email: userData.email,
           mobile: userData.mobile,
@@ -139,58 +142,138 @@ export default function SignUp() {
           housingType: userData.housingType,
           halalBox: userData.halalBox,
           role: 0,
-        },
-        (data) => {
-          setLocalStorage("id", data.id);
-          setLocalStorage("password", userData.password);
-          setLocalStorage("userName", userData.userName);
-          const oldUser = { ...userInfo };
-          oldUser.userId = data.id;
-          setUserInfo(oldUser);
-          try {
-            fetch(`${baseUrl}/api/Email/send`, {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json;",
-              },
-              body: JSON.stringify({
-                toEmail: `${data.email}`,
-                subject: "Eco2Balance Email verification",
-                body: `<html><body><p>Email Verification Code is <b>${
-                  data.verificationCode
-                }</b> </p>
+        }),
+      })
+        .then((response) => {
+          if (response.status == 404) {
+            return response.text();
+          } else {
+            return response.json();
+          }
+        })
+        .then((data) => {
+          if (data.id) {
+            console.log("data.id", data.id)
+            setLocalStorage("id", data.id);
+            setLocalStorage("password", userData.password);
+            setLocalStorage("userName", userData.userName);
+            const oldUser = { ...userInfo };
+            oldUser.userId = data.id;
+            setUserInfo(oldUser);
+            try {
+              fetch(`${baseUrl}/api/Email/send`, {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json;",
+                },
+                body: JSON.stringify({
+                  toEmail: `${data.email}`,
+                  subject: "Eco2Balance Email verification",
+                  body: `<html><body><p>Email Verification Code is <b>${
+                    data.verificationCode
+                  }</b> </p>
                 <br/>
                     <p>Here is the link to enter the verification code.</p>
                     <a href="https://feak.achieversprofile.com/login/verification?${createQueryString(
                       "id",
                       data.id
                     )}">https://feak.achieversprofile.com/login/verification?${createQueryString(
-                  "id",
-                  data.id
-                )}</a></body></html>`,
-                isHtml: true,
-              }),
-            })
-              .then(async (response) => {
-                if (response.ok) {
-                  return response.text();
-                } else {
-                  toast.error("Something went wrong!");
-                }
+                    "id",
+                    data.id
+                  )}</a></body></html>`,
+                  isHtml: true,
+                }),
               })
-              .then((res) => {
-                toast.success(res, { position: "top-right" });
-                router.push(
-                  "/login/verification" + "?" + createQueryString("id", data.id)
-                );
-              })
-              .catch((err) => console.log("email error =====>", err));
-          } catch (err) {
-            console.error(err);
-            toast.error("Something went wrond!");
+                .then(async (response) => {
+                  if (response.ok) {
+                    return response.text();
+                  } else {
+                    toast.error("Something went wrong!");
+                  }
+                })
+                .then((res) => {
+                  toast.success(res, { position: "top-right" });
+                  router.push(
+                    "/login/verification" +
+                      "?" +
+                      createQueryString("id", data.id)
+                  );
+                })
+                .catch((err) => console.log("email error =====>", err));
+            } catch (err) {
+              console.error(err);
+              toast.error("Something went wrond!");
+            }
+          } else {
+            toast.warn(data, {
+              position: "top-right",
+            });
           }
-        }
-      );
+        });
+      // LoginRegisterController.registerAccount(
+      //   {
+      //     userName: userData.userName,
+      //     email: userData.email,
+      //     mobile: userData.mobile,
+      //     password: userData.password,
+      //     street: userData.street,
+      //     unitNo: userData.unitNo,
+      //     postalCode: userData.postalCode,
+      //     housingType: userData.housingType,
+      //     halalBox: userData.halalBox,
+      //     role: 0,
+      //   },
+      //   (data) => {
+      //     setLocalStorage("id", data.id);
+      //     setLocalStorage("password", userData.password);
+      //     setLocalStorage("userName", userData.userName);
+      //     const oldUser = { ...userInfo };
+      //     oldUser.userId = data.id;
+      //     setUserInfo(oldUser);
+      //     try {
+      //       fetch(`${baseUrl}/api/Email/send`, {
+      //         method: "POST",
+      //         headers: {
+      //           "Content-Type": "application/json;",
+      //         },
+      //         body: JSON.stringify({
+      //           toEmail: `${data.email}`,
+      //           subject: "Eco2Balance Email verification",
+      //           body: `<html><body><p>Email Verification Code is <b>${
+      //             data.verificationCode
+      //           }</b> </p>
+      //           <br/>
+      //               <p>Here is the link to enter the verification code.</p>
+      //               <a href="https://feak.achieversprofile.com/login/verification?${createQueryString(
+      //                 "id",
+      //                 data.id
+      //               )}">https://feak.achieversprofile.com/login/verification?${createQueryString(
+      //             "id",
+      //             data.id
+      //           )}</a></body></html>`,
+      //           isHtml: true,
+      //         }),
+      //       })
+      //         .then(async (response) => {
+      //           if (response.ok) {
+      //             return response.text();
+      //           } else {
+      //             toast.error("Something went wrong!");
+      //           }
+      //         })
+      //         .then((res) => {
+      //           toast.success(res, { position: "top-right" });
+      //           router.push(
+      //             "/login/verification" + "?" + createQueryString("id", data.id)
+      //           );
+      //         })
+      //         .catch((err) => console.log("email error =====>", err));
+      //     } catch (err) {
+      //       console.error(err);
+      //       toast.error("Something went wrond!");
+      //     }
+      //   }
+      // );
     }
   };
 
