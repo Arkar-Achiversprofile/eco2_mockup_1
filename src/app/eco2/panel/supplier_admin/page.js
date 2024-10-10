@@ -218,7 +218,8 @@ export default function SupplierAdminPanel() {
           position: "top-right",
         });
       } else {
-        newBrandData.createdBy = userInfo.userName;
+        const userId = getLocalStorage("id")
+        newBrandData.createdBy = `${userId}`;
         BrandController.createBrand(newBrandData, (data) => {
           if (data.id) {
             toast.success("Create brand successfully!", {
@@ -252,7 +253,8 @@ export default function SupplierAdminPanel() {
           position: "top-right",
         });
       } else {
-        newCollectionData.createdBy = `${userInfo.userId}`;
+        const userId = getLocalStorage("id")
+        newCollectionData.createdBy = `${userId}`;
         SupplierAdminController.createCollectionBySupplier(
           newCollectionData,
           (data) => {
@@ -302,7 +304,8 @@ export default function SupplierAdminPanel() {
           position: "top-right",
         });
       } else {
-        newProductData.createdBy = userInfo.userName;
+        const userId = getLocalStorage("id")
+        newProductData.createdBy = `${userId}`;
         newProductData.brandID = brandNameAndIdForProduct.id;
         // console.log("product", newProductData);
         ProductController.createProduct(newProductData, (data) => {
@@ -340,6 +343,7 @@ export default function SupplierAdminPanel() {
   };
 
   const onClickEdit = (type) => {
+    const userId = getLocalStorage("id")
     if (type == "brand") {
       const obj = {
         id: editBrandData.id,
@@ -350,7 +354,7 @@ export default function SupplierAdminPanel() {
         logoFileName: editBrandData.logoFileName,
         deliveryFee: editBrandData.deliveryFee,
         freeShoppingAmount: editBrandData.freeShoppingAmount,
-        createdBy: `${userInfo.userId}`,
+        createdBy: `${userId}`,
         // editedBy: userInfo.userName,
         isActive: true,
       };
@@ -378,7 +382,7 @@ export default function SupplierAdminPanel() {
         }
       });
     } else if (type == "collection") {
-      editCollectionData.createdBy = `${userInfo.userId}`;
+      editCollectionData.createdBy = `${userId}`;
       editCollectionData.brandID = brandNameForCollection.id;
       SupplierAdminController.editCollectionBySupplier(
         editCollectionData,
@@ -414,7 +418,7 @@ export default function SupplierAdminPanel() {
           : "string",
         inStock: editProductData.inStock,
         priority: editProductData.priority,
-        editBy: `${userInfo.userId}`,
+        editBy: `${userId}`,
         isActive: true,
       };
       SupplierAdminController.updateProductBySupplier(obj, (data) => {
@@ -1975,7 +1979,7 @@ export default function SupplierAdminPanel() {
               <thead>
                 <tr>
                   <th scope="col">No</th>
-                  <th scope="col">Transaction ID</th>
+                  <th scope="col">Brand Transaction ID</th>
                   <th scope="col">Stripe Payment ID</th>
                   <th scope="col">Buyer Name</th>
                   <th scope="col">Created Date</th>
@@ -2028,7 +2032,7 @@ export default function SupplierAdminPanel() {
               <thead>
                 <tr>
                   <th scope="col">No</th>
-                  <th scope="col">Transaction ID</th>
+                  <th scope="col">Brand Transaction ID</th>
                   <th scope="col">Stripe Payment ID</th>
                   <th scope="col">Created Date</th>
                   <th scope="col">Status</th>

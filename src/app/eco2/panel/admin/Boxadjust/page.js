@@ -6,6 +6,7 @@ import NavBar from "../../../../components/NavBar";
 import AppContext from "../../../../context/AppContext";
 import { useRouter } from "next/navigation";
 import { GreenCreditAdjustController } from "../../../../controller";
+import { getLocalStorage } from "../../../../api/localStorage";
 
 export default function BoxAdjust() {
   const { userInfo, isMobile, isTablet } = useContext(AppContext);
@@ -41,12 +42,13 @@ export default function BoxAdjust() {
   };
 
   const onClickSubmit = () => {
+    const id = getLocalStorage("id")
     if (boxInfo.accountId == 0) {
       toast.warn("Please choose user!");
     } else {
       let filterUser = users.filter((v) => v.name == boxInfo.accountId);
       boxInfo.accountItemId = filterUser[0].id;
-      boxInfo.createdBy = userInfo.userName;
+      boxInfo.createdBy = `${id}`;
     //   console.log("boxInfo ====>", boxInfo)
       GreenCreditAdjustController.updateBoxAdjust(boxInfo, (data) => {
           toast.success("Box adjustment is successful!", {

@@ -418,7 +418,7 @@ export default function OrderManagement() {
                 <thead>
                   <tr>
                     <th scope="col">No</th>
-                    <th scope="col">Transaction ID</th>
+                    <th scope="col">Brand Transaction ID</th>
                     <th scope="col">Stripe Payment ID</th>
                     <th scope="col">Buyer Name</th>
                     <th scope="col">Created Date</th>
@@ -500,7 +500,7 @@ export default function OrderManagement() {
                 <thead>
                   <tr>
                     <th scope="col">No</th>
-                    <th scope="col">Transaction ID</th>
+                    <th scope="col">Brand Transaction ID</th>
                     <th scope="col">Stripe Payment ID</th>
                     <th scope="col">Created Date</th>
                     <th scope="col">Status</th>

@@ -10,6 +10,7 @@ import { color } from "../../../components/color";
 import Pagination from "../../../components/Pagination";
 import Image from "next/image";
 import { baseUrl } from "../../../controller/baseUrl";
+import { getLocalStorage } from "../../../api/localStorage";
 
 export default function Category() {
   const { userInfo, isMobile, isTablet } = useContext(AppContext);
@@ -153,7 +154,8 @@ export default function Category() {
         position: "top-right",
       });
     } else {
-      categoryData.createdBy = userInfo.userName;
+      const userId = getLocalStorage("id")
+      categoryData.createdBy = `${userId}`;
       // console.log("data", categoryData)
       CategoryController.createCategory(categoryData, (data) => {
         if (data.id) {

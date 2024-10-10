@@ -13,6 +13,7 @@ import Pagination from "../../../components/Pagination";
 import Image from "next/image";
 import { baseUrl } from "../../../controller/baseUrl";
 import { color } from "../../../components/color";
+import { getLocalStorage } from "../../../api/localStorage";
 
 export default function Product() {
   const { userInfo, isMobile } = useContext(AppContext);
@@ -201,7 +202,8 @@ export default function Product() {
         position: "top-right",
       });
     } else {
-      productData.createdBy = `${userInfo.userId}`;
+      const userId = getLocalStorage("id")
+      productData.createdBy = `${userId}`;
       ProductController.createProduct(productData, (data) => {
         if (data.id) {
           toast.success("Creating Product successfully!", {
@@ -261,6 +263,7 @@ export default function Product() {
   };
 
   const onClickEdit = () => {
+    const userId = getLocalStorage("id")
     var obj = {
       id: editProductData.id,
       categoryID: parseInt(editProductData.categoryId),
@@ -278,7 +281,7 @@ export default function Product() {
         : "string",
       inStock: editProductData.inStock,
       priority: editProductData.priority,
-      editBy: `${userInfo.userId}`,
+      editBy: `${userId}`,
       isActive: true,
     };
     ProductController.updateProduct(obj, (data) => {

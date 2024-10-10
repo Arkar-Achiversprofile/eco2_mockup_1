@@ -5,6 +5,7 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import AppContext from "../../../context/AppContext";
 import { BrandController } from "../../../controller";
+import { getLocalStorage } from "../../../api/localStorage";
 
 export default function Collection() {
   const { userInfo, isMobile, isTablet } = useContext(AppContext);
@@ -49,7 +50,8 @@ export default function Collection() {
         position: "top-right",
       });
     } else {
-      collectionData.createdBy = userInfo.userName;
+      const userId = getLocalStorage("id")
+      collectionData.createdBy = `${userId}`;
       BrandController.createCollection(collectionData, (data) => {
         if (data.brandID) {
           toast.success("Creating Collection for Brand successfully!", {

@@ -9,6 +9,7 @@ import Image from "next/image";
 import { color } from "../../../components/color";
 import Pagination from "../../../components/Pagination";
 import { baseUrl } from "../../../controller/baseUrl";
+import { getLocalStorage } from "../../../api/localStorage";
 
 export default function Brand() {
   const { userInfo, isMobile, isTablet } = useContext(AppContext);
@@ -166,7 +167,8 @@ export default function Brand() {
         position: "top-right",
       });
     } else {
-      brandData.createdBy = `${userInfo.userId}`;
+      let userId = getLocalStorage("id")
+      brandData.createdBy = `${userId}`;
       BrandController.createBrand(brandData, (data) => {
         if (data.name) {
           toast.success("Create brand successfully!", {
@@ -224,6 +226,7 @@ export default function Brand() {
   };
 
   const onClickEdit = () => {
+    const userId = getLocalStorage("id")
     const obj = {
       id: editBrandData.id,
       name: editBrandData.name,
@@ -233,7 +236,7 @@ export default function Brand() {
       logoFileName: editBrandData.logoFileName,
       deliveryFee: editBrandData.deliveryFee,
       freeShoppingAmount: editBrandData.freeShoppingAmount,
-      createdBy: `${userInfo.userId}`,
+      createdBy: `${userId}`,
       // editedBy: userInfo.userName,
       isActive: true,
     };

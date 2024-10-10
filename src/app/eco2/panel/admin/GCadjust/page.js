@@ -7,6 +7,7 @@ import { GreenCreditAdjustController } from "../../../../controller";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useRouter } from "next/navigation";
+import { getLocalStorage } from "../../../../api/localStorage";
 
 export default function GCAdjust() {
   const { userInfo } = useContext(AppContext);
@@ -73,9 +74,10 @@ export default function GCAdjust() {
     } else if (GCInfo.adjustAmount == 0) {
       toast.warn("Please set amount!");
     } else {
+      const id = getLocalStorage("id")
       let filterUser = users.filter((v) => v.name == GCInfo.accountItemId);
       GCInfo.accountItemId = filterUser[0].id;
-      GCInfo.createdBy = userInfo.userName;
+      GCInfo.createdBy = `${id}`;
       // console.log("GCINfo ====>", GCInfo)
       GreenCreditAdjustController.updateGCAdjust(GCInfo, (data) => {
         if (data.accountItemId != 0 || data.accountItemId != null || data.accountItemId ) {

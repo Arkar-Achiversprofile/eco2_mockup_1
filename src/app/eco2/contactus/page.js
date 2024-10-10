@@ -84,7 +84,7 @@ export default function ContactUs() {
       <ToastContainer />
       <NavBar />
       <div className="row d-flex justify-content-center mt-5">
-        <div className="col-md-7 col-11">
+        <div className="col-lg-7 col-11">
           <h2 style={{ textAlign: "center", fontWeight: "bolder" }}>
             Contact Us
           </h2>
@@ -157,14 +157,15 @@ export default function ContactUs() {
             Send Message
           </button>
         </div>
-        <div className="col-md-4 col-11 d-flex">
+        <div className="col-lg-4 col-11 d-flex">
           <div
             style={{
-              width: "90%",
+              width: "100%",
               padding: 30,
               alignSelf: "center",
               backgroundColor: color.snowWhite,
-              borderRadius: 10
+              borderRadius: 10,
+              margin: "30px auto"
             }}
           >
             <p style={{ color: color.grey, fontWeight: "bold" }}>Address</p>
@@ -172,6 +173,8 @@ export default function ContactUs() {
               <i class="bi bi-geo-alt-fill"></i>
               <a
                 style={{ color: color.grey, marginLeft: 5 }}
+                rel="noopener noreferrer"
+                target="_blank"
                 href={`//www.google.com.sg/maps/place/Singapore+769201/@1.413811,103.8180138,15z/data=!3m1!4b1!4m6!3m5!1s0x31da140edbab175f:0xd1f5b85af98db0d7!8m2!3d1.413811!4d103.828335!16s%2Fg%2F11p4cqm_8j?entry=ttu&g_ep=EgoyMDI0MTAwNS4yIKXMDSoASAFQAw%3D%3D`}
               >
                 91 Lor Chencharu, Singapore 769201
