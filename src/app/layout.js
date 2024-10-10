@@ -3,7 +3,7 @@ import "bootstrap-icons/font/bootstrap-icons.min.css";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import BootstrapClient from "./components/BootstrapClient";
-import {AppProvider} from "./context/AppContext";
+import { AppProvider } from "./context/AppContext";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -16,6 +16,10 @@ export default function RootLayout({ children }) {
   return (
     <AppProvider>
       <html lang="en">
+        <script
+          src="https://static.elfsight.com/platform/platform.js"
+          async
+        ></script>
         <body className={inter.className}>
           {children}
           <BootstrapClient />

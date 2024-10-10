@@ -36,6 +36,7 @@ let tour2Right = "/Tour2Right.png";
 let tour3Left = "/Tour3Left.jpg";
 let tour3Right = "/Tour3Right.jpg";
 let background1 = "/Background1.jpeg";
+let newFeed = "/NewFeed.png";
 
 export const image = {
   mainLogo,
@@ -75,6 +76,7 @@ export const image = {
   tour2Right,
   tour3Left,
   tour3Right,
-  background1
+  background1,
+  newFeed
 };
 

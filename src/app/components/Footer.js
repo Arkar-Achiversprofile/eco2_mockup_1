@@ -27,7 +27,7 @@ function Footer() {
             <div className="d-flex flex-column align-items-start col-md-3 col-lg-2 col-xl-2 mx-auto mt-5 mb-4">
               <h5 className="fw-bold mb-4 text-white">Quick Menu</h5>
               <p>
-                <a href="#!" className={styles.aTag}>
+                <a href="/eco2/newfeed" className={styles.aTag}>
                   News
                 </a>
               </p>
